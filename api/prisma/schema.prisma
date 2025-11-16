@@ -34,7 +34,7 @@ enum MetodePembayaran {
 // User / Admin
 model tb_user {
   id                Int                     @id @default(autoincrement())
-  username          String
+  username          String                  @db.VarChar(50)
   email             String                  @unique
   role              Role                    @default(User)
   password          String
@@ -60,7 +60,8 @@ model tb_kamar {
 // Fasilitas
 model tb_fasilitas {
   id            Int                  @id @default(autoincrement())
-  namaFasilitas String
+  namaFasilitas String               @db.VarChar(30)
+  kodeFasilitas String               @unique
   deskripsi     String
   kamar         tb_kamar_fasilitas[]
 }
@@ -68,7 +69,8 @@ model tb_fasilitas {
 // Perabotan
 model tb_perabotan {
   id            Int                  @id @default(autoincrement())
-  namaPerabotan String
+  namaPerabotan String               @db.VarChar(30)
+  kodePerabotan String               @unique
   deskripsi     String
   kamar         tb_kamar_perabotan[]
 }
@@ -97,6 +99,7 @@ model tb_kamar_perabotan {
 // Order/Pesanan
 model tb_order {
   id               Int              @id @default(autoincrement())
+  kodeOrder        String           @unique
   userId           Int
   kamarId          Int
   tanggalPesanan   DateTime         @default(now())
@@ -123,6 +126,7 @@ model tb_order {
 // Riwayat Pembayaran - untuk tracking perubahan status pembayaran
 model tb_riwayat_pembayaran {
   id                   Int               @id @default(autoincrement())
+  kodeRiwayat          String            @unique
   orderId              Int
   userId               Int
   kamarId              Int
