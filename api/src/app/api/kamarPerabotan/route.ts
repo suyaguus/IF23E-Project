@@ -116,3 +116,51 @@ export const POST = async (req: NextRequest) => {
         });
     }
 };
+
+// DELETE - Hapus relasi kamar-perabotan
+export const DELETE = async (req: NextRequest) => {
+    try {
+        // Ambil dari query params atau body
+        const { searchParams } = new URL(req.url);
+        const kamarIdQuery = searchParams.get('kamarId');
+        const perabotanIdQuery = searchParams.get('perabotanId');
+
+        let kamarId = kamarIdQuery;
+        let perabotanId = perabotanIdQuery;
+
+        // Jika tidak ada di query, coba dari body
+        if (!kamarId || !perabotanId) {
+            const body = await req.json().catch(() => ({}));
+            kamarId = body.kamarId || kamarId;
+            perabotanId = body.perabotanId || perabotanId;
+        }
+
+        if (!kamarId || !perabotanId) {
+            return NextResponse.json({
+                success: false,
+                message: "kamarId dan perabotanId harus diisi"
+            });
+        }
+
+        await prisma.tb_kamar_perabotan.delete({
+            where: {
+                kamarId_perabotanId: {
+                    kamarId: Number(kamarId),
+                    perabotanId: Number(perabotanId)
+                }
+            }
+        });
+
+        return NextResponse.json({
+            success: true,
+            message: "Perabotan berhasil dihapus dari kamar"
+        });
+
+    } catch (error) {
+        return NextResponse.json({
+            success: false,
+            message: "Server error",
+            error: String(error)
+        });
+    }
+};
