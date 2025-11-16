@@ -1,6 +1,47 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+// buat sevice get data
+// GET - Ambil semua relasi kamar-fasilitas
+export const GET = async () => {
+    try {
+        const data = await prisma.tb_kamar_fasilitas.findMany({
+            include: {
+                kamar: {
+                    select: {
+                        id: true,
+                        nomorKamar: true,
+                        statusKamar: true
+                    }
+                },
+                fasilitas: {
+                    select: {
+                        id: true,
+                        namaFasilitas: true,
+                        kodeFasilitas: true,
+                        deskripsi: true
+                    }
+                }
+            },
+            orderBy: {
+                kamarId: 'asc'
+            }
+        });
+
+        return NextResponse.json({
+            success: true,
+            data: data
+        });
+
+    } catch (error) {
+        return NextResponse.json({
+            success: false,
+            message: "Server error",
+            error: String(error)
+        });
+    }
+};
+
 // POST - Tambah relasi kamar-fasilitas
 export const POST = async (req: NextRequest) => {
     try {
@@ -76,30 +117,3 @@ export const POST = async (req: NextRequest) => {
         });
     }
 };
-
-
-// service delete
-export const DELETE = async (req: NextRequest) => {
-    try {
-        const { kamarId, fasilitasId } = await req.json();
-
-        await prisma.tb_kamar_fasilitas.delete({
-            where: {
-                kamarId_fasilitasId: {
-                    kamarId: Number(kamarId),
-                    fasilitasId: Number(fasilitasId)
-                }
-            }
-        });
-
-        return NextResponse.json({
-            success: true,
-            message: "Fasilitas berhasil dihapus dari kamar"
-        });
-    } catch {
-        return NextResponse.json({
-            success: false,
-            message: "Server error"
-        });
-    }
-}
