@@ -144,3 +144,5 @@ model tb_riwayat_pembayaran {
   @@index([kamarId])
   @@index([createdAt])
 }
+
+// testing
