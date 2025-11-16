@@ -6,7 +6,6 @@ export const DELETE = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) => {
-    try {
         const { id } = await context.params;
         const fasilitasId = Number(id);
 
@@ -36,13 +35,6 @@ export const DELETE = async (
             success: true,
             message: "fasilitas berhasil dihapus",
         });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({
-            success: false,
-            message: "terjadi kesalahan",
-        });
-    }
 };
 
 // buat fungsi update data
@@ -82,3 +74,35 @@ export const PUT = async (
         message: "fasilitas berhasil diupdate",
     });
 };
+
+// buat fungsi get data berdasarkan id
+export const GET = async(
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) => {
+    const { id } = await context.params;
+    const fasilitasId = Number(id);
+
+    if (isNaN(fasilitasId)) {
+        return NextResponse.json({
+            success: false,
+            message: "id tidak valid",
+        });
+    }
+
+    const fasilitas = await prisma.tb_fasilitas.findUnique({
+        where: { id: fasilitasId },
+    });
+
+    if (!fasilitas) {
+        return NextResponse.json({
+            success: false,
+            message: "fasilitas tidak ditemukan",
+        });
+    }
+
+    return NextResponse.json({
+        success: true,
+        data: fasilitas,
+    });
+}
