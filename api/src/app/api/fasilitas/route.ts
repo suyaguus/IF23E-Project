@@ -42,6 +42,7 @@ export const POST = async (request: NextRequest) => {
     await prisma.tb_fasilitas.create({
         data: {
             namaFasilitas: data.namaFasilitas,
+            kodeFasilitas: data.kodeFasilitas,
             deskripsi: data.deskripsi
         }
     })
