@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,17 +7,140 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model tb_user {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  email     String   @unique
-  role Role @default(User)
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
+// Enums
 enum Role {
   Admin
   User
+}
+
+enum StatusKamar {
+  Tersedia
+  Tersewa
+  TidakTersedia
+}
+
+enum StatusPembayaran {
+  Lunas
+  Pending
+  Expired
+  Dibatalkan
+}
+
+enum MetodePembayaran {
+  Transfer
+  Tunai
+}
+
+// User / Admin
+model tb_user {
+  id                Int                     @id @default(autoincrement())
+  username          String
+  email             String                  @unique
+  role              Role                    @default(User)
+  password          String
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  orders            tb_order[]
+  riwayatPembayaran tb_riwayat_pembayaran[]
+}
+
+// Kamar
+model tb_kamar {
+  id                Int                     @id @default(autoincrement())
+  nomorKamar        String                  @unique
+  hargaSewa         Int
+  statusKamar       StatusKamar             @default(Tersedia)
+  deskripsi         String
+  orders            tb_order[]
+  fasilitas         tb_kamar_fasilitas[]
+  perabotan         tb_kamar_perabotan[]
+  riwayatPembayaran tb_riwayat_pembayaran[]
+}
+
+// Fasilitas
+model tb_fasilitas {
+  id            Int                  @id @default(autoincrement())
+  namaFasilitas String
+  deskripsi     String
+  kamar         tb_kamar_fasilitas[]
+}
+
+// Perabotan
+model tb_perabotan {
+  id            Int                  @id @default(autoincrement())
+  namaPerabotan String
+  deskripsi     String
+  kamar         tb_kamar_perabotan[]
+}
+
+// Junction table untuk many-to-many Kamar-Fasilitas
+model tb_kamar_fasilitas {
+  kamarId     Int
+  fasilitasId Int
+  kamar       tb_kamar     @relation(fields: [kamarId], references: [id], onDelete: Cascade)
+  fasilitas   tb_fasilitas @relation(fields: [fasilitasId], references: [id], onDelete: Cascade)
+
+  @@id([kamarId, fasilitasId])
+}
+
+// Junction table untuk many-to-many Kamar-Perabotan
+model tb_kamar_perabotan {
+  kamarId     Int
+  perabotanId Int
+  jumlah      Int          @default(1)
+  kamar       tb_kamar     @relation(fields: [kamarId], references: [id], onDelete: Cascade)
+  perabotan   tb_perabotan @relation(fields: [perabotanId], references: [id], onDelete: Cascade)
+
+  @@id([kamarId, perabotanId])
+}
+
+// Order/Pesanan
+model tb_order {
+  id               Int              @id @default(autoincrement())
+  userId           Int
+  kamarId          Int
+  tanggalPesanan   DateTime         @default(now())
+  tanggalCheckin   DateTime
+  tanggalCheckout  DateTime
+  statusPembayaran StatusPembayaran @default(Pending)
+  totalHarga       Int
+  metodePembayaran MetodePembayaran
+  buktiPembayaran  String? // URL/path file bukti pembayaran
+  catatanUser      String? // Catatan dari user saat memesan
+  catatanAdmin     String? // Catatan dari admin untuk order ini
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  user              tb_user                 @relation(fields: [userId], references: [id])
+  kamar             tb_kamar                @relation(fields: [kamarId], references: [id])
+  riwayatPembayaran tb_riwayat_pembayaran[]
+
+  @@index([userId])
+  @@index([kamarId])
+  @@index([statusPembayaran])
+}
+
+// Riwayat Pembayaran - untuk tracking perubahan status pembayaran
+model tb_riwayat_pembayaran {
+  id                   Int               @id @default(autoincrement())
+  orderId              Int
+  userId               Int
+  kamarId              Int
+  statusPembayaranLama StatusPembayaran? // Status sebelumnya (null jika baru dibuat)
+  statusPembayaranBaru StatusPembayaran // Status yang baru
+  totalHarga           Int
+  metodePembayaran     MetodePembayaran
+  buktiPembayaran      String? // Snapshot bukti pembayaran saat itu
+  keterangan           String? // Keterangan perubahan (misal: "Pembayaran dikonfirmasi oleh admin")
+  diubahOleh           String? // Username yang mengubah (admin/sistem)
+  createdAt            DateTime          @default(now())
+
+  order tb_order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user  tb_user  @relation(fields: [userId], references: [id])
+  kamar tb_kamar @relation(fields: [kamarId], references: [id])
+
+  @@index([orderId])
+  @@index([userId])
+  @@index([kamarId])
+  @@index([createdAt])
 }
