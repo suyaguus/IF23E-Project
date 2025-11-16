@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { TextInput } from "react-native-paper";
+import { FAB, TextInput } from "react-native-paper";
 import axios from "axios";
 
 export default function UserViewPage() {
@@ -82,6 +82,15 @@ export default function UserViewPage() {
       {/* Area Content */}
 
       {/* Area FAB */}
+      {/* area FAB */}
+      <FAB
+        icon="plus"
+        color="#fff"
+        mode="flat"
+        style={styles.fab}
+        onPress={() => console.log("Pressed")}
+        disabled={loading}
+      />
     </View>
   );
 }
@@ -94,5 +103,13 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     color: "#fff",
     fontSize: size,
+  },
+  fab: {
+    position: "absolute",
+    margin: 15,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#a51c31",
+    color: "#fff",
   },
 });
