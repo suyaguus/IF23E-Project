@@ -60,6 +60,7 @@ model tb_kamar {
 // Fasilitas
 model tb_fasilitas {
   id            Int                  @id @default(autoincrement())
+  kode          Int                  @unique
   namaFasilitas String
   deskripsi     String
   kamar         tb_kamar_fasilitas[]
@@ -68,6 +69,7 @@ model tb_fasilitas {
 // Perabotan
 model tb_perabotan {
   id            Int                  @id @default(autoincrement())
+  kode          Int                  @unique
   namaPerabotan String
   deskripsi     String
   kamar         tb_kamar_perabotan[]
@@ -97,6 +99,7 @@ model tb_kamar_perabotan {
 // Order/Pesanan
 model tb_order {
   id               Int              @id @default(autoincrement())
+  kode Int @unique
   userId           Int
   kamarId          Int
   tanggalPesanan   DateTime         @default(now())
@@ -123,6 +126,7 @@ model tb_order {
 // Riwayat Pembayaran - untuk tracking perubahan status pembayaran
 model tb_riwayat_pembayaran {
   id                   Int               @id @default(autoincrement())
+  kode Int @unique
   orderId              Int
   userId               Int
   kamarId              Int
