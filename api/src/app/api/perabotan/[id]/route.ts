@@ -74,3 +74,35 @@ export const PUT = async (
         message: "perabotan berhasil diupdate",
     });
 }
+
+// buat service get by id
+export const GET = async (
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) => {
+    const { id } = await context.params;
+    const perabotanId = Number(id);
+
+    if (isNaN(perabotanId)) {
+        return NextResponse.json({
+            success: false,
+            message: "id tidak valid",
+        });
+    }
+
+    const perabotan = await prisma.tb_perabotan.findUnique({
+        where: { id: perabotanId },
+    });
+
+    if (!perabotan) {
+        return NextResponse.json({
+            success: false,
+            message: "perabotan tidak ditemukan",
+        });
+    }
+
+    return NextResponse.json({
+        success: true,
+        data: perabotan,
+    });
+}
