@@ -40,3 +40,79 @@ export const GET = async () => {
         });
     }
 };
+
+// POST - Tambah relasi kamar-perabotan
+export const POST = async (req: NextRequest) => {
+    try {
+        const { kamarId, perabotanId, jumlah } = await req.json();
+
+        if (!kamarId || !perabotanId) {
+            return NextResponse.json({
+                success: false,
+                message: "kamarId dan perabotanId harus diisi"
+            });
+        }
+
+        // Cek apakah kamar exists
+        const kamar = await prisma.tb_kamar.findUnique({
+            where: { id: Number(kamarId) }
+        });
+
+        if (!kamar) {
+            return NextResponse.json({
+                success: false,
+                message: "Kamar tidak ditemukan"
+            });
+        }
+
+        // Cek apakah perabotan exists
+        const perabotan = await prisma.tb_perabotan.findUnique({
+            where: { id: Number(perabotanId) }
+        });
+
+        if (!perabotan) {
+            return NextResponse.json({
+                success: false,
+                message: "Perabotan tidak ditemukan"
+            });
+        }
+
+        // Cek apakah relasi sudah ada
+        const exists = await prisma.tb_kamar_perabotan.findUnique({
+            where: {
+                kamarId_perabotanId: {
+                    kamarId: Number(kamarId),
+                    perabotanId: Number(perabotanId)
+                }
+            }
+        });
+
+        if (exists) {
+            return NextResponse.json({
+                success: false,
+                message: "Perabotan sudah ditambahkan ke kamar ini"
+            });
+        }
+
+        // Buat relasi baru
+        await prisma.tb_kamar_perabotan.create({
+            data: {
+                kamarId: Number(kamarId),
+                perabotanId: Number(perabotanId),
+                jumlah: jumlah ? Number(jumlah) : 1
+            }
+        });
+
+        return NextResponse.json({
+            success: true,
+            message: "Perabotan berhasil ditambahkan ke kamar"
+        });
+
+    } catch (error) {
+        return NextResponse.json({
+            success: false,
+            message: "Server error",
+            error: String(error)
+        });
+    }
+};
