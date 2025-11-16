@@ -36,3 +36,42 @@ export const DELETE = async (
         message: "riwayat berhasil dihapus",
     });
 }
+
+// buat service update data
+export const PUT = async (
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) => {
+    const { id } = await context.params;
+    const riwayatId = Number(id);
+    const data = await req.json();
+
+    if (isNaN(riwayatId)) {
+        return NextResponse.json({
+            success: false,
+            message: "id tidak valid",
+        });
+    }
+
+    const riwayat = await prisma.tb_riwayat_pembayaran.findUnique({
+        where: { id: riwayatId },
+    });
+
+    if (!riwayat) {
+        return NextResponse.json({
+            success: false,
+            message: "riwayat tidak ditemukan",
+        });
+    }
+
+    await prisma.tb_riwayat_pembayaran.update({
+        where: { id: riwayatId },
+        data: data,
+    });
+
+    return NextResponse.json({
+        success: true,
+        message: "riwayat berhasil diupdate",    
+        data: data  
+    })
+}
