@@ -6,7 +6,6 @@ export const DELETE = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) => {
-    try {
         const { id } = await context.params;
         const kamarId = Number(id);
 
@@ -33,12 +32,6 @@ export const DELETE = async (
         return NextResponse.json({
             success: true, message: "kamar berhasil dihapus"
         });
-
-    } catch (error) {
-        return NextResponse.json({
-            success: false, message: "terjadi kesalahan"
-        });
-    }
 };
 
 // buat fungsi update data
@@ -46,7 +39,6 @@ export const PUT = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) => {
-    try {
         const { id } = await context.params;
         const kamarId = Number(id);
         const data = await req.json();
@@ -75,10 +67,39 @@ export const PUT = async (
         return NextResponse.json({
             success: true, message: "kamar berhasil diupdate"
         });
+};
 
-    } catch (error) {
+// buat fungsi get data berdasarkan id
+export const GET = async (
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) => {
+        const { id } = await context.params;
+        const kamarId = Number(id);
+
+        if (isNaN(kamarId)) {
+            return NextResponse.json({
+                success: false, message: "id tidak valid"
+            });
+        }
+
+        const kamar = await prisma.tb_kamar.findUnique({
+            where: { id: kamarId },
+            select: {
+                nomorKamar: true,
+                hargaSewa: true,
+                statusKamar: true,
+                deskripsi: true
+            }
+        }); 
+
+        if (!kamar) {
+            return NextResponse.json({
+                success: false, message: "kamar tidak ditemukan"
+            });
+        }
+
         return NextResponse.json({
-            success: false, message: "terjadi kesalahan"
+            success: true, message: "kamar berhasil ditemukan", data: kamar
         });
-    }
-}
+};  
