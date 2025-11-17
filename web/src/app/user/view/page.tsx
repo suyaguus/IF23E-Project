@@ -2,6 +2,16 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import React from "react";
 import styles from "../user.module.css";
 
+// buat interface
+interface ModelUser {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  orders: number;
+  riwayat_pembayaran: string;
+}
+
 export default function UserViewPage() {
   return (
     <>
@@ -11,13 +21,14 @@ export default function UserViewPage() {
       {/* article */}
       <article className={styles.content}>
         <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
+          {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Invoice</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
+            <TableRow className="border-black">
+              <TableHead className="text-center w-[20%] " >Username</TableHead>
+              <TableHead className="text-center w-[20%]">Email</TableHead>
+              <TableHead className="text-center w-[20%]">Role</TableHead>
+              <TableHead className="text-center w-[20%]">Orders</TableHead>
+              <TableHead className="text-center w-[20%]">Riwayat Pembayaran</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
