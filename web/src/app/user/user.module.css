@@ -21,3 +21,18 @@
     bottom: 0;
     width:100%;
 }
+
+.btn_edit, .btn_delete {
+    padding: 10px;
+    cursor: pointer;
+    margin: 0 5px;
+    border: 1px solid #d3d3d3;
+}
+
+.btn_edit {
+    background-color: #fff;
+}
+
+.btn_delete {
+    background-color: red;
+}
