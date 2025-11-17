@@ -1,13 +1,15 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import React from "react";
+import styles from "../user.module.css";
 
 export default function UserViewPage() {
   return (
     <>
+      {/* bagian header ada di layout utama */}
       {/* tambah data */}
 
       {/* article */}
-      <article>
+      <article className={styles.content}>
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>

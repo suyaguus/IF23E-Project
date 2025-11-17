@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Image from "next/image";
+import styles from "./user/user.module.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +29,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* bagian header setiap page */}
+        <header className={styles.header}>
+          {/* <img src="./images/logo.png"/> */}
+          <Image
+            src={"/images/logo.png"}
+            alt="Logo Teknokrat"
+            width={400}
+            height={100}
+            priority
+          />
+        </header>
         {children}
+
+        {/* footer */}
+        <footer className={styles.footer}>&copy; 2025 - Suyaguus</footer>
       </body>
     </html>
   );
