@@ -8,7 +8,7 @@ export default function UserAddPage() {
   return (
     <>
       <article>
-        {/* area kode */}
+        {/* area usernam */}
         <section>
           <div className="grid w-full max-w-sm items-center gap-3">
             {/* fungsi htmlfor mengarahkan label ke input walaupun terpisah */}
@@ -22,7 +22,7 @@ export default function UserAddPage() {
           </div>
         </section>
 
-        {/* area nama */}
+        {/* area email */}
         <section>
           <div className="grid w-full max-w-sm items-center gap-3">
             {/* fungsi htmlfor mengarahkan label ke input walaupun terpisah */}
@@ -35,6 +35,23 @@ export default function UserAddPage() {
             />
           </div>
         </section>
+
+        {/* area passwrod */}
+        <section>
+          <div className="grid w-full max-w-sm items-center gap-3">
+            {/* fungsi htmlfor mengarahkan label ke input walaupun terpisah */}
+            <Label htmlFor="txt_nama">Password</Label>
+            <Input
+              type="text"
+              id="txt_nama"
+              placeholder="Gunakan Angka dan Simbol"
+              maxLength={50}
+            />  
+          </div>
+        </section>
+
+        {/* area tombol */}
+        <section>Tombol</section>
       </article>
     </>
   );
