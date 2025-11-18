@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import axios from "axios";
 import { toast } from "sonner";
+import Link from "next/link";
 
 interface ModelUser {
   id: number;
@@ -68,6 +69,16 @@ export default function UserViewPage() {
 
   return (
     <>
+      {/* tombol tambah data */}
+      <nav className="mt-2.5 mx-5 flex md:justify-end sm:justify-start justify-center">
+        <Link
+          href="/user/add"
+          className="sm:bg-sky-700 bg-rose-700 text-white py-2.5 px-5 rounded-full"
+        >
+          Tambah Data
+        </Link>
+      </nav>
+
       <article className={styles.content}>
         {error ? (
           <div className="text-center text-black">
