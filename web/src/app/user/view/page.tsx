@@ -1,7 +1,8 @@
+"use client";
+
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -25,7 +26,6 @@ import {
 import axios from "axios";
 import { toast } from "sonner";
 
-// buat interface
 interface ModelUser {
   id: number;
   username: string;
@@ -38,93 +38,70 @@ interface ModelUser {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function UserViewPage() {
-  // swr digunakan untuk mengambil data
   const { data, error, isLoading, mutate } = useSWR(
     "http://localhost:3001/api/user",
     fetcher
   );
 
+  // Debug: Lihat data yang diterima
+  console.log("Data:", data);
+  console.log("Error:", error);
+  console.log("IsLoading:", isLoading);
+
   const deleteData = async (id: number) => {
-    const response = await axios.delete(
-      `http://localhost:3001/api/user/${id}`
-    );
+    try {
+      const response = await axios.delete(
+        `http://localhost:3001/api/user/${id}`
+      );
 
-    // tampilkan hasil respon
-    // console.log(response.data.message);
-
-    // jika sukses == true
-    if (response.data.success) {
-      toast.success(response.data.message);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        mutate(); // Refresh data setelah delete
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Gagal menghapus data");
+      console.error(error);
     }
-
-    // jika sukses == false
-    else {
-      toast.error(response.data.message);
-    }
-
-    mutate(data);
   };
 
-  // bagian tampilan
   return (
     <>
-      {/* bagian header ada di layout utama */}
-      {/* tambah data */}
-
-      {/* article */}
       <article className={styles.content}>
-        {/* bagian error menggunakan ternary Operator */}
         {error ? (
-          <div className="text-center text-black">Gagal Mengambil Data</div>
+          <div className="text-center text-black">
+            Gagal Mengambil Data: {error.message}
+          </div>
         ) : (
           <Table>
             <TableHeader>
-              {/* bagian desain table #1*/}
               <TableRow>
-                <TableHead className="text-center w-[10%] ">Aksi</TableHead>
-                <TableHead className="text-center w-[10%] ">
-                  Kode Barang
+                <TableHead className="text-center w-[15%]">Aksi</TableHead>
+                <TableHead className="text-center w-[15%]">Username</TableHead>
+                <TableHead className="text-center w-[20%]">Email</TableHead>
+                <TableHead className="text-center w-[15%]">Role</TableHead>
+                <TableHead className="text-center w-[15%]">Orders</TableHead>
+                <TableHead className="text-center w-[20%]">
+                  Riwayat Pembayaran
                 </TableHead>
-                <TableHead className="text-center w-auto ">
-                  Nama Barang
-                </TableHead>
-                <TableHead className="text-center w-[15%] ">
-                  Harga Barang
-                </TableHead>
-                <TableHead className="text-center w-[15%] ">Satuan</TableHead>
               </TableRow>
-
-              {/* bagian desain table #2*/}
-              {/* <TableRow>
-          <TableHead className="text-center">#</TableHead>
-          <TableHead className="text-center">#</TableHead>
-          <TableHead className="text-center">#</TableHead>
-          <TableHead className="text-center">#</TableHead>
-          <TableHead className="text-center">#</TableHead>
-        </TableRow> */}
             </TableHeader>
             <TableBody>
-              {/* bagian data */}
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    Mohon Tunggu
+                  <TableCell colSpan={6} className="text-center">
+                    Mohon Tunggu...
                   </TableCell>
                 </TableRow>
-              ) : (
-                data &&
+              ) : data && data.user && data.user.length > 0 ? (
                 data.user.map((item: ModelUser) => (
-                  // <div key={item.id}>
-                  //   <p>{item.nama}</p>
-                  // </div>
                   <TableRow key={item.id}>
-                    <TableCell className="text-center bg-red-200">
-                      {/* buat tombol edit */}
+                    <TableCell className="text-center">
                       <button className={styles.btn_edit}>
                         <Pencil size={15} />
                       </button>
 
-                      {/* buat tombol hapus */}
                       <AlertDialog>
                         <AlertDialogTrigger className={styles.btn_delete}>
                           <Trash size={15} color="white" />
@@ -135,15 +112,13 @@ export default function UserViewPage() {
                               Apakah anda yakin ingin menghapus data ini?
                             </AlertDialogTitle>
                             <AlertDialogDescription>
-                              Nama barang : {item.username} ingin dihapus ?
+                              Username: {item.username} ingin dihapus?
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Tidak</AlertDialogCancel>
                             <AlertDialogAction
-                              onClick={() => {
-                                deleteData(item.id);
-                              }}
+                              onClick={() => deleteData(item.id)}
                             >
                               Ya
                             </AlertDialogAction>
@@ -151,17 +126,23 @@ export default function UserViewPage() {
                         </AlertDialogContent>
                       </AlertDialog>
                     </TableCell>
-                    <TableCell className="bg-purple-300">
+                    <TableCell className="text-center">
                       {item.username}
                     </TableCell>
-                    <TableCell className="bg-red-200">{item.email}</TableCell>
-                    <TableCell className="bg-red-200">{item.role}</TableCell>
-                    <TableCell className="bg-red-200">{item.orders}</TableCell>
-                    <TableCell className="bg-red-200">
+                    <TableCell className="text-center">{item.email}</TableCell>
+                    <TableCell className="text-center">{item.role}</TableCell>
+                    <TableCell className="text-center">{item.orders}</TableCell>
+                    <TableCell className="text-center">
                       {item.riwayat_pembayaran}
                     </TableCell>
                   </TableRow>
                 ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center">
+                    Tidak ada data
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
