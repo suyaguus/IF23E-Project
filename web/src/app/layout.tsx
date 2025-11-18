@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
 import styles from "./user/user.module.css";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,17 @@ export default function RootLayout({
           />
         </header>
         {children}
+
+        {/* buat text toaster */}
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              color: "white",
+              backgroundColor: "black",
+            },
+          }}
+        />
 
         {/* footer */}
         <footer className={styles.footer}>&copy; 2025 - Suyaguus</footer>
