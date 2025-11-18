@@ -8,7 +8,6 @@ export default function UserAddPage() {
   return (
     <>
       <article>
-        
         {/* area kode */}
         <section>
           <div className="grid w-full max-w-sm items-center gap-3">
@@ -19,6 +18,20 @@ export default function UserAddPage() {
               id="txt_kode"
               placeholder="Isi Username"
               maxLength={15}
+            />
+          </div>
+        </section>
+
+        {/* area nama */}
+        <section>
+          <div className="grid w-full max-w-sm items-center gap-3">
+            {/* fungsi htmlfor mengarahkan label ke input walaupun terpisah */}
+            <Label htmlFor="txt_nama">Email</Label>
+            <Input
+              type="text"
+              id="txt_nama"
+              placeholder="Contoh: user@gmail.com"
+              maxLength={50}
             />
           </div>
         </section>
