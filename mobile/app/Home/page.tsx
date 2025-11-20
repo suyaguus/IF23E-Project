@@ -17,4 +17,8 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   //state daftar favorit (menyimpan id kost)
    const [favorites, setFavorites] = useState<number[]>([]);
+
+   // daftar kategori filter
+   const categories = ['Semua', 'Putra', 'Putri', 'Campur'];
+
 }
