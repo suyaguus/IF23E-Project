@@ -12,6 +12,9 @@ import {
 } from 'react-native';
 
 export default function HomePage() {
+
+  //state kategory terpilih
   const [selectedCategory, setSelectedCategory] = useState('Semua');
- 
+  //state daftar favorit (menyimpan id kost)
+   const [favorites, setFavorites] = useState<number[]>([]);
 }
