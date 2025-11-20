@@ -36,7 +36,7 @@ export const DELETE = async (
 
     return NextResponse.json({
         success: true,
-        message: "user berhasil dihapus",
+        message: "Data User Berhasil di Hapus",
     });
 
     // testing
