@@ -31,16 +31,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* bagian header setiap page */}
-        <header className={styles.header}>
+        {/* <header className={styles.header}> */}
           {/* <img src="./images/logo.png"/> */}
-          <Image
+          {/* <Image
             src={"/images/logo.png"}
             alt="Logo Teknokrat"
             width={400}
             height={100}
             priority
           />
-        </header>
+        </header> */}
         {children}
 
         {/* buat text toaster */}
@@ -55,7 +55,7 @@ export default function RootLayout({
         />
 
         {/* footer */}
-        <footer className={styles.footer}>&copy; 2025 - Suyaguus</footer>
+        {/* <footer className={styles.footer}>&copy; 2025 - Suyaguus</footer> */}
       </body>
     </html>
   );

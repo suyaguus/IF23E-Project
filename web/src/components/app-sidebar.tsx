@@ -35,33 +35,38 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Suyaguus",
+    email: "suyaguus@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "User",
       url: "#",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
+      title: "Kamar",
       url: "#",
       icon: IconListDetails,
     },
     {
-      title: "Analytics",
+      title: "Perabotan",
       url: "#",
       icon: IconChartBar,
     },
     {
-      title: "Projects",
+      title: "Fasilitas",
       url: "#",
       icon: IconFolder,
     },
     {
-      title: "Team",
+      title: "Order",
+      url: "#",
+      icon: IconUsers,
+    },
+    {
+      title: "Riwayat Pembayaran",
       url: "#",
       icon: IconUsers,
     },
@@ -162,7 +167,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">Dashboard Admin</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -170,8 +175,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavDocuments items={data.documents} /> */}
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

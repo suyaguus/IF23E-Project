@@ -1,8 +1,9 @@
 import Image from "next/image";
-import UserViewPage from "./user/view/page";
+import DashboardPage from "./dashboard/user/page";
+import HomePage from "./home/page";
 
 export default function Home() {
   return (
-    <UserViewPage/>
+    <DashboardPage/>
   );
 }
