@@ -1,10 +1,17 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
 
 export default function HomePage() {
-  return (
-    <View>
-      <Text>page</Text>
-    </View>
-  )
+  const [selectedCategory, setSelectedCategory] = useState('Semua');
+ 
 }
