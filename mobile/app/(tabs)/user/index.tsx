@@ -100,7 +100,7 @@ export default function UserViewPage() {
 const size = 20;
 const styles = StyleSheet.create({
   warna_bg: {
-    backgroundColor: "#2F92D4FF",
+    backgroundColor: "#2FD440FF",
     color: "#fff",
     fontSize: size,
   },
