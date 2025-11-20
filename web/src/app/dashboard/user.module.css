@@ -1,0 +1,38 @@
+.header {
+    background-color: #c31a31;
+    padding: 10px;  
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.content{
+    padding: 20px;
+    line-height: 20px;
+}
+
+.footer{
+    background-color: #c31a31;
+    padding: 20px 10px;
+    color: white;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width:100%;
+}
+
+.btn_edit, .btn_delete {
+    padding: 10px;
+    cursor: pointer;
+    margin: 0 5px;
+    border: 1px solid #d3d3d3;
+}
+
+.btn_edit {
+    background-color: #fff;
+}
+
+.btn_delete {
+    background-color: red;
+}
