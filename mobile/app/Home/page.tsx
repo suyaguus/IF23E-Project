@@ -70,4 +70,10 @@ export default function HomePage() {
     );
   };
 
+  // filter kategori
+  const filteredKost =
+    selectedCategory === 'Semua'
+      ? kostList
+      : kostList.filter(kost => kost.category === selectedCategory);
+
 }
