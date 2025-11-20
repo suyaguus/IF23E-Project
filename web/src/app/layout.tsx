@@ -55,7 +55,7 @@ export default function RootLayout({
         />
 
         {/* footer */}
-        <footer className={styles.footer}>&copy; 2025 - Suyaguus</footer>
+        <footer className={styles.footer}>&copy; 2025 - IF23E</footer>
       </body>
     </html>
   );
