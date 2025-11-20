@@ -1,5 +1,5 @@
 import React from 'react'
-import UserViewPage from './user'
+import UserViewPage from './(tabs)/user'
 
 export default function HomePage() {
     return (
