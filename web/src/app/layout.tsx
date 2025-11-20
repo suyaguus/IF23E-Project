@@ -55,7 +55,11 @@ export default function RootLayout({
         />
 
         {/* footer */}
+<<<<<<< HEAD
         {/* <footer className={styles.footer}>&copy; 2025 - Suyaguus</footer> */}
+=======
+        <footer className={styles.footer}>&copy; 2025 - IF23E</footer>
+>>>>>>> 07f10fb33fe2350eb043430b83363d11ba41f4a1
       </body>
     </html>
   );
