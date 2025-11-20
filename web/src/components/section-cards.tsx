@@ -106,20 +106,70 @@ export function SectionCards() {
     mutate: perabotanMutate,
   } = useSWR("http://localhost:3001/api/perabotan", fetcher);
 
-  const deleteData = async (id: number) => {
+  const deleteUser = async (id: number) => {
     try {
       const response = await axios.delete(
         `http://localhost:3001/api/user/${id}`
       );
-
       if (response.data.success) {
         toast.success(response.data.message);
-        userMutate(); // Refresh data setelah delete
+        userMutate();
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error("Gagal menghapus data");
+      toast.error("Gagal menghapus data user");
+      console.error(error);
+    }
+  };
+
+  const deleteKamar = async (id: number) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3001/api/kamar/${id}`
+      );
+      if (response.data.success) {
+        toast.success(response.data.message);
+        kamarMutate();
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Gagal menghapus data kamar");
+      console.error(error);
+    }
+  };
+
+  const deleteFasilitas = async (id: number) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3001/api/fasilitas/${id}`
+      );
+      if (response.data.success) {
+        toast.success(response.data.message);
+        fasilitasMutate();
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Gagal menghapus data fasilitas");
+      console.error(error);
+    }
+  };
+
+  const deletePerabotan = async (id: number) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3001/api/perabotan/${id}`
+      );
+      if (response.data.success) {
+        toast.success(response.data.message);
+        perabotanMutate();
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Gagal menghapus data perabotan");
       console.error(error);
     }
   };
@@ -150,7 +200,7 @@ export function SectionCards() {
             Tambah User
           </Link>
         </div>
-        
+
         <div className="border rounded-lg overflow-hidden">
           <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
             {userError ? (
@@ -162,11 +212,17 @@ export function SectionCards() {
                 <TableHeader className="sticky top-0 bg-gray-50 z-10">
                   <TableRow>
                     <TableHead className="text-center w-[15%]">Aksi</TableHead>
-                    <TableHead className="text-center w-[15%]">Username</TableHead>
+                    <TableHead className="text-center w-[15%]">
+                      Username
+                    </TableHead>
                     <TableHead className="text-center w-[20%]">Email</TableHead>
                     <TableHead className="text-center w-[15%]">Role</TableHead>
-                    <TableHead className="text-center w-[15%]">Orders</TableHead>
-                    <TableHead className="text-center w-[20%]">Riwayat Pembayaran</TableHead>
+                    <TableHead className="text-center w-[15%]">
+                      Orders
+                    </TableHead>
+                    <TableHead className="text-center w-[20%]">
+                      Riwayat Pembayaran
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -198,18 +254,26 @@ export function SectionCards() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Tidak</AlertDialogCancel>
-                                <AlertDialogAction >
-                                  Ya
-                                </AlertDialogAction>
+                                <AlertDialogAction onClick={() => deleteUser(item.id)}>Ya</AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
                         </TableCell>
-                        <TableCell className="text-center">{item.username}</TableCell>
-                        <TableCell className="text-center">{item.email}</TableCell>
-                        <TableCell className="text-center">{item.role}</TableCell>
-                        <TableCell className="text-center">{item.orders}</TableCell>
-                        <TableCell className="text-center">{item.riwayat_pembayaran}</TableCell>
+                        <TableCell className="text-center">
+                          {item.username}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {item.email}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {item.role}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {item.orders}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {item.riwayat_pembayaran}
+                        </TableCell>
                       </TableRow>
                     ))
                   ) : (
@@ -237,7 +301,7 @@ export function SectionCards() {
             Tambah Kamar
           </Link>
         </div>
-        
+
         <div className="border rounded-lg overflow-hidden">
           <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
             {kamarError ? (
@@ -250,14 +314,17 @@ export function SectionCards() {
                   <TableRow>
                     <TableHead className="text-center">Aksi</TableHead>
                     <TableHead className="text-center">ID</TableHead>
-                    {kamarData?.kamar?.[0] && Object.keys(kamarData.kamar[0])
-                      .filter(key => key !== 'id')
-                      .map((key) => (
-                        <TableHead key={key} className="text-center capitalize">
-                          {key.replace(/_/g, ' ')}
-                        </TableHead>
-                      ))
-                    }
+                    {kamarData?.kamar?.[0] &&
+                      Object.keys(kamarData.kamar[0])
+                        .filter((key) => key !== "id")
+                        .map((key) => (
+                          <TableHead
+                            key={key}
+                            className="text-center capitalize"
+                          >
+                            {key.replace(/_/g, " ")}
+                          </TableHead>
+                        ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -267,7 +334,9 @@ export function SectionCards() {
                         Mohon Tunggu...
                       </TableCell>
                     </TableRow>
-                  ) : kamarData && kamarData.kamar && kamarData.kamar.length > 0 ? (
+                  ) : kamarData &&
+                    kamarData.kamar &&
+                    kamarData.kamar.length > 0 ? (
                     kamarData.kamar.map((item: ModelKamar) => (
                       <TableRow key={item.id}>
                         <TableCell className="text-center">
@@ -289,22 +358,19 @@ export function SectionCards() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Tidak</AlertDialogCancel>
-                                <AlertDialogAction >
-                                  Ya
-                                </AlertDialogAction>
+                                <AlertDialogAction onClick={() => deleteKamar(item.id)}>Ya</AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
                         </TableCell>
                         <TableCell className="text-center">{item.id}</TableCell>
                         {Object.entries(item)
-                          .filter(([key]) => key !== 'id')
+                          .filter(([key]) => key !== "id")
                           .map(([key, value]) => (
                             <TableCell key={key} className="text-center">
                               {String(value)}
                             </TableCell>
-                          ))
-                        }
+                          ))}
                       </TableRow>
                     ))
                   ) : (
@@ -332,7 +398,7 @@ export function SectionCards() {
             Tambah Fasilitas
           </Link>
         </div>
-        
+
         <div className="border rounded-lg overflow-hidden">
           <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
             {fasilitasError ? (
@@ -345,14 +411,17 @@ export function SectionCards() {
                   <TableRow>
                     <TableHead className="text-center">Aksi</TableHead>
                     <TableHead className="text-center">ID</TableHead>
-                    {fasilitasData?.fasilitas?.[0] && Object.keys(fasilitasData.fasilitas[0])
-                      .filter(key => key !== 'id')
-                      .map((key) => (
-                        <TableHead key={key} className="text-center capitalize">
-                          {key.replace(/_/g, ' ')}
-                        </TableHead>
-                      ))
-                    }
+                    {fasilitasData?.fasilitas?.[0] &&
+                      Object.keys(fasilitasData.fasilitas[0])
+                        .filter((key) => key !== "id")
+                        .map((key) => (
+                          <TableHead
+                            key={key}
+                            className="text-center capitalize"
+                          >
+                            {key.replace(/_/g, " ")}
+                          </TableHead>
+                        ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -362,7 +431,9 @@ export function SectionCards() {
                         Mohon Tunggu...
                       </TableCell>
                     </TableRow>
-                  ) : fasilitasData && fasilitasData.fasilitas && fasilitasData.fasilitas.length > 0 ? (
+                  ) : fasilitasData &&
+                    fasilitasData.fasilitas &&
+                    fasilitasData.fasilitas.length > 0 ? (
                     fasilitasData.fasilitas.map((item: ModelFasilitas) => (
                       <TableRow key={item.id}>
                         <TableCell className="text-center">
@@ -384,22 +455,19 @@ export function SectionCards() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Tidak</AlertDialogCancel>
-                                <AlertDialogAction >
-                                  Ya
-                                </AlertDialogAction>
+                                <AlertDialogAction onClick={() => deleteFasilitas(item.id)}>Ya</AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
                         </TableCell>
                         <TableCell className="text-center">{item.id}</TableCell>
                         {Object.entries(item)
-                          .filter(([key]) => key !== 'id')
+                          .filter(([key]) => key !== "id")
                           .map(([key, value]) => (
                             <TableCell key={key} className="text-center">
                               {String(value)}
                             </TableCell>
-                          ))
-                        }
+                          ))}
                       </TableRow>
                     ))
                   ) : (
@@ -427,7 +495,7 @@ export function SectionCards() {
             Tambah Perabotan
           </Link>
         </div>
-        
+
         <div className="border rounded-lg overflow-hidden">
           <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
             {perabotanError ? (
@@ -440,14 +508,17 @@ export function SectionCards() {
                   <TableRow>
                     <TableHead className="text-center">Aksi</TableHead>
                     <TableHead className="text-center">ID</TableHead>
-                    {perabotanData?.perabotan?.[0] && Object.keys(perabotanData.perabotan[0])
-                      .filter(key => key !== 'id')
-                      .map((key) => (
-                        <TableHead key={key} className="text-center capitalize">
-                          {key.replace(/_/g, ' ')}
-                        </TableHead>
-                      ))
-                    }
+                    {perabotanData?.perabotan?.[0] &&
+                      Object.keys(perabotanData.perabotan[0])
+                        .filter((key) => key !== "id")
+                        .map((key) => (
+                          <TableHead
+                            key={key}
+                            className="text-center capitalize"
+                          >
+                            {key.replace(/_/g, " ")}
+                          </TableHead>
+                        ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -457,7 +528,9 @@ export function SectionCards() {
                         Mohon Tunggu...
                       </TableCell>
                     </TableRow>
-                  ) : perabotanData && perabotanData.perabotan && perabotanData.perabotan.length > 0 ? (
+                  ) : perabotanData &&
+                    perabotanData.perabotan &&
+                    perabotanData.perabotan.length > 0 ? (
                     perabotanData.perabotan.map((item: ModelPerabotan) => (
                       <TableRow key={item.id}>
                         <TableCell className="text-center">
@@ -479,22 +552,19 @@ export function SectionCards() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Tidak</AlertDialogCancel>
-                                <AlertDialogAction >
-                                  Ya
-                                </AlertDialogAction>
+                                <AlertDialogAction onClick={() => deletePerabotan(item.id)}>Ya</AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
                         </TableCell>
                         <TableCell className="text-center">{item.id}</TableCell>
                         {Object.entries(item)
-                          .filter(([key]) => key !== 'id')
+                          .filter(([key]) => key !== "id")
                           .map(([key, value]) => (
                             <TableCell key={key} className="text-center">
                               {String(value)}
                             </TableCell>
-                          ))
-                        }
+                          ))}
                       </TableRow>
                     ))
                   ) : (
