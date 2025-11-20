@@ -61,4 +61,13 @@ export default function HomePage() {
     },
   ];
 
+  // toggle favorit
+  const toggleFavorite = (roomNumber: number) => {
+    setFavorites(prev =>
+      prev.includes(roomNumber)
+        ? prev.filter(f => f !== roomNumber)
+        : [...prev, roomNumber],
+    );
+  };
+
 }
