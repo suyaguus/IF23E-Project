@@ -1,8 +1,8 @@
 import React from 'react'
-import UserViewPage from './(tabs)/user'
+import HomePage from './Home/page'
 
-export default function HomePage() {
+export default function Home() {
     return (
-        <UserViewPage/>
+        <HomePage/>
     )
 }
