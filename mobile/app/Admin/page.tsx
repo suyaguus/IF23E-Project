@@ -76,7 +76,7 @@ export default function Adminpage() {
                     ))}
                 </View>
 
-                {/* Bagian Informasi Cepat (Misal: Status) */}
+                {/* informasi bagian status */}
                 <Text style={styles.sectionTitle}>Informasi Cepat</Text>
                 
                 <View style={styles.quickInfoCard}>
@@ -99,9 +99,10 @@ const styles = StyleSheet.create({
 
   header: {
     padding: 20,
-    backgroundColor: '#2563eb',
+    backgroundColor: '#2563eb', 
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+    paddingTop: (StatusBar.currentHeight || 20) + 10,
   },
 
   headerTop: {
