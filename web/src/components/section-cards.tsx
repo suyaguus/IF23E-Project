@@ -449,9 +449,11 @@ export function SectionCards() {
                     fasilitasData.fasilitas.map((item: ModelFasilitas) => (
                       <TableRow key={item.id}>
                         <TableCell className="text-center">
-                          <button className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded mr-2">
-                            <Pencil size={15} />
-                          </button>
+                          <Link href={`/fasilitas/edit/${item.id}`}>
+                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded mr-2">
+                              <Pencil size={15} />
+                            </button>
+                          </Link>
                           <AlertDialog>
                             <AlertDialogTrigger className="bg-red-500 hover:bg-red-600 text-white p-2 rounded">
                               <Trash size={15} color="white" />
@@ -550,9 +552,11 @@ export function SectionCards() {
                     perabotanData.perabotan.map((item: ModelPerabotan) => (
                       <TableRow key={item.id}>
                         <TableCell className="text-center">
-                          <button className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded mr-2">
-                            <Pencil size={15} />
-                          </button>
+                          <Link href={`/perabotan/edit/${item.id}`}>
+                            <button className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded mr-2">
+                              <Pencil size={15} />
+                            </button>
+                          </Link>
                           <AlertDialog>
                             <AlertDialogTrigger className="bg-red-500 hover:bg-red-600 text-white p-2 rounded">
                               <Trash size={15} color="white" />
