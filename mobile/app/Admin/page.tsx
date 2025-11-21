@@ -8,6 +8,10 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
+import { blue } from 'react-native-reanimated/lib/typescript/Colors';
+
+// library pada menu icon
+const MenuIcon = ({ name, color }) => <Text style={{ fontSize: 28, color: blue }}>{name}</Text>;
 
 export default function Adminpage() {
   // kategori filter aktif
