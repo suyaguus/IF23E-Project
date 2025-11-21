@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
 
   greeting: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: 'white',
   },
