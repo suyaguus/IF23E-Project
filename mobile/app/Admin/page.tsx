@@ -205,31 +205,7 @@ const styles = StyleSheet.create({
   }
 });
   
-  image: {
-    width: '100%',
-    height: 180,
-    borderRadius: 15,
-  },
-
-  favoriteButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-  },
-
-  favoriteIcon: {
-    fontSize: 24,
-  },
-
-  typeBadge: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    backgroundColor: '#2563eb',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
-  },
+  
 
   typeBadgeText: {
     color: 'white',
