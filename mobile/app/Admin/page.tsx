@@ -197,7 +197,13 @@ const styles = StyleSheet.create({
       shadowRadius: 5,
       elevation: 3,
   },
-  
+
+  quickInfoText: {
+      fontSize: 15,
+      color: '#4b5563',
+      paddingVertical: 5,
+  }
+});
   searchInput: {
     flex: 1,
     fontSize: 14,
