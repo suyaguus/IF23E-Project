@@ -19,7 +19,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function Cards() {
@@ -71,17 +70,17 @@ export function Cards() {
             {getCardValue(userLoading, userError, totalUsers)}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
+            {/* <Badge variant="outline">
               <IconTrendingUp />
               +12.5%
-            </Badge>
+            </Badge> */}
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Growing user base <IconUser className="size-4" />
+            <IconUser className="size-4" />
           </div>
-          <div className="text-muted-foreground">Total registered users</div>
+          <div className="text-muted-foreground">Total Pengguna Aplikasi</div>
         </CardFooter>
       </Card>
 
@@ -93,17 +92,17 @@ export function Cards() {
             {getCardValue(kamarLoading, kamarError, totalKamar)}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
+            {/* <Badge variant="outline">
               <IconTrendingUp />
               +8.3%
-            </Badge>
+            </Badge> */}
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Available rooms <IconDoor className="size-4" />
+            <IconDoor className="size-4" />
           </div>
-          <div className="text-muted-foreground">Total room inventory</div>
+          <div className="text-muted-foreground">Total Kamar yang tersedia</div>
         </CardFooter>
       </Card>
 
@@ -115,17 +114,17 @@ export function Cards() {
             {getCardValue(fasilitasLoading, fasilitasError, totalFasilitas)}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
+            {/* <Badge variant="outline">
               <IconTrendingUp />
               +15%
-            </Badge>
+            </Badge> */}
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Enhanced amenities <IconSparkles className="size-4" />
+            <IconSparkles className="size-4" />
           </div>
-          <div className="text-muted-foreground">Available facilities</div>
+          <div className="text-muted-foreground">Total Fasilitas yang tersedia</div>
         </CardFooter>
       </Card>
 
@@ -137,17 +136,17 @@ export function Cards() {
             {getCardValue(perabotanLoading, perabotanError, totalPerabotan)}
           </CardTitle>
           <CardAction>
-            <Badge variant="outline">
+            {/* <Badge variant="outline">
               <IconTrendingUp />
               +10%
-            </Badge>
+            </Badge> */}
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Well-equipped inventory <IconArmchair className="size-4" />
+            <IconArmchair className="size-4" />
           </div>
-          <div className="text-muted-foreground">Furniture catalog items</div>
+          <div className="text-muted-foreground">Total Perabotan yang tersedia</div>
         </CardFooter>
       </Card>
     </div>
