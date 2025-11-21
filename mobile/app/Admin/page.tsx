@@ -24,9 +24,16 @@ const MenuItem = ({ title, iconName, iconColor, onPress }) => (
 )
 
 export default function Adminpage() {
-  // kategori filter aktif
-  const [selectedCategory, setSelectedCategory] = useState('Semua');
 
+  // Daftar menu utama dahboard
+  const menuItems = [
+        { id: 'user', title: 'Data User', icon: '👤', color: '#2563eb' },      // Biru
+        { id: 'kamar', title: 'Data Kamar', icon: '🏠', color: '#10b981' },    // Hijau
+        { id: 'perabotan', title: 'Perabotan', icon: '🛋️', color: '#f97316' },  // Orange
+        { id: 'fasilitas', title: 'Fasilitas', icon: '🚿', color: '#9333ea' },  // Ungu
+        { id: 'order', title: 'Order', icon: '📦', color: '#db2777' },          // Pink
+        { id: 'pembayaran', title: 'Pembayaran', icon: '💳', color: '#6d28d9' }, // Violet
+    ];
   // daftar favorit (pakai nomor kamar)
   const [favorites, setFavorites] = useState<number[]>([]);
 
