@@ -13,6 +13,16 @@ import { blue } from 'react-native-reanimated/lib/typescript/Colors';
 // library pada menu icon
 const MenuIcon = ({ name, color }) => <Text style={{ fontSize: 28, color: blue }}>{name}</Text>;
 
+// komponen untuk setiap item menu
+const MenuItem = ({ title, iconName, iconColor, onPress }) => (
+  <TouchableOpacity onPress={onPress}>
+    <View style={styles.menuItem}>
+      <MenuIcon name={iconName} color={iconColor} />
+      <Text style={styles.menuTitle}>{title}</Text>
+    </View>
+  </TouchableOpacity>
+)
+
 export default function Adminpage() {
   // kategori filter aktif
   const [selectedCategory, setSelectedCategory] = useState('Semua');
