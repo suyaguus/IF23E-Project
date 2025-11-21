@@ -41,6 +41,7 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import axios from "axios";
+import { Plus } from "lucide-react";
 
 interface ModelUser {
   id: number;
@@ -195,9 +196,10 @@ export function SectionCards() {
           <h2 className="text-2xl font-bold">Data User</h2>
           <Link
             href="/user/tambah"
-            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 transition-colors"
+            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 transition-colors w-50 text-center flex items-center justify-center"
           >
-            Tambah User
+            Tambah Data
+            <Plus className="ml-2" />
           </Link>
         </div>
 
@@ -302,9 +304,10 @@ export function SectionCards() {
           <h2 className="text-2xl font-bold">Data Kamar</h2>
           <Link
             href="/kamar/tambah"
-            className="bg-green-700 text-white py-2.5 px-5 rounded-full hover:bg-green-800 transition-colors"
+            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 transition-colors w-50 text-center flex items-center justify-center"
           >
-            Tambah Kamar
+            Tambah Data
+            <Plus className="ml-2" />
           </Link>
         </div>
 
@@ -405,9 +408,10 @@ export function SectionCards() {
           <h2 className="text-2xl font-bold">Data Fasilitas</h2>
           <Link
             href="/fasilitas/tambah"
-            className="bg-purple-700 text-white py-2.5 px-5 rounded-full hover:bg-purple-800 transition-colors"
+            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 transition-colors w-50 text-center flex items-center justify-center"
           >
-            Tambah Fasilitas
+            Tambah Data
+            <Plus className="ml-2" />
           </Link>
         </div>
 
@@ -508,9 +512,10 @@ export function SectionCards() {
           <h2 className="text-2xl font-bold">Data Perabotan</h2>
           <Link
             href="/perabotan/tambah"
-            className="bg-orange-700 text-white py-2.5 px-5 rounded-full hover:bg-orange-800 transition-colors"
+            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 transition-colors w-50 text-center flex items-center justify-center"
           >
-            Tambah Perabotan
+            Tambah Data
+            <Plus className="ml-2" />
           </Link>
         </div>
 
