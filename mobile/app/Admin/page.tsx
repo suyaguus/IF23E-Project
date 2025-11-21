@@ -138,13 +138,8 @@ const styles = StyleSheet.create({
     color: '#2563eb',
   },
 
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+  scrollContent: {
+    padding: 20,
   },
 
   searchIcon: {
