@@ -180,6 +180,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
+  menuTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#374151',
+  },
+
   searchInput: {
     flex: 1,
     fontSize: 14,
