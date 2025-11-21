@@ -41,28 +41,23 @@ export default function Adminpage() {
         console.log(`Navigasi ke: ${menuId}`);
     };
 
-  // filter kategori
-  const filteredKost =
-    selectedCategory === 'Semua'
-      ? kostList
-      : kostList.filter(kost => kost.category === selectedCategory);
-
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#2563eb" />
+            <StatusBar barStyle="light-content" backgroundColor="#1e40af" /> 
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* HEADER */}
-        <View style={styles.header}>
-          <View style={styles.headerTop}>
-            <View>
-              <Text style={styles.greeting}>Hai, Selamat Datang! 👋</Text>
-              <Text style={styles.subGreeting}>Temukan kamar terbaik</Text>
-            </View>           
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+            {/* HEADER */}
+            <View style={styles.header}>
+                <View style={styles.headerTop}>
+                    <View>
+                        <Text style={styles.greeting}>Dashboard Admin</Text>
+                        <Text style={styles.subGreeting}>Akses cepat ke data master</Text>
+                    </View>
+                    {/* Placeholder Avatar Admin */}
+                    <View style={styles.avatar}>
+                        <Text style={styles.avatarText}>A</Text>
+                    </View> 
+                </View>
+            </View>
   );
 }
 
