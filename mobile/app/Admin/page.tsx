@@ -105,11 +105,11 @@ const styles = StyleSheet.create({
     paddingTop: (StatusBar.currentHeight || 20) + 10,
   },
 
-  headerTop: {
+ headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
   },
 
   greeting: {
