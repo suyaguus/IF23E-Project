@@ -37,7 +37,7 @@ const data = {
   user: {
     name: "Suyaguus",
     email: "suyaguus@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "/images/suyaguus.jpeg",
   },
   navMain: [
     {
