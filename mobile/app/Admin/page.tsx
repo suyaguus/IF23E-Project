@@ -34,8 +34,12 @@ export default function Adminpage() {
         { id: 'order', title: 'Order', icon: '📦', color: '#db2777' },          // Pink
         { id: 'pembayaran', title: 'Pembayaran', icon: '💳', color: '#6d28d9' }, // Violet
     ];
-  // daftar favorit (pakai nomor kamar)
-  const [favorites, setFavorites] = useState<number[]>([]);
+
+  const handleMenuPress = (menuId: string) => {
+        // Logika navigasi ke halaman detail menu
+        alert(`Simulasi: Navigasi ke Halaman ${menuItems.find(m => m.id === menuId)?.title}`);
+        console.log(`Navigasi ke: ${menuId}`);
+    };
 
   // kategori kamar
   const categories = ['Semua', 'Putra', 'Putri', 'Campur'];
