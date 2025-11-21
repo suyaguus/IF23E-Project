@@ -58,6 +58,23 @@ export default function Adminpage() {
                     </View> 
                 </View>
             </View>
+
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+                
+                <Text style={styles.sectionTitle}>Menu Utama</Text>
+                
+                {/* GRID MENU */}
+                <View style={styles.menuGrid}>
+                    {menuItems.map(item => (
+                        <MenuItem 
+                            key={item.id}
+                            title={item.title}
+                            iconName={item.icon}
+                            iconColor={item.color}
+                            onPress={() => handleMenuPress(item.id)}
+                        />
+                    ))}
+                </View>
   );
 }
 
