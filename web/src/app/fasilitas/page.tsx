@@ -64,9 +64,15 @@ export default function FasilitasPage() {
       <nav className="mt-2.5 mx-5 flex md:justify-end sm:justify-start justify-center">
         <Link
           href="/fasilitas/tambah"
-          className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800"
+          className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 mr-2"
         >
           Tambah Fasilitas
+        </Link>
+        <Link
+          href="/"
+          className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 ml-2"
+        >
+          Kembali
         </Link>
       </nav>
 
