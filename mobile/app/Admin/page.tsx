@@ -204,76 +204,7 @@ const styles = StyleSheet.create({
       paddingVertical: 5,
   }
 });
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-  },
-
-  categoriesContainer: {
-    marginTop: 15,
-    paddingHorizontal: 15,
-  },
-
-  categoriesScroll: {
-    gap: 10,
-  },
-
-  categoryButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 15,
-    backgroundColor: '#e5e7eb',
-    borderRadius: 20,
-  },
-
-  categoryButtonActive: {
-    backgroundColor: '#2563eb',
-  },
-
-  categoryText: {
-    color: '#374151',
-    fontSize: 14,
-  },
-
-  categoryTextActive: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-
-  popularSection: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
-
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-
-  seeAll: {
-    fontSize: 14,
-    color: '#2563eb',
-  },
-
-  card: {
-    backgroundColor: 'white',
-    borderRadius: 15,
-    padding: 12,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-  },
-
-  imageContainer: {
-    position: 'relative',
-  },
-
+  
   image: {
     width: '100%',
     height: 180,
