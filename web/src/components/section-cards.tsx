@@ -254,7 +254,11 @@ export function SectionCards() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Tidak</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => deleteUser(item.id)}>Ya</AlertDialogAction>
+                                <AlertDialogAction
+                                  onClick={() => deleteUser(item.id)}
+                                >
+                                  Ya
+                                </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
@@ -358,7 +362,11 @@ export function SectionCards() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Tidak</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => deleteKamar(item.id)}>Ya</AlertDialogAction>
+                                <AlertDialogAction
+                                  onClick={() => deleteKamar(item.id)}
+                                >
+                                  Ya
+                                </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
@@ -455,7 +463,11 @@ export function SectionCards() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Tidak</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => deleteFasilitas(item.id)}>Ya</AlertDialogAction>
+                                <AlertDialogAction
+                                  onClick={() => deleteFasilitas(item.id)}
+                                >
+                                  Ya
+                                </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
@@ -552,7 +564,11 @@ export function SectionCards() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Tidak</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => deletePerabotan(item.id)}>Ya</AlertDialogAction>
+                                <AlertDialogAction
+                                  onClick={() => deletePerabotan(item.id)}
+                                >
+                                  Ya
+                                </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
