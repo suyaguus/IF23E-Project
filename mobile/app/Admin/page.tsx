@@ -187,6 +187,17 @@ const styles = StyleSheet.create({
     color: '#374151',
   },
 
+  quickInfoCard: {
+      backgroundColor: 'white',
+      borderRadius: 12,
+      padding: 15,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 5,
+      elevation: 3,
+  },
+  
   searchInput: {
     flex: 1,
     fontSize: 14,
