@@ -142,9 +142,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
-  searchIcon: {
+  sectionTitle: {
     fontSize: 18,
-    marginRight: 10,
+    fontWeight: 'bold',
+    color: '#1f2937',
+    marginBottom: 15,
+    marginTop: 10,
   },
 
   searchInput: {
