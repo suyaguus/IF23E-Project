@@ -62,20 +62,23 @@ export default function KamarPage() {
 
   return (
     <div>
-      <nav className="mt-2.5 mx-5 flex md:justify-end sm:justify-start justify-center">
-        <Link
-          href="/kamar/tambah"
-          className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800"
-        >
-          Tambah Kamar
-        </Link>
-        <Link
-          href="/"
-          className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800"
-        >
-          Kembali
-        </Link>
-      </nav>
+      <section className="flex items-center justify-between px-5 py-2">
+        <h1 className="text-xl font-semibold">Halaman Kamar</h1>
+        <nav className="flex space-x-4">
+          <Link
+            href="/kamar/tambah"
+            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 text-sm flex items-center justify-center"
+          >
+            Tambah Kamar
+          </Link>
+          <Link
+            href="/"
+            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 text-sm flex items-center justify-center"
+          >
+            Kembali
+          </Link>
+        </nav>
+      </section>
 
       <article className="p-4">
         {error ? (
