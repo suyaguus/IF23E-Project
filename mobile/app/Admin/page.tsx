@@ -41,16 +41,6 @@ export default function Adminpage() {
         console.log(`Navigasi ke: ${menuId}`);
     };
 
-
-  // toggle favorit
-  const toggleFavorite = (roomNumber: number) => {
-    setFavorites(prev =>
-      prev.includes(roomNumber)
-        ? prev.filter(f => f !== roomNumber)
-        : [...prev, roomNumber],
-    );
-  };
-
   // filter kategori
   const filteredKost =
     selectedCategory === 'Semua'
