@@ -171,6 +171,15 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
+  iconContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+
   searchInput: {
     flex: 1,
     fontSize: 14,
