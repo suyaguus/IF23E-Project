@@ -39,8 +39,16 @@ export default function EditDataPage({
 
   // Set form data saat data berhasil di-fetch
   useEffect(() => {
-    if (data && data[dataType]) {
-      setFormData(data[dataType]);
+    if (data) {
+      // Support multiple response formats:
+      // 1. data[dataType] - format: { user: {...} }
+      // 2. data.data - format: { data: {...} }
+      // 3. data - format: {...} langsung
+      const responseData = data[dataType] || data.data || data;
+
+      if (responseData && typeof responseData === "object") {
+        setFormData(responseData);
+      }
     }
   }, [data, dataType]);
 
@@ -112,7 +120,7 @@ export default function EditDataPage({
   }
 
   // Render jika data tidak ditemukan
-  if (!data || !data[dataType]) {
+  if (!data || (!data[dataType] && !data.data)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
