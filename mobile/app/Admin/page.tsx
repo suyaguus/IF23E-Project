@@ -75,6 +75,18 @@ export default function Adminpage() {
                         />
                     ))}
                 </View>
+
+                {/* Bagian Informasi Cepat (Misal: Status) */}
+                <Text style={styles.sectionTitle}>Informasi Cepat</Text>
+                
+                <View style={styles.quickInfoCard}>
+                    <Text style={styles.quickInfoText}>Total Kamar Kosong: 5</Text>
+                    <Text style={styles.quickInfoText}>Order Baru Hari Ini: 2</Text>
+                </View>
+                
+                <View style={{ height: 50 }} /> {/* Padding di bawah ScrollView */}
+            </ScrollView>
+        </SafeAreaView>
   );
 }
 
