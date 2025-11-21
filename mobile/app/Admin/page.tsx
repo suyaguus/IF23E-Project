@@ -150,6 +150,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 
+   menuGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+
+
   searchInput: {
     flex: 1,
     fontSize: 14,
