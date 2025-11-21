@@ -157,6 +157,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
+  menuItem: {
+    width: '48%', // Untuk dua kolom
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
 
   searchInput: {
     flex: 1,
