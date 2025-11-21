@@ -41,9 +41,6 @@ export default function Adminpage() {
         console.log(`Navigasi ke: ${menuId}`);
     };
 
-  // kategori kamar
-  const categories = ['Semua', 'Putra', 'Putri', 'Campur'];
-
   // data kamar
   const kostList = [
     {
