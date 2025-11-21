@@ -1,8 +1,8 @@
 import React from 'react'
-import HomePage from './Home/page'
+import AdminPage from './Admin/page'
 
-export default function Home() {
+export default function Admin() {
     return (
-        <HomePage/>
+        <AdminPage/>
     )
 }
