@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 // Enums
@@ -77,23 +77,25 @@ model tb_perabotan {
 
 // Junction table untuk many-to-many Kamar-Fasilitas
 model tb_kamar_fasilitas {
+  id          Int          @id @default(autoincrement())
   kamarId     Int
   fasilitasId Int
   kamar       tb_kamar     @relation(fields: [kamarId], references: [id], onDelete: Cascade)
   fasilitas   tb_fasilitas @relation(fields: [fasilitasId], references: [id], onDelete: Cascade)
 
-  @@id([kamarId, fasilitasId])
+  @@unique([kamarId, fasilitasId])
 }
 
 // Junction table untuk many-to-many Kamar-Perabotan
 model tb_kamar_perabotan {
+  id          Int          @id @default(autoincrement())
   kamarId     Int
   perabotanId Int
   jumlah      Int          @default(1)
   kamar       tb_kamar     @relation(fields: [kamarId], references: [id], onDelete: Cascade)
   perabotan   tb_perabotan @relation(fields: [perabotanId], references: [id], onDelete: Cascade)
 
-  @@id([kamarId, perabotanId])
+  @@unique([kamarId, perabotanId])
 }
 
 // Order/Pesanan
