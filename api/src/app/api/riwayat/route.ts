@@ -1,16 +1,21 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async() => {
+export const GET = async () => {
     const data = await prisma.tb_riwayat_pembayaran.findMany({
         orderBy: {
             id: 'asc'
         }
     });
 
-    return NextResponse.json({
-        riwayat: data
-    })
+    return NextResponse.json(
+        {
+            riwayat: data
+        },
+        {
+            status: 200
+        }
+    )
 }
 
 export const POST = async (request: NextRequest) => {
@@ -24,10 +29,15 @@ export const POST = async (request: NextRequest) => {
     })
 
     if (check) {
-        return NextResponse.json({
-            message: "Data Gagal Disimpan ! (Riwayat Sudah Ada)",
-            success: false
-        })
+        return NextResponse.json(
+            {
+                message: "Data Gagal Dibuat ! (Riwayat Sudah Ada)",
+                success: false
+            },
+            {
+                status: 400
+            }
+        )
     }
 
     // Tambahkan orderId, userId, kamarId yang required
@@ -47,8 +57,12 @@ export const POST = async (request: NextRequest) => {
         }
     })
 
-    return NextResponse.json({
-        message: "Data Berhasil Disimpan !",
-        success: true
-    })
+    return NextResponse.json(
+        {
+            message: "Data Berhasil Dibuat !",
+            success: true
+        }, {
+        status: 201
+    }
+    )
 }
