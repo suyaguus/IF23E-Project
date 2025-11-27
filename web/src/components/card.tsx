@@ -6,6 +6,8 @@ import {
   IconDoor,
   IconArmchair,
   IconSparkles,
+  IconBed,
+  IconFridge,
 } from "@tabler/icons-react";
 import useSWR from "swr";
 
@@ -100,7 +102,7 @@ export function Cards() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            <IconDoor className="size-4" />
+            <IconBed className="size-4" />
           </div>
           <div className="text-muted-foreground">Total Kamar yang tersedia</div>
         </CardFooter>
@@ -122,7 +124,7 @@ export function Cards() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            <IconSparkles className="size-4" />
+            <IconFridge className="size-4" />
           </div>
           <div className="text-muted-foreground">Total Fasilitas yang tersedia</div>
         </CardFooter>
