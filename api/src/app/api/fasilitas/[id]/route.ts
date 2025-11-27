@@ -6,35 +6,50 @@ export const DELETE = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) => {
-        const { id } = await context.params;
-        const fasilitasId = Number(id);
+    const { id } = await context.params;
+    const fasilitasId = Number(id);
 
-        if (isNaN(fasilitasId)) {
-            return NextResponse.json({
+    if (isNaN(fasilitasId)) {
+        return NextResponse.json(
+            {
                 success: false,
-                message: "id tidak valid",
-            });
-        }
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
+    }
 
-        const fasilitas = await prisma.tb_fasilitas.findUnique({
-            where: { id: fasilitasId },
-        });
+    const fasilitas = await prisma.tb_fasilitas.findUnique({
+        where: { id: fasilitasId },
+    });
 
-        if (!fasilitas) {
-            return NextResponse.json({
+    if (!fasilitas) {
+        return NextResponse.json(
+            {
                 success: false,
-                message: "fasilitas tidak ditemukan",
-            });
-        }
+                message: "Fasilitas Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
+    }
 
-        await prisma.tb_fasilitas.delete({
-            where: { id: fasilitasId },
-        });
+    await prisma.tb_fasilitas.delete({
+        where: { id: fasilitasId },
+    });
 
-        return NextResponse.json({
+    return NextResponse.json(
+        {
             success: true,
-            message: "fasilitas berhasil dihapus",
-        });
+            message: "Fasilitas Berhasil Di Hapus",
+        },
+        {
+            status: 200
+        }
+    );
 };
 
 // buat fungsi update data
@@ -47,10 +62,15 @@ export const PUT = async (
     const data = await req.json();
 
     if (isNaN(fasilitasId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const fasilitas = await prisma.tb_fasilitas.findUnique({
@@ -58,10 +78,15 @@ export const PUT = async (
     });
 
     if (!fasilitas) {
-        return NextResponse.json({
-            success: false,
-            message: "fasilitas tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Fasilitas Tidak Ditemukan"
+            },
+            {
+                status: 404
+            }
+        );
     }
 
     await prisma.tb_fasilitas.update({
@@ -69,14 +94,19 @@ export const PUT = async (
         data: data,
     });
 
-    return NextResponse.json({
-        success: true,
-        message: "fasilitas berhasil diupdate",
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Fasilitas Berhasil Diubah",
+        },
+        {
+            status: 200
+        }
+    );
 };
 
 // buat fungsi get data berdasarkan id
-export const GET = async(
+export const GET = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) => {
@@ -84,10 +114,15 @@ export const GET = async(
     const fasilitasId = Number(id);
 
     if (isNaN(fasilitasId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const fasilitas = await prisma.tb_fasilitas.findUnique({
@@ -95,14 +130,24 @@ export const GET = async(
     });
 
     if (!fasilitas) {
-        return NextResponse.json({
-            success: false,
-            message: "fasilitas tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Fasilitas Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
-    return NextResponse.json({
-        success: true,
-        data: fasilitas,
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            data: fasilitas,
+        },
+        {
+            status: 200
+        }
+    );
 }
