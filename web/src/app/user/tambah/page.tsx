@@ -41,7 +41,7 @@ export default function TambahUserPage() {
   return (
     <AddDataForm
       dataType="user"
-      redirectPath="/dashboard/user"
+      redirectPath="/user"
       title="Tambah Data User"
       fields={fields}
     />
