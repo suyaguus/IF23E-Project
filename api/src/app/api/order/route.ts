@@ -1,16 +1,21 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async() => {
+export const GET = async () => {
     const data = await prisma.tb_order.findMany({
         orderBy: {
             id: 'asc'
         }
     });
 
-    return NextResponse.json({
-        order: data
-    })
+    return NextResponse.json(
+        {
+            order: data
+        },
+        {
+            status: 200
+        }
+    )
 }
 
 // buat service simpan data
@@ -19,7 +24,6 @@ export const POST = async (request: NextRequest) => {
     // buat dalam format json
     const data = await request.json();
 
-    // ✅ PERBAIKAN 1: Cek berdasarkan kodeOrder, bukan ID
     const check = await prisma.tb_order.findFirst({
         where: {
             kodeOrder: data.kodeOrder
@@ -31,22 +35,23 @@ export const POST = async (request: NextRequest) => {
 
     // jika order sudah ditemukan
     if (check) {
-        return NextResponse.json({
-            message: "Data Gagal Disimpan ! (Kode Order Sudah Ada)",
-            success: false
-        })
+        return NextResponse.json(
+            {
+                message: "Data Gagal Dibuat ! (Kode Order Sudah Ada)",
+                success: false
+            },
+            {
+                status: 400
+            }
+        )
     }
 
-    // ✅ PERBAIKAN 2: Jangan kirim ID, biarkan auto-increment
-    // ✅ PERBAIKAN 3: Jangan kirim tanggalPesanan, sudah ada @default(now())
-    // ✅ PERBAIKAN 4: Convert tanggal ke Date object
+    // jika order tidak ditemukan
     await prisma.tb_order.create({
         data: {
-            // id: data.id,  ❌ HAPUS INI - auto increment
             kodeOrder: data.kodeOrder,
             kamarId: data.kamarId,
             userId: data.userId,
-            // tanggalPesanan: data.tanggalPesanan,  ❌ HAPUS INI - sudah default now()
             tanggalCheckin: new Date(data.tanggalCheckin),
             tanggalCheckout: new Date(data.tanggalCheckout),
             statusPembayaran: data.statusPembayaran || "Pending",
@@ -59,8 +64,13 @@ export const POST = async (request: NextRequest) => {
     })
 
     // tampilkan respon
-    return NextResponse.json({
-        message: "Data Berhasil Disimpan !",
-        success: true
-    })
+    return NextResponse.json(
+        {
+            message: "Data Berhasil Dibuat !",
+            success: true
+        },
+        {
+            status: 201
+        }
+    )
 }
