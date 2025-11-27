@@ -1,16 +1,21 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async() => {
+export const GET = async () => {
     const data = await prisma.tb_user.findMany({
         orderBy: {
             id: 'asc'
         }
     });
 
-    return NextResponse.json({
-        user: data
-    })
+    return NextResponse.json(
+        {
+            user: data
+        },
+        {
+            status: 200
+        }
+    )
 }
 
 // buat service simpan data
@@ -31,10 +36,16 @@ export const POST = async (request: NextRequest) => {
 
     // jika email sudah ditemukan
     if (check) {
-        return NextResponse.json({
-            message: "Data Gagal Disimpan ! (Email Sudah Digunakan)",
-            success: false
-        })
+        return NextResponse.json(
+            {
+                message: "Data Gagal Dibuat ! (Email Sudah Digunakan)",
+                success: false
+            },
+            {
+                status: 409
+            }
+
+        )
     }
 
     // jika email tidak ditemukan
@@ -48,8 +59,12 @@ export const POST = async (request: NextRequest) => {
     })
 
     // tampilkan respon
-    return NextResponse.json({
-        message: "Data berhasil disimpan",
-        success: true
-    })
+    return NextResponse.json(
+        {
+            message: "Data Berhasil Dibuat",
+            success: true
+        }, {
+        status: 201
+    }
+    )
 }
