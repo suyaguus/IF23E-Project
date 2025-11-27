@@ -10,10 +10,15 @@ export const DELETE = async (
     const riwayatId = Number(id);
 
     if (isNaN(riwayatId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const riwayat = await prisma.tb_riwayat_pembayaran.findUnique({
@@ -21,20 +26,30 @@ export const DELETE = async (
     });
 
     if (!riwayat) {
-        return NextResponse.json({
-            success: false,
-            message: "riwayat tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Riwayat Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
     await prisma.tb_riwayat_pembayaran.delete({
         where: { id: riwayatId },
     });
 
-    return NextResponse.json({
-        success: true,
-        message: "riwayat berhasil dihapus",
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Riwayat Berhasil Di Hapus",
+        },
+        {
+            status: 200
+        }
+    );
 }
 
 // buat service update data
@@ -47,10 +62,15 @@ export const PUT = async (
     const data = await req.json();
 
     if (isNaN(riwayatId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const riwayat = await prisma.tb_riwayat_pembayaran.findUnique({
@@ -58,10 +78,15 @@ export const PUT = async (
     });
 
     if (!riwayat) {
-        return NextResponse.json({
-            success: false,
-            message: "riwayat tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Riwayat Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
     await prisma.tb_riwayat_pembayaran.update({
@@ -69,11 +94,16 @@ export const PUT = async (
         data: data,
     });
 
-    return NextResponse.json({
-        success: true,
-        message: "riwayat berhasil diupdate",    
-        data: data  
-    })
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Riwayat Berhasil Diubah",
+            data: data
+        },
+        {
+            status: 200
+        }
+    )
 }
 
 // buat get berdasarkan id
@@ -85,10 +115,15 @@ export const GET = async (
     const riwayatId = Number(id);
 
     if (isNaN(riwayatId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const riwayat = await prisma.tb_riwayat_pembayaran.findUnique({
@@ -96,14 +131,24 @@ export const GET = async (
     });
 
     if (!riwayat) {
-        return NextResponse.json({
-            success: false,
-            message: "riwayat tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Riwayat Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
-    return NextResponse.json({
-        success: true,
-        data: riwayat
-    })
+    return NextResponse.json(
+        {
+            success: true,
+            data: riwayat
+        },
+        {
+            status: 200
+        }
+    )
 }
