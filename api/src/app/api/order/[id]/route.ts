@@ -4,16 +4,21 @@ import { NextRequest, NextResponse } from "next/server";
 // buat service delete data
 export const DELETE = async (
     req: NextRequest,
-    context: {params: Promise<{id: string}>}
+    context: { params: Promise<{ id: string }> }
 ) => {
     const { id } = await context.params;
     const orderId = Number(id);
 
     if (isNaN(orderId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const order = await prisma.tb_order.findUnique({
@@ -21,20 +26,30 @@ export const DELETE = async (
     });
 
     if (!order) {
-        return NextResponse.json({
-            success: false,
-            message: "order tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Order Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
     await prisma.tb_order.delete({
         where: { id: orderId },
     });
 
-    return NextResponse.json({
-        success: true,
-        message: "order berhasil dihapus",
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Order Berhasil Di Hapus",
+        },
+        {
+            status: 200
+        }
+    );
 }
 
 // buat service update data
@@ -47,10 +62,15 @@ export const PUT = async (
     const data = await req.json();
 
     if (isNaN(orderId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const order = await prisma.tb_order.findUnique({
@@ -58,10 +78,15 @@ export const PUT = async (
     });
 
     if (!order) {
-        return NextResponse.json({
-            success: false,
-            message: "order tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Order Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
     await prisma.tb_order.update({
@@ -69,10 +94,15 @@ export const PUT = async (
         data: data,
     });
 
-    return NextResponse.json({
-        success: true,
-        message: "order berhasil diupdate",
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Order Berhasil Diubah",
+        },
+        {
+            status: 200
+        }
+    );
 }
 
 // buat service get by id
@@ -84,10 +114,15 @@ export const GET = async (
     const orderId = Number(id);
 
     if (isNaN(orderId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const order = await prisma.tb_order.findUnique({
@@ -95,14 +130,24 @@ export const GET = async (
     });
 
     if (!order) {
-        return NextResponse.json({
-            success: false,
-            message: "order tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Order Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
-    return NextResponse.json({
-        success: true,
-        data: order,
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            data: order,
+        },
+        {
+            status: 200
+        }
+    );
 }
