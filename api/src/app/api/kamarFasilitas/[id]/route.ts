@@ -15,14 +15,24 @@ export const DELETE = async (req: NextRequest) => {
             }
         });
 
-        return NextResponse.json({
-            success: true,
-            message: "Fasilitas berhasil dihapus dari kamar"
-        });
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Fasilitas Berhasil Dihapus Dari Kamar"
+            },
+            {
+                status: 200
+            }
+        );
     } catch {
-        return NextResponse.json({
-            success: false,
-            message: "Server error"
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "SERVER ERROR"
+            },
+            {
+                status: 500
+            }
+        );
     }
 }
