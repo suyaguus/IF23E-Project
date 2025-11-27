@@ -27,17 +27,27 @@ export const GET = async () => {
             }
         });
 
-        return NextResponse.json({
-            success: true,
-            data: data
-        });
+        return NextResponse.json(
+            {
+                success: true,
+                data: data
+            },
+            {
+                status: 200
+            }
+        );
 
     } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: "Server error",
-            error: String(error)
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "SERVER ERROR",
+                error: String(error)
+            },
+            {
+                status: 500
+            }
+        );
     }
 };
 
@@ -47,10 +57,15 @@ export const POST = async (req: NextRequest) => {
         const { kamarId, perabotanId, jumlah } = await req.json();
 
         if (!kamarId || !perabotanId) {
-            return NextResponse.json({
-                success: false,
-                message: "kamarId dan perabotanId harus diisi"
-            });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "KamarId dan PerabotanId Harus Diisi"
+                },
+                {
+                    status: 400
+                }
+            );
         }
 
         // Cek apakah kamar exists
@@ -59,10 +74,15 @@ export const POST = async (req: NextRequest) => {
         });
 
         if (!kamar) {
-            return NextResponse.json({
-                success: false,
-                message: "Kamar tidak ditemukan"
-            });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Kamar Tidak Ditemukan"
+                },
+                {
+                    status: 404
+                }
+            );
         }
 
         // Cek apakah perabotan exists
@@ -71,10 +91,15 @@ export const POST = async (req: NextRequest) => {
         });
 
         if (!perabotan) {
-            return NextResponse.json({
-                success: false,
-                message: "Perabotan tidak ditemukan"
-            });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Perabotan Tidak Ditemukan"
+                },
+                {
+                    status: 404
+                }
+            );
         }
 
         // Cek apakah relasi sudah ada
@@ -88,10 +113,15 @@ export const POST = async (req: NextRequest) => {
         });
 
         if (exists) {
-            return NextResponse.json({
-                success: false,
-                message: "Perabotan sudah ditambahkan ke kamar ini"
-            });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Perabotan Sudah Ada Di Kamar Ini"
+                },
+                {
+                    status: 400
+                }
+            );
         }
 
         // Buat relasi baru
@@ -103,17 +133,27 @@ export const POST = async (req: NextRequest) => {
             }
         });
 
-        return NextResponse.json({
-            success: true,
-            message: "Perabotan berhasil ditambahkan ke kamar"
-        });
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Perabotan Berhasil Ditambahkan Ke Kamar"
+            },
+            {
+                status: 201
+            }
+        );
 
     } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: "Server error",
-            error: String(error)
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "SERVER ERROR",
+                error: String(error)
+            },
+            {
+                status: 500
+            }
+        );
     }
 };
 
@@ -136,10 +176,15 @@ export const DELETE = async (req: NextRequest) => {
         }
 
         if (!kamarId || !perabotanId) {
-            return NextResponse.json({
-                success: false,
-                message: "kamarId dan perabotanId harus diisi"
-            });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "KamarId Dan PerabotanId Harus Diisi"
+                },
+                {
+                    status: 400
+                }
+            );
         }
 
         await prisma.tb_kamar_perabotan.delete({
@@ -151,16 +196,26 @@ export const DELETE = async (req: NextRequest) => {
             }
         });
 
-        return NextResponse.json({
-            success: true,
-            message: "Perabotan berhasil dihapus dari kamar"
-        });
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Perabotan Berhasil Dihapus Dari Kamar"
+            },
+            {
+                status: 200
+            }
+        );
 
     } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: "Server error",
-            error: String(error)
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "SERVER ERROR",
+                error: String(error)
+            },
+            {
+                status: 500
+            }
+        );
     }
 };
