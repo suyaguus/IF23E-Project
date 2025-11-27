@@ -1,7 +1,14 @@
 import { View, Text } from "react-native";
 import React, { useState } from "react";
 import { styles } from "@/styles/dashboard"; // import styles dari file styles/barang.ts
-import { TextInput } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
+import { router } from "expo-router";
+import {
+  filterHarga,
+  filterHargaRaw,
+  filterNomorKamar,
+  formatRibuan,
+} from "@/utils/script";
 
 // testing dorpdown
 const statusPembayaran = [
@@ -10,11 +17,13 @@ const statusPembayaran = [
   { label: "TidakTersedia", value: "TidakTersedia" },
 ];
 
-export default function KamarPage() {
+export default function AddKamarPage() {
   // buat state
-  const [textNomorKamar, setNomorKamar] = useState("");
-  const [textHargaSewa, setHargaSewa] = useState("");
-  const [textDeskripsi, setDeskripsi] = useState("");
+  const [formKamar, setNomorKamar] = useState("");
+  const [formDeskripsi, setDeskripsi] = useState("");
+
+  const [formHarga, setFormHarga] = useState("");
+  const [formHargaRaw, setFormHargaRaw] = useState(0);
 
   return (
     <View
@@ -33,17 +42,26 @@ export default function KamarPage() {
         label="Nomor Kamar..."
         style={styles.text_input}
         maxLength={3}
-        value={textNomorKamar}
-        onChangeText={(text) => setNomorKamar(text)}
+        value={formKamar}
+        onChangeText={(text) => {
+          const result = filterNomorKamar(text);
+          setNomorKamar(result);
+        }}
       />
 
       {/* area harga sewa */}
       <TextInput
-        label="Harga Sewa..."
+        id="txt_harga"
+        label="Harga Sewa"
         style={styles.text_input}
         maxLength={10}
-        value={textHargaSewa}
-        onChangeText={(text) => setHargaSewa(text)}
+        value={formHarga} // Ganti dari formHargaSewa ke formHarga
+        onChangeText={(text) => {
+          const result = formatRibuan(filterHarga(text));
+          const resultRaw = filterHargaRaw(text);
+          setFormHarga(result);
+          setFormHargaRaw(Number(resultRaw));
+        }}
       />
 
       {/* area status kamar */}
@@ -53,10 +71,39 @@ export default function KamarPage() {
         label="Deskirpsi"
         style={styles.text_input}
         maxLength={255}
-        value={textDeskripsi}
+        value={formDeskripsi}
         onChangeText={(text) => setDeskripsi(text)}
       />
       {/* area tombol */}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          marginTop: 10,
+          gap: 10,
+        }}
+      >
+        <Button
+          icon="check"
+          mode="contained"
+          //   testing regex harga
+          onPress={() =>
+            console.log(
+              `${formKamar}, ${formDeskripsi}, ${formHarga}, ${formHargaRaw}`
+            )
+          }
+        >
+          Simpan
+        </Button>
+        <Button
+          icon="close"
+          mode="outlined"
+          onPress={() => router.push("/kamar/page")}
+          style={{ marginRight: 10 }}
+        >
+          Batal
+        </Button>
+      </View>
     </View>
   );
 }
