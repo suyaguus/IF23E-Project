@@ -42,7 +42,7 @@ export default function TambahKamarPage() {
   return (
     <AddDataForm
       dataType="kamar"
-      redirectPath="/dashboard/user"
+      redirectPath="/kamar"
       title="Tambah Data Kamar"
       fields={fields}
     />
