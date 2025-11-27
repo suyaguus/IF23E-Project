@@ -8,9 +8,14 @@ export const GET = async () => {
         },
     });
 
-    return NextResponse.json({
-        kamar: data,
-    });
+    return NextResponse.json(
+        {
+            kamar: data,
+        },
+        {
+            status: 200,
+        }
+    );
 }
 
 // buat service simpan data
@@ -31,10 +36,15 @@ export const POST = async (request: NextRequest) => {
 
     // jika nomor kamar ditemukan
     if (check) {
-        return NextResponse.json({
-            message: "Data Kamar Gagal Disimpan ! (Nomor Kamar sudah digunakan)",
-            success: false
-        })
+        return NextResponse.json(
+            {
+                message: "Data Kamar Gagal Disimpan ! (Nomor Kamar sudah digunakan)",
+                success: false
+            },
+            {
+                status: 400
+            }
+        )
     }
 
     // jika nomor kamar tidak ditemukan
@@ -48,8 +58,13 @@ export const POST = async (request: NextRequest) => {
     })
 
     // tampilkan respon
-    return NextResponse.json({
-        message: "Data Kamar Berhasil Disimpan !",
-        success: true
-    })
+    return NextResponse.json(
+        {
+            message: "Data Kamar Berhasil DIbuat !",
+            success: true
+        },
+        {
+            status: 201
+        }
+    )
 }
