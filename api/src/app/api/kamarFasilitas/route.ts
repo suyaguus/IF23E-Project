@@ -28,17 +28,27 @@ export const GET = async () => {
             }
         });
 
-        return NextResponse.json({
-            success: true,
-            data: data
-        });
+        return NextResponse.json(
+            {
+                success: true,
+                data: data
+            },
+            {
+                status: 200
+            }
+        );
 
     } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: "Server error",
-            error: String(error)
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "SERVER ERROR",
+                error: String(error)
+            },
+            {
+                status: 500
+            }
+        );
     }
 };
 
@@ -51,7 +61,7 @@ export const POST = async (req: NextRequest) => {
         if (!kamarId || !fasilitasId) {
             return NextResponse.json({
                 success: false,
-                message: "kamarId dan fasilitasId harus diisi"
+                message: "KamarId Dan FasilitasId Harus Diisi"
             });
         }
 
@@ -61,10 +71,15 @@ export const POST = async (req: NextRequest) => {
         });
 
         if (!kamar) {
-            return NextResponse.json({
-                success: false,
-                message: "Kamar tidak ditemukan"
-            });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Kamar Tidak Ditemukan"
+                },
+                {
+                    status: 404
+                }
+            );
         }
 
         // Cek apakah fasilitas exists
@@ -73,10 +88,15 @@ export const POST = async (req: NextRequest) => {
         });
 
         if (!fasilitas) {
-            return NextResponse.json({
-                success: false,
-                message: "Fasilitas tidak ditemukan"
-            });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Fasilitas Tidak Ditemukan"
+                },
+                {
+                    status: 404
+                }
+            );
         }
 
         // Cek apakah relasi sudah ada
@@ -90,10 +110,15 @@ export const POST = async (req: NextRequest) => {
         });
 
         if (exists) {
-            return NextResponse.json({
-                success: false,
-                message: "Fasilitas sudah ditambahkan ke kamar ini"
-            });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Fasilitas Sudah Ada Di Kamar"
+                },
+                {
+                    status: 400
+                }
+            );
         }
 
         // Buat relasi baru
@@ -104,16 +129,26 @@ export const POST = async (req: NextRequest) => {
             }
         });
 
-        return NextResponse.json({
-            success: true,
-            message: "Fasilitas berhasil ditambahkan ke kamar"
-        });
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Fasilitas Sudah Ditambahkan Ke Kamar"
+            },
+            {
+                status: 201
+            }
+        );
 
     } catch (error) {
-        return NextResponse.json({
-            success: false,
-            message: "Server error",
-            error: String(error)
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "SERVER ERROR",
+                error: String(error)
+            },
+            {
+                status: 500
+            }
+        );
     }
 };
