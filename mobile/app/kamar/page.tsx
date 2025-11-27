@@ -208,7 +208,7 @@ export default function KamarPage() {
         color="#fff"
         mode="flat"
         style={styles.fab}
-        onPress={() => router.push("./kamar/page")}
+        onPress={() => router.push("./kamar/add/page")}
         // digunakan untuk kembali ke halaman home di device onPress={() => router.replace("/barang/add")}
         disabled={loading}
       />
