@@ -30,7 +30,7 @@ export default function TambahPerabotanPage() {
   return (
     <AddDataForm
       dataType="perabotan"
-      redirectPath="/dashboard/user"
+      redirectPath="/perabotan"
       title="Tambah Data Perabotan"
       fields={fields}
     />
