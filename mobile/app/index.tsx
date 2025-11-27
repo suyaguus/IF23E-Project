@@ -1,6 +1,5 @@
 import { View } from "react-native";
 import React from "react";
-import DashboardPage from "./dashboard/page";
 import {
   BottomNavigation,
   Text,
@@ -10,6 +9,8 @@ import {
 } from "react-native-paper";
 import { styles } from "@/styles/home";
 import { Section } from "react-native-paper/lib/typescript/components/Drawer/Drawer";
+import DashboardUserPage from "./dashboard/user/page";
+import KamarPage from "./kamar/page";
 
 export default function HomePage() {
   const Home = () => <View style={{ flex: 1 }} />;
@@ -52,20 +53,22 @@ export default function HomePage() {
     <View style={{ flex: 1, justifyContent: "center" }}>
       {/* bagian header */}
 
-      <Text>Testing</Text>
+      {/* <Text>Testing</Text> */}
 
       {/* bagian search bar */}
-      <Searchbar
+      {/* <Searchbar
         placeholder="Search"
         onChangeText={setSearchQuery}
         value={searchQuery}
-      />
+      /> */}
 
-      <BottomNavigation
+      {/* bagian bottom navigation */}
+      {/* <BottomNavigation
         navigationState={{ index, routes }}
         onIndexChange={setIndex}
         renderScene={renderScene}
-      />
+      /> */}
+      <KamarPage/>
     </View>
   );
 }
