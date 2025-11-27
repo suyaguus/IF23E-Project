@@ -30,7 +30,7 @@ export default function TambahFasilitasPage() {
   return (
     <AddDataForm
       dataType="fasilitas"
-      redirectPath="/dashboard/user"
+      redirectPath="/fasilitas"
       title="Tambah Data Fasilitas"
       fields={fields}
     />
