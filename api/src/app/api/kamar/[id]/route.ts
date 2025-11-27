@@ -11,10 +11,15 @@ export const DELETE = async (
         const kamarId = Number(id);
 
         if (isNaN(kamarId)) {
-            return NextResponse.json({
-                success: false,
-                message: "id tidak valid"
-            }, { status: 400 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "ID Tidak Valid"
+                },
+                {
+                    status: 400
+                }
+            );
         }
 
         // Cek apakah kamar exists dan ambil relasi
@@ -29,25 +34,40 @@ export const DELETE = async (
         });
 
         if (!kamar) {
-            return NextResponse.json({
-                success: false,
-                message: "kamar tidak ditemukan"
-            }, { status: 404 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Kamar Tidak Ditemukan"
+                },
+                {
+                    status: 404
+                }
+            );
         }
 
         // Cek apakah kamar memiliki order atau riwayat pembayaran
         if (kamar.orders.length > 0) {
-            return NextResponse.json({
-                success: false,
-                message: `Kamar tidak dapat dihapus karena memiliki ${kamar.orders.length} order aktif`
-            }, { status: 400 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: `Kamar Tidak Dapat Dihapus Karena Memiliki ${kamar.orders.length} Order Aktif`
+                },
+                {
+                    status: 400
+                }
+            );
         }
 
         if (kamar.riwayatPembayaran.length > 0) {
-            return NextResponse.json({
-                success: false,
-                message: "Kamar tidak dapat dihapus karena memiliki riwayat pembayaran"
-            }, { status: 400 });
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Kamar Tidak Dapat Dihapus Karena Memiliki Riwayat Pembayaran"
+                },
+                {
+                    status: 400
+                }
+            );
         }
 
         // Gunakan transaction untuk menghapus relasi dan kamar
@@ -67,19 +87,29 @@ export const DELETE = async (
             });
         });
 
-        return NextResponse.json({
-            success: true,
-            message: "kamar berhasil dihapus"
-        }, { status: 200 });
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Kamar Berhasil Di Hapus"
+            },
+            {
+                status: 200
+            }
+        );
 
     } catch (error) {
         console.error("Error saat menghapus kamar:", error);
 
-        return NextResponse.json({
-            success: false,
-            message: "Terjadi kesalahan saat menghapus kamar",
-            error: error instanceof Error ? error.message : String(error)
-        }, { status: 500 });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Terjadi Kesalahan Saat Menghapus Kamar",
+                error: error instanceof Error ? error.message : String(error)
+            },
+            {
+                status: 500
+            }
+        );
     }
 };
 
@@ -93,9 +123,14 @@ export const PUT = async (
     const data = await req.json();
 
     if (isNaN(kamarId)) {
-        return NextResponse.json({
-            success: false, message: "id tidak valid"
-        });
+        return NextResponse.json(
+            {
+                success: false, message: "ID Tidak Valid"
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const kamar = await prisma.tb_kamar.findUnique({
@@ -103,9 +138,15 @@ export const PUT = async (
     });
 
     if (!kamar) {
-        return NextResponse.json({
-            success: false, message: "kamar tidak ditemukan"
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Kamar Tidak Ditemukan"
+            },
+            {
+                status: 404
+            }
+        );
     }
 
     await prisma.tb_kamar.update({
@@ -113,9 +154,15 @@ export const PUT = async (
         data: data
     });
 
-    return NextResponse.json({
-        success: true, message: "kamar berhasil diupdate"
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Kamar Berhasil Diubah"
+        },
+        {
+            status: 200
+        }
+    );
 };
 
 // buat fungsi get data berdasarkan id
@@ -127,9 +174,15 @@ export const GET = async (
     const kamarId = Number(id);
 
     if (isNaN(kamarId)) {
-        return NextResponse.json({
-            success: false, message: "id tidak valid"
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid"
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const kamar = await prisma.tb_kamar.findUnique({
@@ -143,12 +196,24 @@ export const GET = async (
     });
 
     if (!kamar) {
-        return NextResponse.json({
-            success: false, message: "kamar tidak ditemukan"
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Kamar Tidak Ditemukan"
+            },
+            {
+                status: 404
+            }
+        );
     }
 
     return NextResponse.json({
-        success: true, message: "kamar berhasil ditemukan", data: kamar
-    });
+        success: true,
+        message: "Kamar Berhasil Ditemukan",
+        data: kamar
+    },
+        {
+            status: 200
+        }
+    );
 };  
