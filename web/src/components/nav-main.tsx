@@ -1,46 +1,104 @@
-"use client"
+"use client";
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
+import {
+  IconArmchair,
+  IconBed,
+  IconChairDirector,
+  IconCirclePlusFilled,
+  IconDashboard,
+  IconFridge,
+  IconMail,
+  IconMenu,
+  IconUser,
+  type Icon,
+} from "@tabler/icons-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function NavMain({
   items,
 }: {
   items: {
-    title: string
-    url: string
-    icon?: Icon
-  }[]
+    title: string;
+    url: string;
+    icon?: Icon;
+  }[];
 }) {
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
+          {/* bagian judul */}
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton
               tooltip="Menu Sidebar"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
+              className="bg-transparent text-black hover:bg-transparent hover:text-black min-w-8 duration-200 ease-linear"
             >
-              <IconCirclePlusFilled />
+              <IconMenu />
               <span>Menu Sidebar</span>
             </SidebarMenuButton>
-            {/* <Button
-              size="icon"
-              className="size-8 group-data-[collapsible=icon]:opacity-0"
-              variant="outline"
-            >
-              <IconMail />
-              <span className="sr-only">Inbox</span>
-            </Button> */}
           </SidebarMenuItem>
+
+          {/* bagian user */}
+          <Link href="/user">
+            <SidebarMenuItem className="flex items-center gap-2">
+              <SidebarMenuButton
+                tooltip="Menu User"
+                className="bg-transparent text-black hover:bg-transparent hover:border-2 hover:border-primary hover:text-black min-w-8 duration-200 ease-linear"
+              >
+                <IconUser />
+                <span>Menu User</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </Link>
+
+          {/* bagian kamar */}
+          <Link href="/kamar">
+            <SidebarMenuItem className="flex items-center gap-2">
+              <SidebarMenuButton
+                tooltip="Menu Kamar"
+                className="bg-transparent text-black hover:bg-transparent hover:border-2 hover:border-primary hover:text-black min-w-8 duration-200 ease-linear"
+              >
+                <IconBed />
+                <span>Menu Kamar</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </Link>
+
+          {/* bagian fasilitas */}
+          <Link href="/fasilitas">
+            <SidebarMenuItem className="flex items-center gap-2">
+              <SidebarMenuButton
+                tooltip="Menu Fasilitas"
+                className="bg-transparent text-black hover:bg-transparent hover:border-2 hover:border-primary hover:text-black min-w-8 duration-200 ease-linear"
+              >
+                <IconFridge />
+                <span>Menu Fasilitas</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </Link>
+
+          {/* bagian perabotan */}
+          <Link href="/perabotan">
+            <SidebarMenuItem className="flex items-center gap-2">
+              <SidebarMenuButton
+                tooltip="Menu Perabotan"
+                className="bg-transparent text-black hover:bg-transparent hover:border-2 hover:border-primary hover:text-black min-w-8 duration-200 ease-linear"
+              >
+                <IconArmchair />
+                <span>Menu Perabotan</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </Link>
+
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
@@ -54,5 +112,5 @@ export function NavMain({
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }
