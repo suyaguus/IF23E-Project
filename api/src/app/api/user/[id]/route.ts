@@ -10,7 +10,13 @@ export const DELETE = async (
 
     if (isNaN(userId)) {
         return NextResponse.json(
-            { success: false, message: "id tidak valid" },
+            {
+                success: false, message: "ID tidak Valid"
+            },
+            {
+                status: 400
+            }
+
         );
     }
 
@@ -20,7 +26,12 @@ export const DELETE = async (
 
     if (!user) {
         return NextResponse.json(
-            { success: false, message: "user tidak ditemukan" },
+            {
+                success: false, message: "User Tidak Ditemukan"
+            },
+            {
+                status: 404
+            }
         );
     }
 
@@ -34,10 +45,15 @@ export const DELETE = async (
         where: { id: userId },
     });
 
-    return NextResponse.json({
-        success: true,
-        message: "Data User Berhasil di Hapus",
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Data User Berhasil Di Hapus",
+        },
+        {
+            status: 200
+        }
+    );
 
     // testing
 };
@@ -54,7 +70,12 @@ export const GET = async (
 
         if (isNaN(userId)) {
             return NextResponse.json(
-                { success: false, message: "id tidak valid" },
+                {
+                    success: false, message: "ID tidak Valid"
+                },
+                {
+                    status: 400
+                }
             );
         }
 
@@ -70,17 +91,32 @@ export const GET = async (
 
         if (!user) {
             return NextResponse.json(
-                { success: false, message: "user tidak ditemukan" },
+                {
+                    success: false, message: "User Tidak DItemukan"
+                },
+                {
+                    status: 404
+                }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "Data berhasil ditemukan", user },
+            {
+                success: true, message: "Data Berhasil Ditemukan", user
+            },
+            {
+                status: 200
+            }
         );
 
     } catch (error) {
         return NextResponse.json(
-            { success: false, message: "server error", error: String(error) },
+            {
+                success: false, message: "SERVER ERROR", error: String(error)
+            },
+            {
+                status: 500
+            }
         );
     }
 }
@@ -97,7 +133,12 @@ export const PUT = async (
 
         if (isNaN(userId)) {
             return NextResponse.json(
-                { success: false, message: "id tidak valid" },
+                {
+                    success: false, message: "ID Tidak Valid"
+                },
+                {
+                    status: 400
+                }
             );
         }
 
@@ -107,7 +148,12 @@ export const PUT = async (
 
         if (!user) {
             return NextResponse.json(
-                { success: false, message: "user tidak ditemukan" },
+                {
+                    success: false, message: "User Tidak Ditemukan"
+                },
+                {
+                    status: 404
+                }
             );
         }
 
@@ -117,12 +163,22 @@ export const PUT = async (
         });
 
         return NextResponse.json(
-            { success: true, message: "Data berhasil diubah" },
+            {
+                success: true, message: "Data Berhasil Diubah"
+            },
+            {
+                status: 200
+            }
         );
 
     } catch (error) {
         return NextResponse.json(
-            { success: false, message: "server error", error: String(error) },
+            {
+                success: false, message: "SERVER ERROR", error: String(error)
+            },
+            {
+                status: 500
+            }
         );
     }
 }
