@@ -10,10 +10,15 @@ export const DELETE = async (
     const perabotanId = Number(id);
 
     if (isNaN(perabotanId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const perabotan = await prisma.tb_perabotan.findUnique({
@@ -21,20 +26,30 @@ export const DELETE = async (
     });
 
     if (!perabotan) {
-        return NextResponse.json({
-            success: false,
-            message: "perabotan tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Perabotan Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
     await prisma.tb_perabotan.delete({
         where: { id: perabotanId },
     });
 
-    return NextResponse.json({
-        success: true,
-        message: "perabotan berhasil dihapus",
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Perabotan Berhasil Di Hapus",
+        },
+        {
+            status: 200
+        }
+    );
 }
 
 // buat service update data
@@ -47,10 +62,15 @@ export const PUT = async (
     const data = await req.json();
 
     if (isNaN(perabotanId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const perabotan = await prisma.tb_perabotan.findUnique({
@@ -58,10 +78,15 @@ export const PUT = async (
     });
 
     if (!perabotan) {
-        return NextResponse.json({
-            success: false,
-            message: "perabotan tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Perabotan Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
     await prisma.tb_perabotan.update({
@@ -69,10 +94,15 @@ export const PUT = async (
         data: data,
     });
 
-    return NextResponse.json({
-        success: true,
-        message: "perabotan berhasil diupdate",
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            message: "Perabotan Berhasil Diubah",
+        },
+        {
+            status: 200
+        }
+    );
 }
 
 // buat service get by id
@@ -84,10 +114,15 @@ export const GET = async (
     const perabotanId = Number(id);
 
     if (isNaN(perabotanId)) {
-        return NextResponse.json({
-            success: false,
-            message: "id tidak valid",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "ID Tidak Valid",
+            },
+            {
+                status: 400
+            }
+        );
     }
 
     const perabotan = await prisma.tb_perabotan.findUnique({
@@ -95,14 +130,24 @@ export const GET = async (
     });
 
     if (!perabotan) {
-        return NextResponse.json({
-            success: false,
-            message: "perabotan tidak ditemukan",
-        });
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Perabotan Tidak Ditemukan",
+            },
+            {
+                status: 404
+            }
+        );
     }
 
-    return NextResponse.json({
-        success: true,
-        data: perabotan,
-    });
+    return NextResponse.json(
+        {
+            success: true,
+            data: perabotan,
+        },
+        {
+            status: 200
+        }
+    );
 }
