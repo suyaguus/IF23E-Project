@@ -9,6 +9,7 @@ import {
   Snackbar,
   Text,
   TextInput,
+  Chip,
 } from "react-native-paper";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import axios from "axios";
@@ -37,7 +38,7 @@ export default function KamarPage() {
       nomorKamar: string;
       hargaSewa: number;
       statusKamar: string;
-      deskirpsi: string;
+      deskripsi: string;
       orders: string;
       fasilitas: string;
       perabotan: string;
@@ -51,7 +52,7 @@ export default function KamarPage() {
   // State filter data pencarian
   const [filter, setFilter] = useState<typeof dataKamar>([]);
 
-  // state untuk simpan id barang
+  // state untuk simpan id kamar
   const [id, setId] = useState(0);
 
   // State untuk loading
@@ -62,30 +63,59 @@ export default function KamarPage() {
   // buat useRef untuk menampilkan respon hapus data
   const messageResponse = useRef("");
 
+  // Fungsi untuk mendapatkan warna status
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "tersedia":
+        return "#4CAF50"; // Hijau
+      case "tersewa":
+        return "#F44336"; // Merah
+      case "tidaktersedia":
+      case "tidak tersedia":
+        return "#9E9E9E"; // Abu-abu
+      default:
+        return "#9E9E9E"; // Default abu-abu
+    }
+  };
+
+  // Fungsi untuk format text status
+  const formatStatus = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "tersedia":
+        return "Tersedia";
+      case "tersewa":
+        return "Tersewa";
+      case "tidaktersedia":
+      case "tidak tersedia":
+        return "Tidak Tersedia";
+      default:
+        return status;
+    }
+  };
+
   // buat react hook (useEffect)
   useEffect(() => {
-    getDataBarang();
+    getDataKamar();
   }, []);
 
   useEffect(() => {
     // jika search data di isi
     if (search.toLowerCase().trim() !== "") {
-      // Lakukan Pencarian dan filter data berdasarkan nomorKamar dan hargaSewa
+      // Lakukan Pencarian dan filter data berdasarkan nomorKamar
       const filter_data = dataKamar.filter((item) => {
-        // filter nama dengan mengabaikan spasi
-        // const nama = item.nomorKamar.replace(/\s+/g, "").toLowerCase();
-        // filter harga tanpa mengabaikan spasi
-        const harga = item.hargaSewa.toString().toLowerCase();
-        // return (
-        //   nama.includes(search.replace(/\s+/g, "").toLowerCase()) ||
-        //   harga.includes(search.toLowerCase())
-        // );
+        const nomorKamar = item.nomorKamar.toLowerCase();
+        const status = item.statusKamar.toLowerCase();
+        const searchTerm = search.toLowerCase();
+        
+        return (
+          nomorKamar.includes(searchTerm) ||
+          status.includes(searchTerm)
+        );
       });
 
-      // Tampilkan data barang berdasarkan pencarian
+      // Tampilkan data kamar berdasarkan pencarian
       setFilter(filter_data);
     }
-
     // jika pencarian data tidak di isi
     else {
       // Tampilkan Seluruh data
@@ -95,10 +125,10 @@ export default function KamarPage() {
 
   // koneksi api dengan axios
   // buat fungsi koneksi api dengan axios
-  const getDataBarang = async () => {
+  const getDataKamar = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(Strings.api_kamar); //membuat constans strings untuk api
+      const response = await axios.get(Strings.api_kamar);
       setDataKamar(response.data.kamar);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -114,22 +144,20 @@ export default function KamarPage() {
   };
 
   // buat fungsi untuk hapus data
-  const deleteDataBarang = async (id: number) => {
+  const deleteDataKamar = async (id: number) => {
     try {
       setLoading(true);
-      const response = await axios.delete(
-        `${Strings.api_kamar}/${id}` // contans strings untuk api
-      );
+      const response = await axios.delete(`${Strings.api_kamar}/${id}`);
 
       // tampilkan response (message)
       messageResponse.current = response.data.message;
       showSnackbar();
 
       // Refresh data setelah berhasil hapus
-      await getDataBarang();
-    } catch (error) {
+      await getDataKamar();
+    } catch (error: any) {
       console.error("Error deleting data:", error);
-      messageResponse.current = "Gagal menghapus data";
+      messageResponse.current = error.response?.data?.message || "Gagal menghapus data";
       showSnackbar();
     } finally {
       setLoading(false);
@@ -139,13 +167,9 @@ export default function KamarPage() {
 
   return (
     <View style={{ flex: 1, justifyContent: "flex-start", width: "100%" }}>
-      <Text style={[styles.warna_bg, styles.jarak, { textAlign: "center" }]}>
-        List Kamar
-      </Text>
-
       {/* area pencarian */}
       <TextInput
-        label="Cari Data Kamar"
+        label="Cari Nomor Kamar atau Status"
         right={
           <TextInput.Icon
             icon={() => (
@@ -153,7 +177,6 @@ export default function KamarPage() {
                 name="search"
                 size={24}
                 color="black"
-                onPress={() => console.log("Pressed")}
               />
             )}
           />
@@ -166,19 +189,47 @@ export default function KamarPage() {
 
       {/* area content */}
       <FlatList
-        style={{ backgroundColor: "#0046FF" }}
+        style={{ backgroundColor: "#f5f5f5" }}
         data={filter}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
           <Card key={item.id} style={styles.card}>
             <Card.Title
-              title={item.nomorKamar}
+              title={`Kamar ${item.nomorKamar}`}
               subtitle={formatRupiah(item.hargaSewa)}
               titleStyle={{ fontSize: 20, fontWeight: "bold" }}
+              right={(props) => (
+                <Chip
+                  style={{
+                    backgroundColor: getStatusColor(item.statusKamar),
+                    marginRight: 15,
+                  }}
+                  textStyle={{ 
+                    color: "#fff", 
+                    fontWeight: "bold",
+                    fontSize: 12
+                  }}
+                  icon={() => (
+                    <MaterialIcons
+                      name={
+                        item.statusKamar.toLowerCase() === "tersedia"
+                          ? "check-circle"
+                          : item.statusKamar.toLowerCase() === "tersewa"
+                          ? "cancel"
+                          : "remove-circle"
+                      }
+                      size={18}
+                      color="#fff"
+                    />
+                  )}
+                >
+                  {formatStatus(item.statusKamar)}
+                </Chip>
+              )}
             />
             <Card.Actions>
               <Button
-                style={[styles.button, { backgroundColor: "#0046FF" }]} 
+                style={[styles.button, { backgroundColor: "#0046FF" }]}
                 onPress={() => {
                   setId(item.id);
                   setMessage(item.nomorKamar);
@@ -190,9 +241,8 @@ export default function KamarPage() {
               </Button>
 
               <Button
-                style={[styles.buttonWhite, { backgroundColor: "white" }]} 
-                // pindah ke halaman detail
-                onPress={() => router.push(`/kamar/detail/page?id=${item.id}`)} 
+                style={[styles.buttonWhite, { backgroundColor: "white" }]}
+                onPress={() => router.push(`/kamar/detail/page?id=${item.id}`)}
                 disabled={loading}
               >
                 <MaterialIcons name="edit" size={24} color="black" />
@@ -200,6 +250,14 @@ export default function KamarPage() {
             </Card.Actions>
           </Card>
         )}
+        ListEmptyComponent={
+          <View style={styles_local.emptyContainer}>
+            <MaterialIcons name="inbox" size={80} color="#ccc" />
+            <Text style={styles_local.emptyText}>
+              {search ? "Tidak ada kamar yang ditemukan" : "Belum ada data kamar"}
+            </Text>
+          </View>
+        }
       />
 
       {/* area FAB */}
@@ -208,34 +266,34 @@ export default function KamarPage() {
         color="#fff"
         mode="flat"
         style={styles.fab}
-        onPress={() => router.push("./kamar/add/page")}
-        // digunakan untuk kembali ke halaman home di device onPress={() => router.replace("/barang/add")}
+        onPress={() => router.push("/kamar/add/page")}
         disabled={loading}
       />
 
       {/* area dialog hapus data */}
       <Portal>
         <Dialog visible={visible} onDismiss={hideDialog}>
-          <Dialog.Title style={styles.warna_bg}>Informasi</Dialog.Title>
+          <Dialog.Title style={styles.warna_bg}>Konfirmasi Hapus</Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium">{message.current}</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button
-              onPress={() => {
-                deleteDataBarang(id);
-              }}
-              disabled={loading}
-              style={{ backgroundColor: "0046FF" }}
-            >
-              Ya
-            </Button>
-            <Button
               onPress={hideDialog}
               disabled={loading}
-              style={{ backgroundColor: "0046FF" }}
+              textColor="#666"
             >
               Tidak
+            </Button>
+            <Button
+              onPress={() => {
+                deleteDataKamar(id);
+              }}
+              disabled={loading}
+              textColor="#F44336"
+              style={{ marginLeft: 8 }}
+            >
+              {loading ? "Menghapus..." : "Ya, Hapus"}
             </Button>
           </Dialog.Actions>
         </Dialog>
@@ -245,6 +303,7 @@ export default function KamarPage() {
       <Snackbar
         visible={visibleSnackbar}
         onDismiss={hideSnackbar}
+        duration={3000}
         style={styles.snackbar}
       >
         {messageResponse.current}
@@ -252,3 +311,17 @@ export default function KamarPage() {
     </View>
   );
 }
+
+const styles_local = StyleSheet.create({
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 100,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "#999",
+    marginTop: 16,
+  },
+});
