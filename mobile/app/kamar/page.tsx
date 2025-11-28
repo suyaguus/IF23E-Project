@@ -192,7 +192,7 @@ export default function KamarPage() {
               <Button
                 style={[styles.buttonWhite, { backgroundColor: "white" }]} 
                 // pindah ke halaman detail
-                onPress={() => router.push("/kamar/detail/page")} 
+                onPress={() => router.push(`/kamar/detail/page?id=${item.id}`)} 
                 disabled={loading}
               >
                 <MaterialIcons name="edit" size={24} color="black" />
