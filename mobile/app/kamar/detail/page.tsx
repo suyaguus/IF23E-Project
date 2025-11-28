@@ -36,8 +36,7 @@ export default function DetailKamarPage() {
   const [formHarga, setFormHarga] = useState("");
   const [formHargaRaw, setFormHargaRaw] = useState(0);
   const [formDeskripsi, setFormDeskripsi] = useState("");
-  const [formStatusKamar, setFormStatusKamar] = useState(""); // Ini yang digunakan untuk simpan
-
+  const [formStatusKamar, setFormStatusKamar] = useState(""); 
   // State untuk loading dan snackbar
   const [loading, setLoading] = useState(false);
   const [visibleSnackbar, setVisibleSnackbar] = useState(false);
@@ -211,10 +210,10 @@ export default function DetailKamarPage() {
           valueField="value"
           placeholder="Pilih Status Kamar"
           searchPlaceholder="Cari..."
-          value={formStatusKamar} // ✅ Gunakan formStatusKamar
+          value={formStatusKamar}
           onChange={(item) => {
             console.log("Dropdown changed:", item.value);
-            setFormStatusKamar(item.value); // ✅ Update formStatusKamar
+            setFormStatusKamar(item.value);
           }}
           renderLeftIcon={() => (
             <MaterialIcons
