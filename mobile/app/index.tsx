@@ -9,9 +9,9 @@ import {
 } from "react-native-paper";
 import { styles } from "@/styles/home";
 import { Section } from "react-native-paper/lib/typescript/components/Drawer/Drawer";
-import DashboardUserPage from "./dashboard/user/page";
 import KamarPage from "./kamar/page";
 import DashboardAdminPage from "./dashboard/admin/page";
+import DashboardPage from "./dashboard/page";
 
 export default function HomePage() {
   const Home = () => <View style={{ flex: 1 }} />;
@@ -69,7 +69,8 @@ export default function HomePage() {
         onIndexChange={setIndex}
         renderScene={renderScene}
       /> */}
-      <DashboardAdminPage />
+      {/* <DashboardAdminPage /> */}
+      <DashboardPage/>
     </View>
   );
 }
