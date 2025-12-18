@@ -31,7 +31,6 @@ enum MetodePembayaran {
   Tunai
 }
 
-// User / Admin
 model tb_user {
   id                Int                     @id @default(autoincrement())
   username          String                  @db.VarChar(50)
@@ -39,46 +38,10 @@ model tb_user {
   role              Role                    @default(User)
   password          String
   notelp            String
-  resetToken        String?                 @unique
-  resetTokenExpiry  DateTime?
   createdAt         DateTime                @default(now())
   updatedAt         DateTime                @updatedAt
   orders            tb_order[]
   riwayatPembayaran tb_riwayat_pembayaran[]
-  accessTokens      tb_accessToken[]
-  refreshTokens     tb_refreshToken[]
-}
-
-// Access Token
-model tb_accessToken {
-  id        Int      @id @default(autoincrement())
-  token     String   @db.Text // Text untuk token panjang
-  tokenId   String   @unique // UUID untuk identifier
-  userId    Int
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-
-  user tb_user @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([tokenId])
-  @@index([expiresAt])
-}
-
-// Refresh Token
-model tb_refreshToken {
-  id        Int      @id @default(autoincrement())
-  token     String   @db.Text
-  tokenId   String   @unique
-  userId    Int
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-
-  user tb_user @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([tokenId])
-  @@index([expiresAt])
 }
 
 // Kamar
@@ -147,9 +110,9 @@ model tb_order {
   statusPembayaran StatusPembayaran @default(Pending)
   totalHarga       Int
   metodePembayaran MetodePembayaran
-  buktiPembayaran  String? // URL/path file bukti pembayaran
-  catatanUser      String? // Catatan dari user saat memesan
-  catatanAdmin     String? // Catatan dari admin untuk order ini
+  buktiPembayaran  String?
+  catatanUser      String?
+  catatanAdmin     String?
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
@@ -162,20 +125,20 @@ model tb_order {
   @@index([statusPembayaran])
 }
 
-// Riwayat Pembayaran - untuk tracking perubahan status pembayaran
+// Riwayat Pembayaran
 model tb_riwayat_pembayaran {
   id                   Int               @id @default(autoincrement())
   kodeRiwayat          String            @unique
   orderId              Int
   userId               Int
   kamarId              Int
-  statusPembayaranLama StatusPembayaran? // Status sebelumnya (null jika baru dibuat)
-  statusPembayaranBaru StatusPembayaran // Status yang baru
+  statusPembayaranLama StatusPembayaran?
+  statusPembayaranBaru StatusPembayaran
   totalHarga           Int
   metodePembayaran     MetodePembayaran
-  buktiPembayaran      String? // Snapshot bukti pembayaran saat itu
-  keterangan           String? // Keterangan perubahan (misal: "Pembayaran dikonfirmasi oleh admin")
-  diubahOleh           String? // Username yang mengubah (admin/sistem)
+  buktiPembayaran      String?
+  keterangan           String?
+  diubahOleh           String?
   createdAt            DateTime          @default(now())
 
   order tb_order @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -186,4 +149,15 @@ model tb_riwayat_pembayaran {
   @@index([userId])
   @@index([kamarId])
   @@index([createdAt])
+}
+
+// buat table otp
+model tb_otp {
+  id        Int      @id @default(autoincrement())
+  email     String   
+  otp      String   
+  expiresAt DateTime 
+  createdAt DateTime @default(now())
+  
+  @@index([email])
 }
