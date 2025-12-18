@@ -1,18 +1,12 @@
-"use client"
+"use client";
 
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
   IconUserCircle,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,24 +15,69 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"; // 1. Import AlertDialog
+import { useRouter } from "next/navigation";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    name: string;
+    email: string;
+    avatar: string;
+  };
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  // 2. Fungsi handleLogout (TANPA window.confirm)
+  // Fungsi ini hanya akan dipanggil jika user menekan "Continue/Keluar" di dialog
+  const handleLogout = async () => {
+    try {
+      const storedUserString = localStorage.getItem("user");
+      const storedUser = storedUserString ? JSON.parse(storedUserString) : null;
+
+      const response = await fetch("http://localhost:3001/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: storedUser?.id,
+          email: storedUser?.email || user.email,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("Log-out berhasil!!!");
+      } else {
+        console.warn("Gagal log di server, lanjut logout client");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      localStorage.removeItem("user");
+      router.replace("/auth/login");
+      router.refresh();
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -84,27 +123,45 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(`/user/profile`)}>
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
-              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <IconLogout />
-              Log out
-            </DropdownMenuItem>
+
+            {/* 3. IMPLEMENTASI ALERT DIALOG DI SINI */}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                {/* PENTING: onSelect={(e) => e.preventDefault()} 
+                  Ini wajib ada agar Dropdown tidak langsung tertutup saat diklik,
+                  sehingga Dialog bisa muncul dengan benar.
+                */}
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <IconLogout />
+                  Log out
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Apakah Anda yakin ingin keluar dari akun ini? Sesi Anda akan
+                    diakhiri.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Batal</AlertDialogCancel>
+                  {/* Panggil handleLogout di sini */}
+                  <AlertDialogAction onClick={handleLogout}>
+                    Ya, Keluar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
