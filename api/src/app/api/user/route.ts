@@ -54,7 +54,8 @@ export const POST = async (request: NextRequest) => {
             username: data.username,
             email: data.email,
             role: data.role || "User",
-            password: data.password
+            password: data.password,
+            notelp: data.notelp
         }
     })
 
