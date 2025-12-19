@@ -18,8 +18,11 @@ export default function DashBoardPage() {
             <SidebarInset>
                 <SiteHeaderDashboard />
 
-                 {/* SECTION GAMBAR KAMAR KOST */}
+                {/* SECTION GAMBAR KAMAR KOST */}
                 <div className="px-4 py-6 lg:px-6">
+                    <h2 className="mb-4 text-lg font-semibold">
+                        Galeri Kamar Kost
+                    </h2>
 
                 </div>
 
@@ -27,7 +30,7 @@ export default function DashBoardPage() {
                     <div className="@container/main flex flex-1 flex-col gap-2">
                         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
                             {/* bagian card */}
-                            
+
                             {/* bagian section data */}
                             {/* <SectionCards /> */}
                             {/* <div className="px-4 lg:px-6">
