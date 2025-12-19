@@ -1,5 +1,5 @@
-export default function DashboarPage() {
+export default function DashBoardPage() {
     return (
-        
+
     );
 }
