@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
                 email,
                 password: hashedPassword,
                 notelp,
-                role: 'User',
+                role: body.role || 'User',
             },
             select: {
                 id: true,
