@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import { Sidebar, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
-import { IconInnerShadowTop } from "@tabler/icons-react";
+import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+import { IconInnerShadowTop } from "@tabler/icons-react"
+import { NavGuest } from "./nav-guest";
+
+
+
+
+
 
 const data = {
     user: {
@@ -56,6 +62,11 @@ export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Si
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+      <SidebarContent>
+        <NavGuest items={data.navGuest} />
+        {/* <NavDocuments items={data.documents} /> */}
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+      </SidebarContent>
     </Sidebar>
   );
   
