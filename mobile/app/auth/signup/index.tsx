@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import { TextInput, Button, Text, useTheme } from "react-native-paper";
+import { View, StyleSheet, ScrollView, Keyboard } from "react-native";
+// 1. IMPORT SNACKBAR
+import {
+  TextInput,
+  Button,
+  Text,
+  useTheme,
+  Snackbar,
+} from "react-native-paper";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import api from "@/services/api";
+import { Strings } from "@/constants/strings";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -15,92 +24,192 @@ export default function RegisterPage() {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = () => {
+  // --- STATE UNTUK SNACKBAR ---
+  const [visible, setVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [isError, setIsError] = useState(false); // Untuk membedakan warna error/sukses
+
+  // Fungsi Helper untuk menampilkan Snackbar
+  const showSnackbar = (message: string, isErr: boolean = false) => {
+    setSnackbarMessage(message);
+    setIsError(isErr);
+    setVisible(true);
+  };
+
+  const onDismissSnackBar = () => setVisible(false);
+
+  const handleRegister = async () => {
+    console.log("--- TOMBOL DAFTAR DITEKAN ---");
+    Keyboard.dismiss();
+
+    // Validasi input
+    if (!name || !email || !phone || !password) {
+      showSnackbar("Mohon lengkapi semua data.", true);
+      return;
+    }
+
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const payload = {
+        username: name,
+        email: email,
+        notelp: phone,
+        password: password,
+        role: "User",
+      };
+
+      console.log("Mengirim Payload:", payload);
+
+      // Casting ke any agar TypeScript tidak rewel
+      const responseRaw = await api.post(Strings.api_auth_register, payload);
+      const response = responseRaw as any;
+
+      console.log("Respon API:", response);
+
+      // Cek Sukses
+      const isSuccess =
+        response.status === 201 ||
+        response.status === 200 ||
+        response.data?.success === true ||
+        response.success === true;
+
+      if (isSuccess) {
+        // 1. Bersihkan Form
+        setName("");
+        setEmail("");
+        setPhone("");
+        setPassword("");
+        setLoading(false);
+
+        // 2. Tampilkan Snackbar Sukses
+        showSnackbar("Akun berhasil dibuat! Mengalihkan...", false);
+
+        // 3. Redirect otomatis setelah delay sedikit (agar user sempat baca pesan)
+        setTimeout(() => {
+          router.replace("/auth/login");
+        }, 1500);
+      } else {
+        setLoading(false);
+        const errorMsg =
+          response.data?.message || response.message || "Gagal mendaftar.";
+        showSnackbar(errorMsg, true);
+      }
+    } catch (error: any) {
       setLoading(false);
-      alert("Pendaftaran Berhasil! Silakan Login.");
-      router.back(); 
-    }, 1500);
+      console.error("Register Error:", error);
+
+      let msg = "Terjadi kesalahan koneksi";
+      if (error.response) {
+        msg = error.response.data?.message || msg;
+      } else if (error.message) {
+        msg = error.message;
+      }
+
+      showSnackbar(msg, true);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text
-          variant="headlineMedium"
-          style={[styles.title, { color: theme.colors.primary }]}
+      <View style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <Text
+            variant="headlineMedium"
+            style={[styles.title, { color: theme.colors.primary }]}
+          >
+            Buat Akun Baru
+          </Text>
+          <Text variant="bodyMedium" style={styles.subtitle}>
+            Lengkapi data diri Anda
+          </Text>
+
+          <TextInput
+            label="Nama Lengkap"
+            value={name}
+            onChangeText={setName}
+            mode="outlined"
+            left={<TextInput.Icon icon="account" />}
+            style={styles.input}
+          />
+
+          <TextInput
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            mode="outlined"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            left={<TextInput.Icon icon="email" />}
+            style={styles.input}
+          />
+
+          <TextInput
+            label="Nomor Telepon"
+            value={phone}
+            onChangeText={setPhone}
+            mode="outlined"
+            keyboardType="phone-pad"
+            left={<TextInput.Icon icon="phone" />}
+            style={styles.input}
+          />
+
+          <TextInput
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            mode="outlined"
+            left={<TextInput.Icon icon="lock" />}
+            right={
+              <TextInput.Icon
+                icon={secureTextEntry ? "eye" : "eye-off"}
+                onPress={() => setSecureTextEntry(!secureTextEntry)}
+              />
+            }
+            secureTextEntry={secureTextEntry}
+            style={styles.input}
+          />
+
+          <Button
+            mode="contained"
+            onPress={handleRegister}
+            loading={loading}
+            disabled={loading}
+            style={styles.button}
+            contentStyle={{ paddingVertical: 5 }}
+          >
+            Daftar
+          </Button>
+
+          <Button
+            mode="text"
+            onPress={() => router.replace("/auth/login")}
+            style={{ marginTop: 10 }}
+          >
+            Sudah punya akun? Login
+          </Button>
+        </ScrollView>
+
+        {/* --- KOMPONEN SNACKBAR DI SINI --- */}
+        {/* Diletakkan di luar ScrollView tapi di dalam Container utama agar mengapung di bawah */}
+        <Snackbar
+          visible={visible}
+          onDismiss={onDismissSnackBar}
+          duration={3000} // Hilang otomatis setelah 3 detik
+          style={{
+            backgroundColor: isError ? theme.colors.error : "#4CAF50", // Merah jika error, Hijau jika sukses
+            marginBottom: 20, // Sedikit jarak dari bawah layar
+          }}
+          action={{
+            label: "Tutup",
+            onPress: () => {
+              setVisible(false);
+            },
+          }}
         >
-          Buat Akun Baru
-        </Text>
-        <Text variant="bodyMedium" style={styles.subtitle}>
-          Lengkapi data diri Anda
-        </Text>
-
-        <TextInput
-          label="Nama Lengkap"
-          value={name}
-          onChangeText={setName}
-          mode="outlined"
-          left={<TextInput.Icon icon="account" />}
-          style={styles.input}
-        />
-
-        <TextInput
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          mode="outlined"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          left={<TextInput.Icon icon="email" />}
-          style={styles.input}
-        />
-
-        <TextInput
-          label="Nomor Telepon"
-          value={phone}
-          onChangeText={setPhone}
-          mode="outlined"
-          keyboardType="phone-pad"
-          left={<TextInput.Icon icon="phone" />}
-          style={styles.input}
-        />
-
-        <TextInput
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          mode="outlined"
-          left={<TextInput.Icon icon="lock" />}
-          right={
-            <TextInput.Icon
-              icon={secureTextEntry ? "eye" : "eye-off"}
-              onPress={() => setSecureTextEntry(!secureTextEntry)}
-            />
-          }
-          secureTextEntry={secureTextEntry}
-          style={styles.input}
-        />
-
-        <Button
-          mode="contained"
-          onPress={handleRegister}
-          loading={loading}
-          style={styles.button}
-          contentStyle={{ paddingVertical: 5 }}
-        >
-          Daftar
-        </Button>
-
-        <Button
-          mode="text"
-          onPress={() => router.push("../auth/login")}
-          style={{ marginTop: 10 }}
-        >
-          Sudah punya akun? Login
-        </Button>
-      </ScrollView>
+          {snackbarMessage}
+        </Snackbar>
+      </View>
     </SafeAreaView>
   );
 }
