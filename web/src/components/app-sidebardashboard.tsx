@@ -1,22 +1,149 @@
-import { useEffect, useState } from "react";
-import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
-import { IconInnerShadowTop } from "@tabler/icons-react"
-import { NavGuest } from "./nav-guest";
+"use client";
 
+import * as React from "react";
+import { useEffect, useState } from "react"; // 1. Import Hooks
+import {
+  IconInnerShadowTop,
+  // ... icon lainnya
+} from "@tabler/icons-react";
 
-
-
-
+import { NavUser } from "@/components/nav-user";
+import { NavGuest } from "@/components/nav-guest";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
 const data = {
-    user: {
-
-    },
-    navGuest: [],
+  user: {
+    // name: "Suyaguus",
+    // email: "suyaguus@gmail.com",
+    // avatar: "/images/suyaguus.jpeg",
+  },
+  navMain: [
+    // {
+    //   title: "User",
+    //   url: "/user",
+    //   icon: IconDashboard,
+    // },
+    // {
+    //   title: "Kamar",
+    //   url: "#",
+    //   icon: IconListDetails,
+    // },
+    // {
+    //   title: "Perabotan",
+    //   url: "#",
+    //   icon: IconChartBar,
+    // },
+    // {
+    //   title: "Fasilitas",
+    //   url: "#",
+    //   icon: IconFolder,
+    // },
+    // {
+    //   title: "Order",
+    //   url: "#",
+    //   icon: IconUsers,
+    // },
+    // {
+    //   title: "Riwayat Pembayaran",
+    //   url: "#",
+    //   icon: IconUsers,
+    // },
+  ],
+  navGuest: [],
+  // navClouds: [
+  //   {
+  //     title: "Capture",
+  //     icon: IconCamera,
+  //     isActive: true,
+  //     url: "#",
+  //     items: [
+  //       {
+  //         title: "Active Proposals",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Archived",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Proposal",
+  //     icon: IconFileDescription,
+  //     url: "#",
+  //     items: [
+  //       {
+  //         title: "Active Proposals",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Archived",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Prompts",
+  //     icon: IconFileAi,
+  //     url: "#",
+  //     items: [
+  //       {
+  //         title: "Active Proposals",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Archived",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  // ],
+  // navSecondary: [
+  //   {
+  //     title: "Settings",
+  //     url: "#",
+  //     icon: IconSettings,
+  //   },
+  //   {
+  //     title: "Get Help",
+  //     url: "#",
+  //     icon: IconHelp,
+  //   },
+  //   {
+  //     title: "Search",
+  //     url: "#",
+  //     icon: IconSearch,
+  //   },
+  // ],
+  // documents: [
+  //   {
+  //     name: "Data Library",
+  //     url: "#",
+  //     icon: IconDatabase,
+  //   },
+  //   {
+  //     name: "Reports",
+  //     url: "#",
+  //     icon: IconReport,
+  //   },
+  //   {
+  //     name: "Word Assistant",
+  //     url: "#",
+  //     icon: IconFileWord,
+  //   },
+  // ],
 };
 
 export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    // Buat State untuk User dengan Default "Guest"
+  // Buat State untuk User dengan Default "Guest"
   const [currentUser, setCurrentUser] = useState({
     name: "Guest User",
     email: "guest@example.com",
@@ -47,7 +174,7 @@ export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Si
   }, []);
   return (
     <Sidebar collapsible="offcanvas" {...props}>
-        <SidebarHeader>
+      <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -67,7 +194,9 @@ export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Si
         {/* <NavDocuments items={data.documents} /> */}
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={currentUser} />{" "}
+      </SidebarFooter>
     </Sidebar>
   );
-  
 }
