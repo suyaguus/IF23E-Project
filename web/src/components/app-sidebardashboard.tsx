@@ -150,6 +150,9 @@ export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Si
     avatar: "", // Kosongkan atau isi path gambar default
   });
 
+  const [isMounted, setIsMounted] = useState(false);
+
+
   useEffect(() => {
     // Pastikan kode hanya jalan di client
     if (typeof window !== "undefined") {
@@ -195,7 +198,7 @@ export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Si
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={currentUser} />{" "}
+         {isMounted && <NavUser user={currentUser} />}
       </SidebarFooter>
     </Sidebar>
   );
