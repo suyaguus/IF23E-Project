@@ -13,11 +13,8 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-// Import Auth Provider & Hook
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
-// --- DEFINISI TEMA ---
 const theme = {
   ...DefaultTheme,
   colors: {
@@ -30,14 +27,12 @@ const theme = {
   },
 };
 
-// --- KOMPONEN ISI DRAWER ---
+// komponen drawer
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
+
   const router = useRouter();
   const pathname = usePathname();
 
-  // SEKARANG AMAN MEMANGGIL useAuth DI SINI
-  // KARENA KOMPONEN INI DIRENDER DI DALAM <RootLayoutNav>
-  // YANG SUDAH DIBUNGKUS OLEH <AuthProvider> DI PARENT
   const { userData, isLoggedIn } = useAuth();
 
   const isActive = (path: string) => pathname.includes(path);
@@ -53,7 +48,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           style={{ backgroundColor: "white" }}
           color={theme.colors.primary}
         />
-        {/* DATA USER DINAMIS */}
+
         <Text variant="titleMedium" style={styles.drawerTitle}>
           {isLoggedIn && userData ? userData.username : "Guest User"}
         </Text>
@@ -101,8 +96,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
   );
 };
 
-// --- KOMPONEN NAVIGASI (DIPISAH) ---
-// Komponen ini berisi Drawer dan logika UI, TAPI TIDAK ADA PROVIDER DI SINI
+// komponen navigasi
 function RootLayoutNav() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -150,8 +144,7 @@ function RootLayoutNav() {
   );
 }
 
-// --- EXPORT DEFAULT: ROOT LAYOUT ---
-// Komponen ini HANYA bertugas membungkus aplikasi dengan Provider
+// komponen root
 export default function RootLayout() {
   return (
     <AuthProvider>
