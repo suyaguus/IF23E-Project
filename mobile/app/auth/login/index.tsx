@@ -87,7 +87,7 @@ export default function LoginPage() {
         {/* --- BAGIAN LUPA PASSWORD (DITAMBAHKAN) --- */}
         <View style={styles.forgotPasswordContainer}>
           <TouchableOpacity
-            onPress={() => router.push("/auth/forgotPassword")} // Arahkan ke folder forgotPassword
+            onPress={() => router.push("/auth/forgot-password")} // Arahkan ke folder forgotPassword
           >
             <Text style={{ color: theme.colors.primary, fontWeight: "bold" }}>
               Lupa Password?
