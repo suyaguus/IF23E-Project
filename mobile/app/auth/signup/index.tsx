@@ -20,7 +20,7 @@ export default function RegisterPage() {
     setTimeout(() => {
       setLoading(false);
       alert("Pendaftaran Berhasil! Silakan Login.");
-      router.back(); // Kembali ke halaman Login
+      router.back(); 
     }, 1500);
   };
 
