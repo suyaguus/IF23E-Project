@@ -16,7 +16,6 @@ export default function AdminProfilePage() {
   const { userData, logout } = useAuth();
   const theme = useTheme();
 
-  // Ambil inisial nama untuk Avatar (Misal: Surya Agung -> SA)
   const getInitials = (name: string) => {
     return name
       .split(" ")
