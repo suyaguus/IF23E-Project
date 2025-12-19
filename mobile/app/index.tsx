@@ -1,17 +1,7 @@
 import { View } from "react-native";
 import React from "react";
-import {
-  BottomNavigation,
-  Text,
-  Icon,
-  Searchbar,
-  Appbar,
-} from "react-native-paper";
-import { styles } from "@/styles/home";
-import { Section } from "react-native-paper/lib/typescript/components/Drawer/Drawer";
-import KamarPage from "./kamar/page";
-import DashboardAdminPage from "./dashboard/admin/page";
-import DashboardPage from "./dashboard/page";
+import { BottomNavigation } from "react-native-paper";
+import DashboardPage from "./dashboard";
 
 export default function HomePage() {
   const Home = () => <View style={{ flex: 1 }} />;
@@ -69,8 +59,7 @@ export default function HomePage() {
         onIndexChange={setIndex}
         renderScene={renderScene}
       /> */}
-      {/* <DashboardAdminPage /> */}
-      <DashboardPage/>
+      <DashboardPage />
     </View>
   );
 }
