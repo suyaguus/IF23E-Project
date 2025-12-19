@@ -24,13 +24,13 @@ export default function DashBoardPage() {
                         Galeri Kamar Kost
                     </h2>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <div className="overflow-hidden rounded-xl border">
+                        <div className="w-full">
                             <Image
                                 src="/images/kamarkost1.png"
                                 alt="Kamar Kost 1"
-                                width={400}
-                                height={600}
-                                className="h-48 w-full object-cover"
+                                width={600}
+                                height={400}
+                                className="object-contain w-full"
                             />
                         </div>
 
