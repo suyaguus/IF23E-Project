@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Sidebar } from "./ui/sidebar";
+import { Sidebar, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+import { IconInnerShadowTop } from "@tabler/icons-react";
 
 const data = {
     user: {
@@ -38,5 +39,24 @@ export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Si
       }
     }
   }, []);
+  return (
+    <Sidebar collapsible="offcanvas" {...props}>
+        <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <a href="#">
+                <IconInnerShadowTop className="!size-5" />
+                <span className="text-base font-semibold">Dashboard</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+    </Sidebar>
+  );
   
 }
