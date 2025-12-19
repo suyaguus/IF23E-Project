@@ -25,7 +25,7 @@ export default function DashBoardPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div className="w-full">
                             <Image
-                                src="/images/kamarkost4.jpg"
+                                src="/images/kamarkost1.jpg"
                                 alt="Kamar Kost 1"
                                 width={600}
                                 height={400}
