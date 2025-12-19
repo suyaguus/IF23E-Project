@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar } from "./ui/sidebar";
 
 const data = {
@@ -15,5 +15,28 @@ export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Si
     email: "guest@example.com",
     avatar: "", // Kosongkan atau isi path gambar default
   });
+
+  useEffect(() => {
+    // Pastikan kode hanya jalan di client
+    if (typeof window !== "undefined") {
+      const storedUserString = localStorage.getItem("user");
+
+      if (storedUserString) {
+        try {
+          const storedUser = JSON.parse(storedUserString);
+
+          // 2. Update State (Sertakan avatar juga)
+          setCurrentUser({
+            name: storedUser.username || "User",
+            email: storedUser.email || "No Email",
+            // Gunakan avatar kosong atau default image jika tidak ada
+            avatar: "", 
+          });
+        } catch (error) {
+          console.error("Gagal parsing user data:", error);
+        }
+      }
+    }
+  }, []);
   
 }
