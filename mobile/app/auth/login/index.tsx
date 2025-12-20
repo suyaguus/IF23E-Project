@@ -3,21 +3,18 @@ import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { TextInput, Button, Text, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-// IMPORT useAuth
 import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
   const theme = useTheme();
 
-  // Ambil fungsi login dan state loading dari Context
   const { login, isLoading } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
 
-  // Ubah menjadi ASYNC
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Peringatan", "Mohon isi email dan password");
@@ -25,18 +22,15 @@ export default function LoginPage() {
     }
 
     try {
-      // 1. Panggil login
       const user = await login(email, password);
 
       console.log("DATA USER DARI BACKEND:", JSON.stringify(user, null, 2));
 
-      // 2. Cek Role (Case Insensitive)
       const role = user.role ? user.role.toLowerCase() : "";
 
       if (role === "admin") {
         router.replace("../dashboard/admin");
       } else {
-        // PERBAIKAN: Gunakan path absolute (diawali /) agar aman
         router.replace("../dashboard/user");
       }
     } catch (error) {
@@ -84,17 +78,15 @@ export default function LoginPage() {
           style={styles.input}
         />
 
-        {/* --- BAGIAN LUPA PASSWORD (DITAMBAHKAN) --- */}
         <View style={styles.forgotPasswordContainer}>
           <TouchableOpacity
-            onPress={() => router.push("/auth/forgot-password")} // Arahkan ke folder forgotPassword
+            onPress={() => router.push("/auth/forgot-password")}
           >
             <Text style={{ color: theme.colors.primary, fontWeight: "bold" }}>
               Lupa Password?
             </Text>
           </TouchableOpacity>
         </View>
-        {/* ------------------------------------------- */}
 
         <View style={styles.buttonGroup}>
           <Button
@@ -118,7 +110,6 @@ export default function LoginPage() {
           </Button>
         </View>
 
-        {/* --- BAGIAN REGISTER (DITAMBAHKAN) --- */}
         <View style={styles.registerContainer}>
           <Text>Belum punya akun? </Text>
           <TouchableOpacity onPress={() => router.push("../auth/signup")}>
@@ -127,7 +118,6 @@ export default function LoginPage() {
             </Text>
           </TouchableOpacity>
         </View>
-        {/* ------------------------------------- */}
       </View>
     </SafeAreaView>
   );
@@ -140,7 +130,6 @@ const styles = StyleSheet.create({
   subtitle: { textAlign: "center", color: "#666", marginBottom: 32 },
   input: { marginBottom: 16, backgroundColor: "#fff" },
 
-  // Style Container Lupa Password
   forgotPasswordContainer: {
     alignItems: "flex-end",
     marginBottom: 24,
@@ -148,7 +137,6 @@ const styles = StyleSheet.create({
 
   button: { borderRadius: 8 },
 
-  // Style Container Register
   registerContainer: {
     flexDirection: "row",
     justifyContent: "center",
