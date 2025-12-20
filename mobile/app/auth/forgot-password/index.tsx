@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
         console.log("Navigasi langsung dijalankan...");
 
         router.push({
-          pathname: "/auth/verifyOtp",
+          pathname: "/auth/verify-otp",
           params: { email: email },
         } as any);
       } else {
