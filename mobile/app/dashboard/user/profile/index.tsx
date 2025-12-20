@@ -10,6 +10,7 @@ import {
   Portal,
   Dialog,
   HelperText,
+  Snackbar, 
 } from "react-native-paper";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/services/api";
@@ -26,13 +27,23 @@ export default function UserProfile() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-
   const [loadingPass, setLoadingPass] = useState(false);
   const [secureText, setSecureText] = useState({
     current: true,
     new: true,
     confirm: true,
   });
+
+  const [visibleSb, setVisibleSb] = useState(false);
+  const [messageSb, setMessageSb] = useState("");
+  const [isErrorSb, setIsErrorSb] = useState(false);
+
+  const showSnackbar = (msg: string, isError: boolean = false) => {
+    setMessageSb(msg);
+    setIsErrorSb(isError);
+    setVisibleSb(true);
+  };
+  const onDismissSnackBar = () => setVisibleSb(false);
 
   const showDialog = () => setVisibleDialog(true);
   const hideDialog = () => {
@@ -46,17 +57,17 @@ export default function UserProfile() {
     Keyboard.dismiss();
 
     if (!currentPassword || !newPassword || !confirmNewPassword) {
-      Alert.alert("Error", "Mohon isi semua kolom password.");
+      showSnackbar("Mohon isi semua kolom password.", true); 
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
-      Alert.alert("Error", "Password baru dan konfirmasi tidak cocok.");
+      showSnackbar("Password baru dan konfirmasi tidak cocok.", true);
       return;
     }
 
     if (newPassword.length < 6) {
-      Alert.alert("Error", "Password baru minimal 6 karakter.");
+      showSnackbar("Password baru minimal 6 karakter.", true);
       return;
     }
 
@@ -79,19 +90,15 @@ export default function UserProfile() {
       console.log("Respon:", response.data);
 
       if (response.data.success || response.status === 200) {
-        Alert.alert("Sukses", "Password berhasil diubah!");
-        hideDialog();
+        showSnackbar("Password berhasil diubah!", false); 
       } else {
-        Alert.alert(
-          "Gagal",
-          response.data.message || "Gagal mengubah password."
-        );
+        showSnackbar(response.data.message || "Gagal mengubah password.", true);
       }
     } catch (error: any) {
       console.error("Change Password Error:", error);
       const msg =
         error.response?.data?.message || "Terjadi kesalahan server/jaringan";
-      Alert.alert("Gagal", msg);
+      showSnackbar(msg, true);
     } finally {
       setLoadingPass(false);
     }
@@ -105,79 +112,83 @@ export default function UserProfile() {
   };
 
   return (
-    <ScrollView
+    <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <View style={[styles.header, { backgroundColor: theme.colors.primary }]}>
-        <Avatar.Icon
-          size={80}
-          icon="account"
-          style={{ backgroundColor: "white" }}
-          color={theme.colors.primary}
-        />
-        <Text variant="headlineSmall" style={styles.name}>
-          {userData?.username || "Nama Pengguna"}
-        </Text>
-        <Text variant="bodyMedium" style={styles.email}>
-          {userData?.email || "email@example.com"}
-        </Text>
-      </View>
-
-      <View style={styles.content}>
-        <Text
-          variant="titleMedium"
-          style={{ marginBottom: 15, fontWeight: "bold" }}
+      <ScrollView>
+        <View
+          style={[styles.header, { backgroundColor: theme.colors.primary }]}
         >
-          Edit Profil
-        </Text>
+          <Avatar.Icon
+            size={80}
+            icon="account"
+            style={{ backgroundColor: "white" }}
+            color={theme.colors.primary}
+          />
+          <Text variant="headlineSmall" style={styles.name}>
+            {userData?.username || "Nama Pengguna"}
+          </Text>
+          <Text variant="bodyMedium" style={styles.email}>
+            {userData?.email || "email@example.com"}
+          </Text>
+        </View>
 
-        <TextInput
-          label="Username"
-          value={name}
-          onChangeText={setName}
-          mode="outlined"
-          style={styles.input}
-          left={<TextInput.Icon icon="account" />}
-        />
+        <View style={styles.content}>
+          <Text
+            variant="titleMedium"
+            style={{ marginBottom: 15, fontWeight: "bold" }}
+          >
+            Edit Profil
+          </Text>
 
-        <TextInput
-          label="Nomor Telepon"
-          value={phone}
-          onChangeText={setPhone}
-          mode="outlined"
-          keyboardType="phone-pad"
-          style={styles.input}
-          left={<TextInput.Icon icon="phone" />}
-        />
+          <TextInput
+            label="Username"
+            value={name}
+            onChangeText={setName}
+            mode="outlined"
+            style={styles.input}
+            left={<TextInput.Icon icon="account" />}
+          />
 
-        <TextInput
-          label="Email"
-          value={userData?.email || ""}
-          mode="outlined"
-          style={[styles.input, { backgroundColor: "#f0f0f0" }]}
-          disabled={true}
-          left={<TextInput.Icon icon="email" />}
-        />
+          <TextInput
+            label="Nomor Telepon"
+            value={phone}
+            onChangeText={setPhone}
+            mode="outlined"
+            keyboardType="phone-pad"
+            style={styles.input}
+            left={<TextInput.Icon icon="phone" />}
+          />
 
-        <Button
-          mode="contained"
-          onPress={handleSaveProfile}
-          style={{ marginTop: 10, borderRadius: 8 }}
-        >
-          Simpan Profil
-        </Button>
+          <TextInput
+            label="Email"
+            value={userData?.email || ""}
+            mode="outlined"
+            style={[styles.input, { backgroundColor: "#f0f0f0" }]}
+            disabled={true}
+            left={<TextInput.Icon icon="email" />}
+          />
 
-        <Divider style={{ marginVertical: 20 }} />
+          <Button
+            mode="contained"
+            onPress={handleSaveProfile}
+            style={{ marginTop: 10, borderRadius: 8 }}
+          >
+            Simpan Profil
+          </Button>
 
-        <Button
-          mode="outlined"
-          textColor={theme.colors.error}
-          style={{ borderColor: theme.colors.error, borderRadius: 8 }}
-          onPress={showDialog}
-        >
-          Ubah Password
-        </Button>
-      </View>
+          <Divider style={{ marginVertical: 20 }} />
+
+          <Button
+            mode="outlined"
+            textColor={theme.colors.error}
+            style={{ borderColor: theme.colors.error, borderRadius: 8 }}
+            onPress={showDialog}
+          >
+            Ubah Password
+          </Button>
+        </View>
+      </ScrollView>
 
       <Portal>
         <Dialog
@@ -270,7 +281,24 @@ export default function UserProfile() {
           </Dialog.Actions>
         </Dialog>
       </Portal>
-    </ScrollView>
+
+      <Snackbar
+        visible={visibleSb}
+        onDismiss={onDismissSnackBar}
+        duration={3000}
+        style={{
+          backgroundColor: isErrorSb ? theme.colors.error : "#4CAF50", 
+          marginBottom: 10,
+        }}
+        action={{
+          label: "Tutup",
+          onPress: onDismissSnackBar,
+          textColor: "white",
+        }}
+      >
+        {messageSb}
+      </Snackbar>
+    </View>
   );
 }
 
