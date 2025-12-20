@@ -10,7 +10,6 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const theme = useTheme();
 
-  // 1. AMBIL PARAMETER DENGAN CARA AMAN
   const params = useLocalSearchParams();
   const email = Array.isArray(params.email) ? params.email[0] : params.email;
   const otpCode = Array.isArray(params.otpCode)
@@ -22,12 +21,11 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [secureText, setSecureText] = useState(true);
 
-  // 2. CEK DATA SAAT HALAMAN DIBUKA
   useEffect(() => {
     console.log("=== DEBUG RESET PASSWORD PAGE ===");
     console.log("Email diterima:", email);
     console.log("OTP diterima:", otpCode);
-    console.log("URL API:", Strings.api_auth_reset_password); // Cek URL API
+    console.log("URL API:", Strings.api_auth_reset_password);
     console.log("=================================");
 
     if (!email || !otpCode) {
@@ -45,7 +43,7 @@ export default function ResetPasswordPage() {
   }, [email, otpCode]);
 
   const handleResetPassword = async () => {
-    console.log("Tombol Simpan Ditekan"); // Debug 1
+    console.log("Tombol Simpan Ditekan");
 
     if (!password || !confirmPassword) {
       Alert.alert("Peringatan", "Mohon isi password baru dan konfirmasi");
@@ -62,14 +60,14 @@ export default function ResetPasswordPage() {
       const payload = {
         email: email,
         otp: otpCode,
-        newPassword: password, // Sesuai Postman Anda
+        newPassword: password,
       };
 
-      console.log("Mengirim Payload ke Backend:", payload); // Debug 2
+      console.log("Mengirim Payload ke Backend:", payload);
 
       const response = await api.post(Strings.api_auth_reset_password, payload);
 
-      console.log("Respon Backend:", response.status, response.data); // Debug 3
+      console.log("Respon Backend:", response.status, response.data);
 
       if (response.data.success || response.status === 200) {
         Alert.alert(
@@ -107,7 +105,6 @@ export default function ResetPasswordPage() {
           Reset Password
         </Text>
 
-        {/* INFO DEBUG DI UI */}
         <View style={{ marginBottom: 20 }}>
           <Text variant="bodySmall" style={{ color: "#666" }}>
             Reset untuk: {email}
