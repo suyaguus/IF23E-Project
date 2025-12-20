@@ -31,18 +31,12 @@ export default function ForgotPasswordPage() {
       if (response.data.success || response.status === 200) {
         setLoading(false);
 
-        // --- PERUBAHAN DI SINI ---
-        // Jangan pakai Alert dulu. Langsung paksa pindah untuk tes.
         console.log("Navigasi langsung dijalankan...");
 
-        // Coba Path 1 (Sesuai screenshot terakhir Anda: verifyOtp)
         router.push({
           pathname: "/auth/verifyOtp",
           params: { email: email },
         } as any);
-
-        // JIKA MASIH GAGAL, Buka komentar baris di bawah ini dan tutup baris atas
-        // router.push({ pathname: "/auth/verify-otp", params: { email: email } } as any);
       } else {
         Alert.alert("Gagal", response.data.message || "Gagal mengirim OTP.");
         setLoading(false);
