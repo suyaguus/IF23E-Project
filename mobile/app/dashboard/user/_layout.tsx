@@ -47,7 +47,7 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface }}>
-      {/* Header Profile User */}
+
       <View
         style={[styles.drawerHeader, { backgroundColor: theme.colors.primary }]}
       >
@@ -66,7 +66,7 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
       </View>
 
       <PaperDrawer.Section showDivider={false} style={{ flex: 1 }}>
-        {/* MENU DASHBOARD USER */}
+
         <PaperDrawer.Item
           icon={({ size, color }) => (
             <MaterialIcons
@@ -81,7 +81,6 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
           theme={{ colors: { secondaryContainer: "#E6F2FF" } }}
         />
 
-        {/* MENU PROFILE USER */}
         <PaperDrawer.Item
           icon={({ size, color }) => (
             <MaterialIcons
@@ -95,8 +94,6 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
           onPress={() => navigateTo("/dashboard/user/profile")}
           theme={{ colors: { secondaryContainer: "#E6F2FF" } }}
         />
-
-        {/* NANTI BISA DITAMBAH: RIWAYAT, KOS SAYA, DLL */}
       </PaperDrawer.Section>
 
       <View style={{ paddingBottom: 10 }}>
@@ -131,6 +128,7 @@ export default function UserLayout() {
       }}
     >
       <Drawer.Screen name="index" options={{ title: "Beranda User" }} />
+
       <Drawer.Screen name="profile/index" options={{ title: "Profil Saya" }} />
     </Drawer>
   );
