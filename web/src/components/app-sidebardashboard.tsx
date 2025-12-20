@@ -198,7 +198,8 @@ export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Si
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-         {isMounted && <NavUser user={currentUser} />}
+          <NavUser user={currentUser} />{" "}
+          {/* {isMounted && <NavUser user={currentUser} />} */}
       </SidebarFooter>
     </Sidebar>
   );
