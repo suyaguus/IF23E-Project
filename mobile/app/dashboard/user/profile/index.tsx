@@ -10,7 +10,7 @@ import {
   Portal,
   Dialog,
   HelperText,
-  Snackbar, 
+  Snackbar,
 } from "react-native-paper";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/services/api";
@@ -57,7 +57,7 @@ export default function UserProfile() {
     Keyboard.dismiss();
 
     if (!currentPassword || !newPassword || !confirmNewPassword) {
-      showSnackbar("Mohon isi semua kolom password.", true); 
+      showSnackbar("Mohon isi semua kolom password.", true);
       return;
     }
 
@@ -80,24 +80,25 @@ export default function UserProfile() {
         newPassword: newPassword,
       };
 
-      console.log("Mengirim Request Ganti Password...", payload);
-
       const response = await api.post(
         Strings.api_auth_change_password,
         payload
       );
 
-      console.log("Respon:", response.data);
-
       if (response.data.success || response.status === 200) {
-        showSnackbar("Password berhasil diubah!", false); 
+        setLoadingPass(false);
+
+        hideDialog();
+
+        setTimeout(() => {
+          showSnackbar("Password berhasil diubah!", false);
+        }, 400);
       } else {
         showSnackbar(response.data.message || "Gagal mengubah password.", true);
       }
     } catch (error: any) {
       console.error("Change Password Error:", error);
-      const msg =
-        error.response?.data?.message || "Terjadi kesalahan server/jaringan";
+      const msg = error.response?.data?.message || "Terjadi kesalahan server";
       showSnackbar(msg, true);
     } finally {
       setLoadingPass(false);
@@ -287,7 +288,7 @@ export default function UserProfile() {
         onDismiss={onDismissSnackBar}
         duration={3000}
         style={{
-          backgroundColor: isErrorSb ? theme.colors.error : "#4CAF50", 
+          backgroundColor: isErrorSb ? theme.colors.error : "#4CAF50",
           marginBottom: 10,
         }}
         action={{
