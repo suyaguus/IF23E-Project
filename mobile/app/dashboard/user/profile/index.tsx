@@ -87,7 +87,6 @@ export default function UserProfile() {
 
       if (response.data.success || response.status === 200) {
         setLoadingPass(false);
-
         hideDialog();
 
         setTimeout(() => {
@@ -106,10 +105,7 @@ export default function UserProfile() {
   };
 
   const handleSaveProfile = () => {
-    Alert.alert(
-      "Info",
-      "Simpan profil (Nama/Telp) belum diimplementasikan di backend."
-    );
+    Alert.alert("Info", "Fitur simpan profil belum tersedia.");
   };
 
   return (
@@ -202,7 +198,6 @@ export default function UserProfile() {
           >
             Ganti Password
           </Dialog.Title>
-
           <Dialog.Content>
             <TextInput
               label="Password Saat Ini"
@@ -223,7 +218,6 @@ export default function UserProfile() {
                 />
               }
             />
-
             <TextInput
               label="Password Baru"
               value={newPassword}
@@ -240,7 +234,6 @@ export default function UserProfile() {
                 />
               }
             />
-
             <TextInput
               label="Konfirmasi Password Baru"
               value={confirmNewPassword}
@@ -260,12 +253,10 @@ export default function UserProfile() {
                 />
               }
             />
-
             <HelperText type="info" visible={true}>
               Password minimal 6 karakter.
             </HelperText>
           </Dialog.Content>
-
           <Dialog.Actions>
             <Button onPress={hideDialog} textColor="#666">
               Batal
