@@ -74,6 +74,12 @@ export default function DashBoardPage() {
                             <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
                                 ✅ Dapur
                             </span>
+                            <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
+                                ✅ Kasur
+                            </span>
+                            <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
+                                ✅ Lemari Pakaian
+                            </span>
                         </div>
                     </div>
 
