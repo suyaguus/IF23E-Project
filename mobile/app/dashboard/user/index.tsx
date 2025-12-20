@@ -17,7 +17,6 @@ export default function UserDashboard() {
           Mau cari kos apa hari ini?
         </Text>
 
-        {/* Contoh Card Info Singkat */}
         <Card style={styles.card}>
           <Card.Content>
             <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
@@ -31,8 +30,6 @@ export default function UserDashboard() {
             <Button mode="text">Cari Kos</Button>
           </Card.Actions>
         </Card>
-
-        {/* Bisa ditambahkan List Kos Rekomendasi di sini nanti */}
       </View>
     </ScrollView>
   );
