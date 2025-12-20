@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Keyboard } from "react-native";
-// 1. IMPORT SNACKBAR
 import {
   TextInput,
   Button,
@@ -24,12 +23,11 @@ export default function RegisterPage() {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  // --- STATE UNTUK SNACKBAR ---
+  // buat state snacbar
   const [visible, setVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [isError, setIsError] = useState(false); // Untuk membedakan warna error/sukses
+  const [isError, setIsError] = useState(false);
 
-  // Fungsi Helper untuk menampilkan Snackbar
   const showSnackbar = (message: string, isErr: boolean = false) => {
     setSnackbarMessage(message);
     setIsError(isErr);
@@ -61,7 +59,6 @@ export default function RegisterPage() {
 
       console.log("Mengirim Payload:", payload);
 
-      // Casting ke any agar TypeScript tidak rewel
       const responseRaw = await api.post(Strings.api_auth_register, payload);
       const response = responseRaw as any;
 
@@ -75,17 +72,14 @@ export default function RegisterPage() {
         response.success === true;
 
       if (isSuccess) {
-        // 1. Bersihkan Form
         setName("");
         setEmail("");
         setPhone("");
         setPassword("");
         setLoading(false);
 
-        // 2. Tampilkan Snackbar Sukses
         showSnackbar("Akun berhasil dibuat! Mengalihkan...", false);
 
-        // 3. Redirect otomatis setelah delay sedikit (agar user sempat baca pesan)
         setTimeout(() => {
           router.replace("/auth/login");
         }, 1500);
@@ -190,15 +184,13 @@ export default function RegisterPage() {
           </Button>
         </ScrollView>
 
-        {/* --- KOMPONEN SNACKBAR DI SINI --- */}
-        {/* Diletakkan di luar ScrollView tapi di dalam Container utama agar mengapung di bawah */}
         <Snackbar
           visible={visible}
           onDismiss={onDismissSnackBar}
-          duration={3000} // Hilang otomatis setelah 3 detik
+          duration={3000}
           style={{
-            backgroundColor: isError ? theme.colors.error : "#4CAF50", // Merah jika error, Hijau jika sukses
-            marginBottom: 20, // Sedikit jarak dari bawah layar
+            backgroundColor: isError ? theme.colors.error : "#4CAF50",
+            marginBottom: 20,
           }}
           action={{
             label: "Tutup",
