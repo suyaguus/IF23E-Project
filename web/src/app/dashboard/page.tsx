@@ -26,18 +26,19 @@ export default function DashBoardPage() {
 
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div className="relative overflow-hidden rounded-lg border">
+                        <div className="group relative overflow-hidden rounded-lg border">
                             <Image
                                 src="/images/kamarkost1.jpg"
                                 alt="Kamar Kost 1"
                                 width={600}
                                 height={400}
-                                className="object-cover w-full"
+                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                             />
-                            {/* Overlay */}
-                            <div className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover:bg-black/50" />
 
-                            {/* Info kamar kost*/}
+                            {/* Overlay */}
+                            <div className="pointer-events-none absolute inset-0 bg-black/30 transition-colors duration-300 group-hover:bg-black/50" />
+
+                            {/* Info */}
                             <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
                                 <p className="text-sm font-medium">Kamar 1</p>
                                 <p className="text-xs opacity-80">Campur</p>
@@ -47,14 +48,26 @@ export default function DashBoardPage() {
                                 </span>
                             </div>
                         </div>
-                        <div className="w-full">
+
+                        <div className="group relative overflow-hidden rounded-lg border">
                             <Image
                                 src="/images/kamarkost2.png"
                                 alt="Kamar Kost 2"
                                 width={600}
                                 height={400}
-                                className="object-contain w-full"
+                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                             />
+
+                            <div className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover:bg-black/50" />
+
+                            <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
+                                <p className="text-sm font-medium">Kamar 2</p>
+                                <p className="text-xs opacity-80">Campur</p>
+
+                                <span className="mt-1 inline-block rounded-full bg-red-600 px-3 py-0.5 text-xs">
+                                    Penuh
+                                </span>
+                            </div>
                         </div>
                         <div className="w-full">
                             <Image
