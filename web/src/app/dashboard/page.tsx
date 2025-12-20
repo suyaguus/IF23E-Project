@@ -27,55 +27,64 @@ export default function DashBoardPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div className="overflow-hidden rounded-lg border">
-    <div className="group relative">
-      <Image
-        src="/images/kamarkost1.jpg"
-        alt="Kamar Kost 1"
-        width={600}
-        height={400}
-        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-      />
+                            <div className="group relative">
+                                <Image
+                                    src="/images/kamarkost1.jpg"
+                                    alt="Kamar Kost 1"
+                                    width={600}
+                                    height={400}
+                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
 
-      <div className="pointer-events-none absolute inset-0 bg-black/30 transition-colors duration-300 group-hover:bg-black/50" />
+                                <div className="pointer-events-none absolute inset-0 bg-black/30 transition-colors duration-300 group-hover:bg-black/50" />
 
-      <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
-        <p className="text-sm font-medium">Kamar 1</p>
-        <p className="text-xs opacity-80">Khusus Cowok</p>
-        <span className="mt-1 inline-block rounded-full bg-green-600 px-3 py-0.5 text-xs">
-          Tersedia
-        </span>
-      </div>
-    </div>
+                                <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
+                                    <p className="text-sm font-medium">Kamar 1</p>
+                                    <p className="text-xs opacity-80">Khusus Cowok</p>
+                                    <span className="mt-1 inline-block rounded-full bg-green-600 px-3 py-0.5 text-xs">
+                                        Tersedia
+                                    </span>
+                                </div>
+                            </div>
 
-    {/* Info bawah gambar */}
-    <div className="space-y-1 p-4">
-      <p className="text-sm text-muted-foreground">Harga / bulan</p>
-      <p className="text-base font-medium">Rp 1.200.000</p>
-      <p className="text-sm text-muted-foreground">Single • 3 × 4 m</p>
-    </div>
-  </div>
-                        
-
-                        <div className="group relative overflow-hidden rounded-lg border">
-                            <Image
-                                src="/images/kamarkost2.png"
-                                alt="Kamar Kost 2"
-                                width={600}
-                                height={400}
-                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            />
-
-                            <div className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover:bg-black/50" />
-
-                            <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
-                                <p className="text-sm font-medium">Kamar 2</p>
-                                <p className="text-xs opacity-80">Campur</p>
-
-                                <span className="mt-1 inline-block rounded-full bg-red-600 px-3 py-0.5 text-xs">
-                                    Penuh
-                                </span>
+                            {/* Info bawah gambar */}
+                            <div className="space-y-1 p-4">
+                                <p className="text-sm text-muted-foreground">Harga / bulan</p>
+                                <p className="text-base font-medium">Rp 850.000</p>
+                                <p className="text-sm text-muted-foreground">Single • 3 × 3 m</p>
                             </div>
                         </div>
+
+
+                        {/* ===== KAMAR 2 ===== */}
+                        <div className="overflow-hidden rounded-lg border">
+                            <div className="group relative">
+                                <Image
+                                    src="/images/kamarkost2.png"
+                                    alt="Kamar Kost 2"
+                                    width={600}
+                                    height={400}
+                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+
+                                <div className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover:bg-black/50" />
+
+                                <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
+                                    <p className="text-sm font-medium">Kamar 2</p>
+                                    <p className="text-xs opacity-80">Campur</p>
+                                    <span className="mt-1 inline-block rounded-full bg-red-600 px-3 py-0.5 text-xs">
+                                        Penuh
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="space-y-1 p-4">
+                                <p className="text-sm text-muted-foreground">Harga / bulan</p>
+                                <p className="text-base font-medium">Rp 1.000.000</p>
+                                <p className="text-sm text-muted-foreground">Single • 4 × 4 m</p>
+                            </div>
+                        </div>
+                
                         <div className="group relative overflow-hidden rounded-lg border">
                             <Image
                                 src="/images/kamarkost3.png"
@@ -125,7 +134,7 @@ export default function DashBoardPage() {
                             </span>
                         </div>
                     </div>
-                    
+
 
                     {/* Alamat Kost */}
                     <div>
