@@ -81,28 +81,36 @@ export default function DashBoardPage() {
                             <div className="space-y-1 p-4">
                                 <p className="text-sm text-muted-foreground">Harga / bulan</p>
                                 <p className="text-base font-medium">Rp 1.000.000</p>
-                                <p className="text-sm text-muted-foreground">Single • 4 × 4 m</p>
+                                <p className="text-sm text-muted-foreground">Double • 4 × 4 m</p>
                             </div>
                         </div>
-                
-                        <div className="group relative overflow-hidden rounded-lg border">
-                            <Image
-                                src="/images/kamarkost3.png"
-                                alt="Kamar Kost 3"
-                                width={600}
-                                height={400}
-                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            />
 
-                            <div className="absolute inset-0 bg-black/30 transition-colors duration-300 group-hover:bg-black/50" />
+                        {/* ===== KAMAR 3 ===== */}
+                        <div className="overflow-hidden rounded-lg border">
+                            <div className="group relative">
+                                <Image
+                                    src="/images/kamarkost3.png"
+                                    alt="Kamar Kost 3"
+                                    width={600}
+                                    height={400}
+                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
 
-                            <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
-                                <p className="text-sm font-medium">Kamar 3</p>
-                                <p className="text-xs opacity-80">Khusus Cewek</p>
+                                <div className="absolute inset-0 bg-black/30 transition-colors duration-300 group-hover:bg-black/50" />
 
-                                <span className="mt-1 inline-block rounded-full bg-green-600 px-3 py-0.5 text-xs">
-                                    Tersedia
-                                </span>
+                                <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
+                                    <p className="text-sm font-medium">Kamar 3</p>
+                                    <p className="text-xs opacity-80">Khusus Cewek</p>
+                                    <span className="mt-1 inline-block rounded-full bg-green-600 px-3 py-0.5 text-xs">
+                                        Tersedia
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="space-y-1 p-4">
+                                <p className="text-sm text-muted-foreground">Harga / bulan</p>
+                                <p className="text-base font-medium">Rp 900.000</p>
+                                <p className="text-sm text-muted-foreground">Single • 3 × 3 m</p>
                             </div>
                         </div>
                     </div>
