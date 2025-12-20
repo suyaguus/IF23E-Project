@@ -13,6 +13,8 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/context/AuthContext";
+import api from "@/services/api";
+import { Strings } from "@/constants/strings";
 
 const UserDrawerContent = (props: DrawerContentComponentProps) => {
   const router = useRouter();
@@ -34,11 +36,22 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
       { text: "Batal", style: "cancel" },
       {
         text: "Ya",
-        onPress: () => {
-          logout();
+        onPress: async () => {
+          try {
+            if (userData) {
+              await api.post(Strings.api_auth_logout, {
+                userId: userData.id,
+                email: userData.email,
+              });
+            }
+          } catch (error) {
+            console.error("Logout API Error:", error);
+          }
+
+          await logout();
           setTimeout(() => {
             while (router.canGoBack()) router.back();
-            router.replace("/");
+            router.replace("/auth/login");
           }, 100);
         },
       },
@@ -47,7 +60,6 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface }}>
-
       <View
         style={[styles.drawerHeader, { backgroundColor: theme.colors.primary }]}
       >
@@ -66,9 +78,8 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
       </View>
 
       <PaperDrawer.Section showDivider={false} style={{ flex: 1 }}>
-
         <PaperDrawer.Item
-          icon={({ size, color }) => (
+          icon={({ size }) => (
             <MaterialIcons
               name="home"
               size={size}
@@ -82,7 +93,7 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
         />
 
         <PaperDrawer.Item
-          icon={({ size, color }) => (
+          icon={({ size }) => (
             <MaterialIcons
               name="person"
               size={size}
@@ -128,7 +139,6 @@ export default function UserLayout() {
       }}
     >
       <Drawer.Screen name="index" options={{ title: "Beranda User" }} />
-
       <Drawer.Screen name="profile/index" options={{ title: "Profil Saya" }} />
     </Drawer>
   );
