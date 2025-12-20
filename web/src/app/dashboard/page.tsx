@@ -54,52 +54,57 @@ export default function DashBoardPage() {
                     </div>
                 </div>
 
-                <div className="px-4 py-6 lg:px-6">
-                    <h2 className="mb-4 text-base font-medium">Lokasi Kost</h2>
+                <div className="px-4 py-6 lg:px-6 space-y-8">
 
-                    {/* Lokasi */}
-                    <div className="mb-6 rounded-lg border bg-white p-4 shadow-sm">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            📍
-                            <span>Jl. Mawar Raya No. 123, Jakarta Selatan</span>
+                    {/* Fasilitas */}
+                    <div>
+                        <h3 className="mb-4 text-base font-medium">Fasilitas</h3>
+                        <div className="flex flex-wrap gap-3">
+                            <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
+                                ✅ WiFi
+                            </span>
+                            <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
+                                ✅ Parkir
+                            </span>
+                            <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
+                                ✅ AC
+                            </span>
+                            <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
+                                ✅ Dapur
+                            </span>
                         </div>
                     </div>
 
-                    <h3 className="mb-4 text-base font-medium">Fasilitas</h3>
-                    <div className="flex flex-wrap gap-3">
-                        <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
-                            ✅ WiFi
-                        </span>
-                        <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
-                            ✅ Parkir
-                        </span>
-                        <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
-                            ✅ AC
-                        </span>
-                        <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
-                            ✅ Dapur
-                        </span>
-                    </div>
-
-
-                    <div className="flex flex-1 flex-col">
-                        <div className="@container/main flex flex-1 flex-col gap-2">
-                            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                                {/* bagian card */}
-
-                                {/* bagian section data */}
-                                {/* <SectionCards /> */}
-                                {/* <div className="px-4 lg:px-6">
-                <ChartAreaInteractive />
-              </div> */}
-
+                    {/* Alamat Kost */}
+                    <div>
+                        <h2 className="mb-4 text-base font-medium">Alamat Kost</h2>
+                        <div className="rounded-lg border bg-white p-4 shadow-sm">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                📍 Jl. Mawar Raya No. 123, Jakarta Selatan
                             </div>
                         </div>
                     </div>
                 </div>
 
-            </SidebarInset>
-        </SidebarProvider>
+
+
+                <div className="flex flex-1 flex-col">
+                    <div className="@container/main flex flex-1 flex-col gap-2">
+                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                            {/* bagian card */}
+
+                            {/* bagian section data */}
+                            {/* <SectionCards /> */}
+                            {/* <div className="px-4 lg:px-6">
+                <ChartAreaInteractive />
+              </div> */}
+
+                        </div>
+                    </div>
+                </div>
+
+        </SidebarInset>
+        </SidebarProvider >
 
     )
 }
