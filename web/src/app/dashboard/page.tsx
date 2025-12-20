@@ -2,6 +2,8 @@ import { AppSidebardashboard } from "@/components/app-sidebardashboard";
 import { SiteHeaderDashboard } from "@/components/site-headerdashboard";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import Image from "next/image";
+import { MapPin } from "lucide-react"
+
 
 
 export default function DashBoardPage() {
@@ -78,10 +80,9 @@ export default function DashBoardPage() {
                     {/* Alamat Kost */}
                     <div>
                         <h2 className="mb-4 text-base font-medium">Alamat Kost</h2>
-                        <div className="rounded-lg border bg-white p-4 shadow-sm">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                📍 Jl. Mawar Raya No. 123, Jakarta Selatan
-                            </div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <MapPin className="h-4 w-4" />
+                            <span>Jl. Mawar Raya No. 123, Jakarta Selatan</span>
                         </div>
                     </div>
                 </div>
@@ -103,7 +104,7 @@ export default function DashBoardPage() {
                     </div>
                 </div>
 
-        </SidebarInset>
+            </SidebarInset>
         </SidebarProvider >
 
     )
