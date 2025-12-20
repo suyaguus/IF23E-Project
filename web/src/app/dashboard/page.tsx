@@ -41,7 +41,7 @@ export default function DashBoardPage() {
                             {/* Info */}
                             <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
                                 <p className="text-sm font-medium">Kamar 1</p>
-                                <p className="text-xs opacity-80">Campur</p>
+                                <p className="text-xs opacity-80">Khusus Cowok</p>
 
                                 <span className="mt-1 inline-block rounded-full bg-green-600 px-3 py-0.5 text-xs">
                                     Tersedia
@@ -69,14 +69,25 @@ export default function DashBoardPage() {
                                 </span>
                             </div>
                         </div>
-                        <div className="w-full">
+                        <div className="group relative overflow-hidden rounded-lg border">
                             <Image
                                 src="/images/kamarkost3.png"
                                 alt="Kamar Kost 3"
                                 width={600}
                                 height={400}
-                                className="object-contain w-full"
+                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                             />
+
+                            <div className="absolute inset-0 bg-black/30 transition-colors duration-300 group-hover:bg-black/50" />
+
+                            <div className="absolute bottom-0 z-10 w-full px-4 py-3 text-white">
+                                <p className="text-sm font-medium">Kamar 3</p>
+                                <p className="text-xs opacity-80">Khusus Cewek</p>
+
+                                <span className="mt-1 inline-block rounded-full bg-green-600 px-3 py-0.5 text-xs">
+                                    Tersedia
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
