@@ -7,9 +7,8 @@ import {
   // ... icon lainnya
 } from "@tabler/icons-react";
 
-import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-
+import { NavGuest } from "@/components/nav-guest";
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +18,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+
 const data = {
   user: {
     // name: "Suyaguus",
@@ -57,6 +57,7 @@ const data = {
     //   icon: IconUsers,
     // },
   ],
+  navGuest: [],
   // navClouds: [
   //   {
   //     title: "Capture",
@@ -141,13 +142,16 @@ const data = {
   // ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebardashboard({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // Buat State untuk User dengan Default "Guest"
   const [currentUser, setCurrentUser] = useState({
     name: "Guest User",
     email: "guest@example.com",
     avatar: "", // Kosongkan atau isi path gambar default
   });
+
+  const [isMounted, setIsMounted] = useState(false);
+
 
   useEffect(() => {
     // Pastikan kode hanya jalan di client
@@ -182,19 +186,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Dashboard Admin</span>
+                <span className="text-base font-semibold">Dashboard</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavGuest items={data.navGuest} />
         {/* <NavDocuments items={data.documents} /> */}
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={currentUser} />{" "}
+         {isMounted && <NavUser user={currentUser} />}
       </SidebarFooter>
     </Sidebar>
   );

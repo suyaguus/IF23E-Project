@@ -1,7 +1,8 @@
-import DashboardPage from "./dashboard/admin/page";
+import DashboarAdmindPage from "./dashboard/admin/page";
+import DashBoardPage from "./dashboard/page";
 
 export default function Home() {
   return (
-    <DashboardPage/>
+    <DashBoardPage/>
   );
 }
