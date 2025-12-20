@@ -47,10 +47,10 @@ export default function VerifyOtpPage() {
         otp: otp,
       });
 
-      console.log("Status Backend:", response.status); 
+      console.log("Status Backend:", response.status);
 
       if (response.data.success || response.status === 200) {
-        setLoading(false); 
+        setLoading(false);
         console.log("OTP Valid! Pindah ke Reset Password...");
 
         router.push({
@@ -82,7 +82,6 @@ export default function VerifyOtpPage() {
           Verifikasi OTP
         </Text>
 
-        {/* 3. VISUAL CHECK DI UI */}
         <View
           style={{
             marginBottom: 20,
