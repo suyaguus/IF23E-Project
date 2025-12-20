@@ -55,7 +55,7 @@ export default function DashBoardPage() {
                 </div>
 
                 <div className="px-4 py-6 lg:px-6">
-                    <h2 className="mb-3 text-lg font-semibold">Lokasi Kost</h2>
+                    <h2 className="mb-4 text-base font-medium">Lokasi Kost</h2>
 
                     {/* Lokasi */}
                     <div className="mb-6 rounded-lg border bg-white p-4 shadow-sm">
@@ -65,7 +65,7 @@ export default function DashBoardPage() {
                         </div>
                     </div>
 
-                    <h3 className="mb-3 text-base font-semibold">Fasilitas</h3>
+                    <h3 className="mb-4 text-base font-medium">Fasilitas</h3>
                     <div className="flex flex-wrap gap-3">
                         <span className="flex items-center gap-2 rounded-full border px-4 py-1 text-sm">
                             ✅ WiFi
