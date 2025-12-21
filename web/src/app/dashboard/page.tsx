@@ -24,7 +24,7 @@ export default function DashBoardPage() {
                 <div className="px-4 py-10 lg:px-6">
                     <h2 className="mb-4 text-base font-medium">Galeri Kamar Kost</h2>
 
-
+                     {/* KAMAR 1 */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div className="overflow-hidden rounded-lg border">
                             <div className="group relative">
@@ -56,7 +56,7 @@ export default function DashBoardPage() {
                         </div>
 
 
-                        {/* ===== KAMAR 2 ===== */}
+                        {/* KAMAR 2 */}
                         <div className="overflow-hidden rounded-lg border">
                             <div className="group relative">
                                 <Image
@@ -85,7 +85,7 @@ export default function DashBoardPage() {
                             </div>
                         </div>
 
-                        {/* ===== KAMAR 3 ===== */}
+                        {/* KAMAR 3 */}
                         <div className="overflow-hidden rounded-lg border">
                             <div className="group relative">
                                 <Image
