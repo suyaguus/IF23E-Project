@@ -1,13 +1,17 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+// buat service tampil data
 export const GET = async () => {
+
+    // ambil data
     const data = await prisma.tb_riwayat_pembayaran.findMany({
         orderBy: {
             id: 'asc'
         }
     });
 
+    // tampilkan respon
     return NextResponse.json(
         {
             riwayat: data
@@ -18,16 +22,18 @@ export const GET = async () => {
     )
 }
 
+// buat service simpan data
 export const POST = async (request: NextRequest) => {
     const data = await request.json();
 
-    // Cek duplikasi menggunakan kodeRiwayat (bukan id)
+    // cek duplikasi menggunakan kodeRiwayat (bukan id)
     const check = await prisma.tb_riwayat_pembayaran.findUnique({
         where: {
             kodeRiwayat: data.kodeRiwayat
         }
     })
 
+    // jika riwayat sudah ada
     if (check) {
         return NextResponse.json(
             {
@@ -57,6 +63,7 @@ export const POST = async (request: NextRequest) => {
         }
     })
 
+    // tampilkan respon
     return NextResponse.json(
         {
             message: "Data Berhasil Dibuat !",
