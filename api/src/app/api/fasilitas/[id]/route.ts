@@ -9,6 +9,7 @@ export const DELETE = async (
     const { id } = await context.params;
     const fasilitasId = Number(id);
 
+    // validasi id
     if (isNaN(fasilitasId)) {
         return NextResponse.json(
             {
@@ -21,10 +22,12 @@ export const DELETE = async (
         );
     }
 
+    // cek apakah fasilitas ada berdasarkan id
     const fasilitas = await prisma.tb_fasilitas.findUnique({
         where: { id: fasilitasId },
     });
 
+    // jika fasilitas tidak ditemukan
     if (!fasilitas) {
         return NextResponse.json(
             {
@@ -37,10 +40,12 @@ export const DELETE = async (
         );
     }
 
+    // hapus fasilitas
     await prisma.tb_fasilitas.delete({
         where: { id: fasilitasId },
     });
 
+    // response sukses
     return NextResponse.json(
         {
             success: true,
@@ -61,6 +66,7 @@ export const PUT = async (
     const fasilitasId = Number(id);
     const data = await req.json();
 
+    // validasi id
     if (isNaN(fasilitasId)) {
         return NextResponse.json(
             {
@@ -73,10 +79,12 @@ export const PUT = async (
         );
     }
 
+    // cek apakah fasilitas ada berdasarkan id
     const fasilitas = await prisma.tb_fasilitas.findUnique({
         where: { id: fasilitasId },
     });
 
+    // jika fasilitas tidak ditemukan
     if (!fasilitas) {
         return NextResponse.json(
             {
@@ -89,11 +97,13 @@ export const PUT = async (
         );
     }
 
+    // update fasilitas
     await prisma.tb_fasilitas.update({
         where: { id: fasilitasId },
         data: data,
     });
 
+    // response sukses
     return NextResponse.json(
         {
             success: true,
@@ -113,6 +123,7 @@ export const GET = async (
     const { id } = await context.params;
     const fasilitasId = Number(id);
 
+    // validasi id
     if (isNaN(fasilitasId)) {
         return NextResponse.json(
             {
@@ -125,10 +136,12 @@ export const GET = async (
         );
     }
 
+    // ambil data fasilitas berdasarkan id
     const fasilitas = await prisma.tb_fasilitas.findUnique({
         where: { id: fasilitasId },
     });
 
+    // jika fasilitas tidak ditemukan
     if (!fasilitas) {
         return NextResponse.json(
             {
@@ -141,6 +154,7 @@ export const GET = async (
         );
     }
 
+    // response sukses
     return NextResponse.json(
         {
             success: true,
