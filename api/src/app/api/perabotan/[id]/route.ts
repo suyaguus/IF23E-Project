@@ -9,6 +9,7 @@ export const DELETE = async (
     const { id } = await context.params;
     const perabotanId = Number(id);
 
+    // validasi id
     if (isNaN(perabotanId)) {
         return NextResponse.json(
             {
@@ -21,10 +22,12 @@ export const DELETE = async (
         );
     }
 
+    // cek apakah perabotan ada berdasarkan id
     const perabotan = await prisma.tb_perabotan.findUnique({
         where: { id: perabotanId },
     });
 
+    // jika perabotan tidak ditemukan
     if (!perabotan) {
         return NextResponse.json(
             {
@@ -37,10 +40,12 @@ export const DELETE = async (
         );
     }
 
+    // hapus perabotan
     await prisma.tb_perabotan.delete({
         where: { id: perabotanId },
     });
 
+    // tampilkan response
     return NextResponse.json(
         {
             success: true,
@@ -61,6 +66,7 @@ export const PUT = async (
     const perabotanId = Number(id);
     const data = await req.json();
 
+    // validasi id
     if (isNaN(perabotanId)) {
         return NextResponse.json(
             {
@@ -73,10 +79,12 @@ export const PUT = async (
         );
     }
 
+    // cek apakah perabotan ada berdasarkan id
     const perabotan = await prisma.tb_perabotan.findUnique({
         where: { id: perabotanId },
     });
 
+    // response jika perabotan tidak ditemukan
     if (!perabotan) {
         return NextResponse.json(
             {
@@ -89,11 +97,13 @@ export const PUT = async (
         );
     }
 
+    // update perabotan
     await prisma.tb_perabotan.update({
         where: { id: perabotanId },
         data: data,
     });
 
+    // tampilkan response
     return NextResponse.json(
         {
             success: true,
@@ -113,6 +123,7 @@ export const GET = async (
     const { id } = await context.params;
     const perabotanId = Number(id);
 
+    // validasi id
     if (isNaN(perabotanId)) {
         return NextResponse.json(
             {
@@ -125,10 +136,12 @@ export const GET = async (
         );
     }
 
+    // cek apakah perabotan ada berdasarkan id
     const perabotan = await prisma.tb_perabotan.findUnique({
         where: { id: perabotanId },
     });
 
+    // response jika perabotan tidak ditemukan
     if (!perabotan) {
         return NextResponse.json(
             {
@@ -141,6 +154,7 @@ export const GET = async (
         );
     }
 
+    // tampilkan response
     return NextResponse.json(
         {
             success: true,
