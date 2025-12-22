@@ -3,12 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 // buat service tampil data
 export const GET = async () => {
+
+     // ambil data
      const data = await prisma.tb_perabotan.findMany({
           orderBy: {
                id: 'asc'
           }
      });
 
+     // tampilkan respon
      return NextResponse.json(
           {
                perabotan: data
