@@ -5,8 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 // GET - Ambil semua relasi kamar-fasilitas
 export const GET = async () => {
     try {
+
+        // ambil data kamar-fasilitas
         const data = await prisma.tb_kamar_fasilitas.findMany({
             include: {
+                // relasi ke tabel kamar 
                 kamar: {
                     select: {
                         id: true,
@@ -14,6 +17,8 @@ export const GET = async () => {
                         statusKamar: true
                     }
                 },
+
+                // relasi ke tabel fasilitas
                 fasilitas: {
                     select: {
                         id: true,
@@ -28,6 +33,7 @@ export const GET = async () => {
             }
         });
 
+        // response sukses
         return NextResponse.json(
             {
                 success: true,
@@ -39,6 +45,7 @@ export const GET = async () => {
         );
 
     } catch (error) {
+        // response error
         return NextResponse.json(
             {
                 success: false,
@@ -57,7 +64,7 @@ export const POST = async (req: NextRequest) => {
     try {
         const { kamarId, fasilitasId } = await req.json();
 
-        // Validasi input
+        // validasi input
         if (!kamarId || !fasilitasId) {
             return NextResponse.json({
                 success: false,
@@ -65,11 +72,12 @@ export const POST = async (req: NextRequest) => {
             });
         }
 
-        // Cek apakah kamar exists
+        // cek apakah kamar exists
         const kamar = await prisma.tb_kamar.findUnique({
             where: { id: Number(kamarId) }
         });
 
+        // jika kamar tidak ditemukan
         if (!kamar) {
             return NextResponse.json(
                 {
@@ -87,6 +95,7 @@ export const POST = async (req: NextRequest) => {
             where: { id: Number(fasilitasId) }
         });
 
+        // jika fasilitas tidak ditemukan
         if (!fasilitas) {
             return NextResponse.json(
                 {
@@ -99,7 +108,7 @@ export const POST = async (req: NextRequest) => {
             );
         }
 
-        // Cek apakah relasi sudah ada
+        // cek apakah relasi sudah ada
         const exists = await prisma.tb_kamar_fasilitas.findUnique({
             where: {
                 kamarId_fasilitasId: {
@@ -109,6 +118,7 @@ export const POST = async (req: NextRequest) => {
             }
         });
 
+        // jika relasi sudah ada
         if (exists) {
             return NextResponse.json(
                 {
@@ -121,7 +131,7 @@ export const POST = async (req: NextRequest) => {
             );
         }
 
-        // Buat relasi baru
+        // buat relasi baru
         await prisma.tb_kamar_fasilitas.create({
             data: {
                 kamarId: Number(kamarId),
@@ -129,6 +139,7 @@ export const POST = async (req: NextRequest) => {
             }
         });
 
+        // response sukses
         return NextResponse.json(
             {
                 success: true,
@@ -140,6 +151,7 @@ export const POST = async (req: NextRequest) => {
         );
 
     } catch (error) {
+        // response error
         return NextResponse.json(
             {
                 success: false,
