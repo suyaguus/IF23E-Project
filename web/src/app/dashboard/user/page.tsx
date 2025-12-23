@@ -1,5 +1,5 @@
-import { AppSidebaruser } from "@/components/app-sidebar" // Pastikan buat sidebar khusus user atau pakai props
-import { UserStatsCards } from "@/components/user-cards" // Komponen kartu baru (kode ada di bawah)
+import { AppSidebarUser } from "@/components/app-sidebar-user" // Sesuaikan nama file sidebar Anda
+import { UserStatsCards } from "@/components/user-cards" 
 import { SiteHeader } from "@/components/site-header"
 import {
   SidebarInset,
@@ -11,12 +11,12 @@ export default function DashboardUserPage() {
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
+          "--sidebar-width": "280px",
+          "--header-height": "64px",
         } as React.CSSProperties
       }
     >
-      {/* Ganti AppSidebar dengan AppSidebarUser (sidebar khusus menu user) */}
+      {/* Gunakan sidebar khusus user */}
       <AppSidebarUser variant="inset" />
       
       <SidebarInset>
@@ -25,15 +25,12 @@ export default function DashboardUserPage() {
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               
-              {/* BAGIAN CARD KHUSUS USER */}
-              {/* Menggantikan <Cards /> milik admin */}
               <div className="px-4 lg:px-6">
                  <h2 className="text-2xl font-bold tracking-tight mb-4">Dashboard Penghuni</h2>
+                 {/* Memanggil komponen kartu yang baru dibuat */}
                  <UserStatsCards />
               </div>
 
-              {/* AREA KONTEN TAMBAHAN (Opsional) */}
-              {/* Misalnya tabel riwayat pembayaran terakhir */}
               <div className="px-4 lg:px-6 mt-4">
                 <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
                     <h3 className="font-semibold mb-2">Pengumuman & Info Kos</h3>
