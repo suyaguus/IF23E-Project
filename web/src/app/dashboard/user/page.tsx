@@ -1,4 +1,4 @@
-import { AppSidebarUser } from "@/components/app-sidebar-user" // Sesuaikan nama file sidebar Anda
+import { AppSidebarUser } from "@/components/app-sidebar-user" 
 import { UserStatsCards } from "@/components/user-cards" 
 import { SiteHeader } from "@/components/site-header"
 import {
@@ -16,7 +16,6 @@ export default function DashboardUserPage() {
         } as React.CSSProperties
       }
     >
-      {/* Gunakan sidebar khusus user */}
       <AppSidebarUser variant="inset" />
       
       <SidebarInset>
@@ -27,7 +26,6 @@ export default function DashboardUserPage() {
               
               <div className="px-4 lg:px-6">
                  <h2 className="text-2xl font-bold tracking-tight mb-4">Dashboard Penghuni</h2>
-                 {/* Memanggil komponen kartu yang baru dibuat */}
                  <UserStatsCards />
               </div>
 
