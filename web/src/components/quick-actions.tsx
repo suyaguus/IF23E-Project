@@ -3,20 +3,12 @@
 import Link from "next/link"; // 1. Import Link
 import { Button } from "@/components/ui/button";
 import { 
-  IconCreditCard, 
   IconMessage2, 
   IconBrandWhatsapp, 
-  IconFileDownload 
 } from "@tabler/icons-react";
 
 export function QuickActions() {
   const actions = [
-    { 
-      label: "Bayar Sewa", 
-      icon: IconCreditCard, 
-      variant: "default" as const,
-      url: "/dashboard-user/pembayaran" // 2. Tambahkan URL tujuan
-    },
     { 
       label: "Ajukan Komplain", 
       icon: IconMessage2, 
@@ -28,12 +20,6 @@ export function QuickActions() {
       icon: IconBrandWhatsapp, 
       variant: "outline" as const,
       url: "https://wa.me/628123456789" // Contoh link WhatsApp
-    },
-    { 
-      label: "Unduh Kontrak", 
-      icon: IconFileDownload, 
-      variant: "ghost" as const,
-      url: "/dashboard-user/kontrak" 
     },
   ];
 
