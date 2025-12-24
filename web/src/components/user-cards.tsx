@@ -4,7 +4,7 @@
 import { IconHome, IconReceipt2, IconCalendarStats, IconMessageReport, Icon } from "@tabler/icons-react";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle, CardAction } from "@/components/ui/card";
 import { Badge, badgeVariants } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress"; // Pastikan sudah install shadcn progress
+import { Progress } from "@/components/ui/progress"; 
 import { VariantProps } from "class-variance-authority";
 
 type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
@@ -16,14 +16,14 @@ interface StatItem {
   icon: Icon;
   status: string;
   badgeVariant: BadgeVariant;
-  progress?: number; // Tambahkan opsional progress
+  progress?: number; 
 }
 
 export function UserStatsCards() {
   const stats: StatItem[] = [
     {
       title: "Kamar Saya",
-      value: "A-102",
+      value: "A-0",
       description: "Lantai 1 - Tipe Deluxe",
       icon: IconHome,
       status: "Aktif",
@@ -31,25 +31,25 @@ export function UserStatsCards() {
     },
     {
       title: "Tagihan Bulan Ini",
-      value: "Rp 1.500.000",
-      description: "Jatuh tempo: 5 Feb 2025",
+      value: "-",
+      description: "Jatuh tempo: -",
       icon: IconReceipt2,
       status: "Belum Bayar",
-      badgeVariant: "destructive",
+      badgeVariant: "default",
     },
     {
       title: "Sisa Sewa",
-      value: "14 Hari",
-      description: "Berakhir: 15 Feb 2025",
+      value: "0 Hari",
+      description: "Berakhir: -",
       icon: IconCalendarStats,
-      status: "Perlu Perpanjang",
+      status: "Diproses",
       badgeVariant: "secondary",
-      progress: 45, // Contoh: sisa 14 dari 30 hari
+      progress: 0, 
     },
     {
       title: "Komplain Aktif",
-      value: "1",
-      description: "Perbaikan AC sedang diproses",
+      value: "0",
+      description: "Sedang Tidak ada Perbaikan",
       icon: IconMessageReport,
       status: "Diproses",
       badgeVariant: "outline",
