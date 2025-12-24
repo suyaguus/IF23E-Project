@@ -1,35 +1,22 @@
+// src/components/user-cards.tsx
 "use client";
 
-import React from "react";
-import {
-  IconHome,
-  IconReceipt2,
-  IconCalendarStats,
-  IconMessageReport,
-  Icon, 
-} from "@tabler/icons-react";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  CardAction,
-} from "@/components/ui/card";
+import { IconHome, IconReceipt2, IconCalendarStats, IconMessageReport, Icon } from "@tabler/icons-react";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle, CardAction } from "@/components/ui/card";
 import { Badge, badgeVariants } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress"; // Pastikan sudah install shadcn progress
 import { VariantProps } from "class-variance-authority";
 
-//tipe variant resmi 
 type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
 
-//tipe 'Icon' yang baru diimpor
 interface StatItem {
   title: string;
   value: string;
   description: string;
-  icon: Icon; 
+  icon: Icon;
   status: string;
   badgeVariant: BadgeVariant;
+  progress?: number; // Tambahkan opsional progress
 }
 
 export function UserStatsCards() {
@@ -57,6 +44,7 @@ export function UserStatsCards() {
       icon: IconCalendarStats,
       status: "Perlu Perpanjang",
       badgeVariant: "secondary",
+      progress: 45, // Contoh: sisa 14 dari 30 hari
     },
     {
       title: "Komplain Aktif",
@@ -71,24 +59,26 @@ export function UserStatsCards() {
   return (
     <div className="grid grid-cols-1 gap-4 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       {stats.map((item, index) => (
-        <Card key={index} className="@container/card shadow-sm border-border/50">
+        <Card key={index} className="@container/card shadow-sm border-border/60 overflow-hidden">
           <CardHeader>
             <CardDescription>{item.title}</CardDescription>
-            <CardTitle className="text-2xl font-semibold tabular-nums">
-              {item.value}
-            </CardTitle>
+            <CardTitle className="text-2xl font-semibold">{item.value}</CardTitle>
             <CardAction>
-              <Badge variant={item.badgeVariant} className="text-[10px]">
-                {item.status}
-              </Badge>
+              <Badge variant={item.badgeVariant} className="text-[10px]">{item.status}</Badge>
             </CardAction>
           </CardHeader>
-          <CardFooter className="flex-col items-start gap-1.5 text-sm border-t pt-4">
-            <div className="flex gap-2 font-medium">
-              {/* Memanggil komponen ikon */}
-              <item.icon size={18} className="text-primary" />
+          <CardFooter className="flex-col items-start gap-3">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+               <item.icon size={16} className="text-primary" />
+               {item.description}
             </div>
-            <div className="text-muted-foreground">{item.description}</div>
+            {/* Tampilkan Progress Bar jika ada data progress */}
+            {item.progress !== undefined && (
+              <div className="w-full space-y-1">
+                <Progress value={item.progress} className="h-1.5" />
+                <p className="text-[10px] text-right text-muted-foreground">{item.progress}% Terlewati</p>
+              </div>
+            )}
           </CardFooter>
         </Card>
       ))}
