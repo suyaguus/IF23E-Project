@@ -6,8 +6,6 @@ import {
   IconBed,
   IconReceipt2,
   IconMessageReport,
-  IconUser,
-  IconSettings,
   IconLogout,
 } from "@tabler/icons-react"
 
@@ -48,19 +46,6 @@ const navItems = [
   },
 ]
 
-const secondaryNav = [
-  {
-    title: "Profil Saya",
-    url: "/dashboard-user/profile",
-    icon: IconUser,
-  },
-  {
-    title: "Pengaturan",
-    url: "/dashboard-user/settings",
-    icon: IconSettings,
-  },
-]
-
 export function AppSidebarUser({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
@@ -69,7 +54,7 @@ export function AppSidebarUser({ ...props }: React.ComponentProps<typeof Sidebar
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Grup Menu Utama */}
+        
         <SidebarGroup>
           <SidebarGroupLabel>Menu Utama</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -88,24 +73,6 @@ export function AppSidebarUser({ ...props }: React.ComponentProps<typeof Sidebar
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Grup Menu Akun */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Akun</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {secondaryNav.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className="border-t p-4">
