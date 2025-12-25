@@ -30,10 +30,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          {/* HANYA RENDER CHILDREN, JANGAN ADA SIDEBAR DISINI */}
           {children}
 
-          {/* Toaster tetap disini agar notifikasi bisa muncul di Login & Dashboard */}
           <Toaster
             position="top-center"
             toastOptions={{
@@ -41,8 +39,12 @@ export default function RootLayout({
                 color: "white",
                 backgroundColor: "black",
               },
+              classNames: {
+                description: "text-white font-medium",
+              }
             }}
           />
+
         </AuthProvider>
       </body>
     </html>
