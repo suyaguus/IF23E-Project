@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   // 1. Definisikan header CORS
   const headers = new Headers({
-    "Access-Control-Allow-Origin": "*", // Atau domain frontend spesifik
+    "Access-Control-Allow-Origin": "*", 
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
   });

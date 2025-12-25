@@ -1,13 +1,21 @@
+const BASE_URL = `https://if-23-e-project.vercel.app/api`;
+
 export const Strings = {
-    api_kamar: 'http://localhost:3001/api/kamar',
-    api_user: 'http://localhost:3001/api/user',
-    api_fasilitas: 'http://localhost:3001/api/fasilitas',
-    api_perabotan: 'http://localhost:3001/api/perabotan',
-    api_order: 'http://localhost:3001/api/order',
-    api_riwayat: 'http://localhost:3001/api/riwayat',
-    api_kamarFasilitas: 'http://localhost:3001/api/kamarFasilitas',
-    api_kamarPerabotan: 'http://localhost:3001/api/kamarPerabotan',
-    api_auth: 'http://localhost:3001/api/auth',                   // Login
-    api_auth_register: 'http://localhost:3001/api/auth/register', // Register
-    api_auth_verify: 'http://localhost:3001/api/auth/verify',     // Verify Token
+    api_kamar: `${BASE_URL}/kamar`,
+    api_user: `${BASE_URL}/user`,
+    api_fasilitas: `${BASE_URL}/fasilitas`,
+    api_perabotan: `${BASE_URL}/perabotan`,
+    api_order: `${BASE_URL}/order`,
+    api_riwayat: `${BASE_URL}/riwayat`,
+    api_kamarFasilitas: `${BASE_URL}/kamarFasilitas`,
+    api_kamarPerabotan: `${BASE_URL}/kamarPerabotan`,
+    
+    // Auth
+    api_auth_login: `${BASE_URL}/auth/login`,                   
+    api_auth_register: `${BASE_URL}/auth/register`, 
+    api_auth_verify_otp: `${BASE_URL}/auth/verify-otp`, 
+    api_auth_forgot_password: `${BASE_URL}/auth/forgot-password`, 
+    api_auth_reset_password: `${BASE_URL}/auth/reset-password`,
+    api_auth_logout: `${BASE_URL}/auth/logout`,
+    api_auth_change_password: `${BASE_URL}/auth/change-password`,
 }

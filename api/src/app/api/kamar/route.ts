@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+// buat service ambil data
 export const GET = async () => {
     const data = await prisma.tb_kamar.findMany({
         orderBy: {
