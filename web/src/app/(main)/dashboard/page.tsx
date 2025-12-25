@@ -5,11 +5,23 @@ import { KamarCard } from "@/components/kamar-card";
 export default function DashBoardPage() {
   return (
     <>
+      <section className="px-4 pt-8 text-center lg:px-6">
+        <header className="mx-auto">
+          <h2 className="text-lg font-semibold">
+            Informasi Kost
+          </h2>
+          <small className="text-sm text-muted-foreground">
+            Gambaran umum dan fasilitas kost
+          </small>
+        </header>
+      </section>
+
+
       {/*  SECTION GAMBAR KAMAR KOST */}
       <section className="px-4 py-10 lg:px-6">
-         <h2 className="mb-4 text-base font-medium">Galeri Kamar Kost</h2>
+        <h2 className="mb-4 text-base font-medium">Galeri Kamar Kost</h2>
 
-         <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <KamarCard
             image="/images/kamarkost1.jpg"
             title="Kamar 1"
@@ -39,8 +51,8 @@ export default function DashBoardPage() {
         </section>
       </section>
 
-       {/* FASILITAS */}
-       <section className="px-4 py-4 lg:px-6">
+      {/* FASILITAS */}
+      <section className="px-4 py-4 lg:px-6">
         <h3 className="mb-4 text-base font-medium">Fasilitas</h3>
 
         <section className="flex flex-wrap gap-3 text-sm">
@@ -53,17 +65,17 @@ export default function DashBoardPage() {
             ✅ Lemari Pakaian
           </article>
         </section>
-       </section>
+      </section>
 
-       {/* Alamat Kost */}
-        <section className="px-4 py-6 lg:px-6">
-           <h3 className="mb-2 text-base font-medium">Alamat Kost</h3>
+      {/* Alamat Kost */}
+      <section className="px-4 py-6 lg:px-6">
+        <h3 className="mb-2 text-base font-medium">Alamat Kost</h3>
 
-            <address className="flex items-center gap-2 text-sm not-italic text-muted-foreground">
+        <address className="flex items-center gap-2 text-sm not-italic text-muted-foreground">
           <MapPin className="h-4 w-4" />
           Jl. Mawar Raya No. 123, Jakarta Selatan
         </address>
-        </section>
+      </section>
 
 
       {/* --- TEMPAT SECTION DATA LAINNYA --- */}
