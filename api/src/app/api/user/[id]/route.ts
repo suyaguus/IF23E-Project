@@ -71,6 +71,7 @@ export const DELETE = async (
     );
 };
 
+export const dynamic = "force-dynamic";
 
 // get user berdasarkan id
 export const GET = async (
