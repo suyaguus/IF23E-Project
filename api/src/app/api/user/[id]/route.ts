@@ -145,15 +145,20 @@ export async function PUT(
     context: { params: Promise<{ id: string }> }
 ) {
     try {
-        // 1. Tangkap params (Wajib agar Next.js tidak error)
-        // Kita tidak menggunakannya untuk query database, hanya formalitas routing
-        const { id } = await context.params; 
+        // 1. Tangkap parameter dari URL (Wajib agar Next.js tidak error)
+        // KITA HANYA TANGKAP, TIDAK KITA CEK APAKAH INI ANGKA ATAU BUKAN
+        const { id } = await context.params;
 
-        // 2. Ambil Data dari Body
+        // --- BAGIAN INI YANG DULU BIKIN ERROR, SUDAH KITA HAPUS: ---
+        // const userId = Number(id);
+        // if (isNaN(userId)) { return ... "ID Tidak Valid" } 
+        // -----------------------------------------------------------
+
+        // 2. Ambil Data dari Body (Kita fokus ke sini sekarang)
         const body = await req.json();
         const { email, username, notelp } = body;
 
-        // 3. Validasi: Email Wajib Ada (Kunci Pencarian Utama)
+        // 3. Validasi: Email Wajib Ada (Sebagai kunci pencarian)
         if (!email) {
             return NextResponse.json(
                 { success: false, message: "Email user wajib disertakan." },
@@ -161,7 +166,7 @@ export async function PUT(
             );
         }
 
-        // 4. Cek User di Database berdasarkan EMAIL
+        // 4. Cari User berdasarkan EMAIL
         const existingUser = await prisma.tb_user.findUnique({
             where: { email: email },
         });
@@ -173,10 +178,11 @@ export async function PUT(
             );
         }
 
-        // 5. Siapkan Data Partial Update
+        // 5. Siapkan Data Update
+        // Gunakan 'tb_userUpdateInput' (huruf kecil) sesuai pesan error TypeScript Anda sebelumnya
         const dataToUpdate: Prisma.tb_userUpdateInput = {};
-        
-        // Hanya update jika data dikirim dan valid
+
+        // Masukkan data hanya jika valid
         if (username !== undefined && username !== null && username.trim() !== "") {
             dataToUpdate.username = username;
         }
@@ -184,7 +190,7 @@ export async function PUT(
             dataToUpdate.notelp = notelp;
         }
 
-        // Jika tidak ada data yang berubah
+        // Cek jika tidak ada perubahan
         if (Object.keys(dataToUpdate).length === 0) {
             return NextResponse.json(
                 { success: true, message: "Tidak ada data yang diubah.", data: existingUser },
@@ -192,7 +198,7 @@ export async function PUT(
             );
         }
 
-        // 6. Eksekusi Update berdasarkan EMAIL
+        // 6. Eksekusi Update ke Database
         const updatedUser = await prisma.tb_user.update({
             where: { email: email },
             data: dataToUpdate,
