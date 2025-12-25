@@ -14,9 +14,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
-// Import cn utility jika Anda memilikinya (biasanya ada di shadcn),
-// tapi jika tidak, kita pakai cara manual di bawah.
-// import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { authFetcher } from "@/lib/fetchers/authFetcher";
+import { getErrorMessage } from "@/types/auth";
+import { toast } from "sonner";
 
 // ... (Interface User, LoginResponse, ApiError TETAP SAMA, tidak perlu diubah) ...
 
@@ -25,19 +26,79 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<typeof Card>) {
+  const { login } = useAuth(); // Kita ambil fungsi login dari Context
   const router = useRouter();
   // ... (State variables TETAP SAMA) ...
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const [fieldErrors, setFieldErrors] = useState({
+    email: "",
+    password: "",
+  });
 
   // ... (handleSubmit Logic TETAP SAMA) ...
   const handleSubmit = async (e: React.FormEvent) => {
-    // Copy paste logic submit Anda yang tadi di sini
     e.preventDefault();
-    // ... logic login ...
+
+    // 1. Reset error & Validasi Manual
+    let isValid = true;
+    const newErrors = { email: "", password: "" };
+
+    if (!email) {
+      newErrors.email = "Email wajib diisi";
+      isValid = false;
+    }
+
+    if (!password) {
+      newErrors.password = "Password wajib diisi";
+      isValid = false;
+    }
+
+    setFieldErrors(newErrors);
+
+    // 2. STOP jika tidak valid (Jangan nyalakan loading)
+    if (!isValid) return;
+
+    // 3. Baru nyalakan loading
+    setIsLoading(true);
+
+    try {
+      const result = await authFetcher.login({ email, password });
+
+      if (result.success && result.data && result.data.user) {
+        toast.success("Login Berhasil!", {
+          description: (
+            <span className="text-white font-medium">
+              Selamat datang {result.data.user.username}!
+            </span>
+          )
+        });
+        login(result.data.user);
+      } else {
+        // --- PERUBAHAN WARNA TEKS (Opsi HTML/JSX) ---
+        toast.error("Login Gagal", {
+          description: (
+            <span className="text-white font-medium">
+              {result.message || "Periksa kembali email dan password Anda."}
+            </span>
+          ),
+        });
+      }
+    } catch (err: unknown) {
+      console.error("Login error:", err);
+      const msg = getErrorMessage(err);
+
+      // --- PERUBAHAN WARNA TEKS (Catch Block) ---
+      toast.error("Terjadi Kesalahan", {
+        description: <span className="text-red-500 font-medium">{msg}</span>,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -52,13 +113,8 @@ export function LoginForm({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="grid gap-4">
+        <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
           {/* ... (Isi Form TETAP SAMA persis seperti sebelumnya) ... */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
-              {error}
-            </div>
-          )}
 
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
@@ -67,17 +123,31 @@ export function LoginForm({
               type="email"
               placeholder="m@example.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (fieldErrors.email)
+                  setFieldErrors({ ...fieldErrors, email: "" });
+              }}
               required
               disabled={isLoading}
+              className={
+                fieldErrors.email
+                  ? "border-red-500 focus-visible:ring-red-500"
+                  : ""
+              }
             />
+            {fieldErrors.email && (
+              <span className="text-xs text-red-500 font-medium">
+                {fieldErrors.email}
+              </span>
+            )}
           </div>
 
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
               <Link
-                href="/forgot-password" // Link sudah benar (tanpa /auth)
+                href="/forgot-password"
                 className="ml-auto inline-block text-sm underline"
               >
                 Lupa password?
@@ -89,10 +159,18 @@ export function LoginForm({
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (fieldErrors.password)
+                    setFieldErrors({ ...fieldErrors, password: "" });
+                }}
                 required
                 disabled={isLoading}
-                className="pr-10"
+                className={`pr-10 ${
+                  fieldErrors.password
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <button
                 type="button"
@@ -107,6 +185,11 @@ export function LoginForm({
                 )}
               </button>
             </div>
+            {fieldErrors.password && (
+              <span className="text-xs text-red-500 font-medium">
+                {fieldErrors.password}
+              </span>
+            )}
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
