@@ -10,9 +10,9 @@ export default function DashBoardPage() {
           <h2 className="text-xl font-semibold tracking-tight">
             Informasi Kost
           </h2>
-          <small className="text-sm text-muted-foreground">
+          <article className="text-sm text-muted-foreground">
             Gambaran umum dan Deskripsi kost
-          </small>
+          </article>
         </header>
       </section>
 
@@ -54,9 +54,14 @@ export default function DashBoardPage() {
       <section className="px-4 pt-2 lg:px-6">
         <article>
           <h3 className="text-base font-medium">Deskripsi Kost</h3>
-          <small className="mt-2 block text-muted-foreground">
-            Kost nyaman, bagus, rapih, dan nyaman dengan fasilitas lengkap dan lokasi yang sangat strategis.
-          </small>
+          <article className="mt-2 text-justify leading-relaxed text-muted-foreground">
+            Kost ini merupakan pilihan ideal bagi Anda yang menginginkan hunian nyaman
+            dengan lokasi strategis di Bandar Lampung. Didukung oleh fasilitas yang
+            lengkap, lingkungan yang bersih serta aman, dan akses yang mudah ke kampus,
+            perkantoran, maupun transportasi umum, kost ini dirancang untuk memberikan
+            kenyamanan maksimal dan mendukung aktivitas harian secara optimal bagi
+            mahasiswa maupun karyawan.
+          </article>
         </article>
       </section>
 
@@ -82,7 +87,7 @@ export default function DashBoardPage() {
 
         <address className="flex items-center gap-2 text-sm not-italic text-muted-foreground">
           <MapPin className="h-4 w-4" />
-          Jl. Mawar Raya No. 123, Jakarta Selatan
+          Jl. Jend. Sudirman No.123, Bandar Lampung
         </address>
       </section>
 
