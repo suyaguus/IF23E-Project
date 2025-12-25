@@ -1,4 +1,3 @@
-import { User } from "./interfaces";
 
 export interface ApiResponse<T = unknown> {
     success: boolean;
@@ -62,6 +61,17 @@ export interface AuthResponse {
         [key: string]: unknown;
     };
 }
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  notelp?: string;
+  avatar?: string; 
+  createdAt?: string;
+}
+
 export function getErrorMessage(error: unknown): string {
     if (error instanceof Error) return error.message;
     if (typeof error === "string") return error;
