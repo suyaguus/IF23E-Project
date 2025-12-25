@@ -157,7 +157,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 <FieldDescription className="px-6 text-center mt-4">
                   Already have an account?{" "}
                   <a
-                    href="/auth/login"
+                    href="/login"
                     className="text-primary hover:underline"
                   >
                     Sign in
