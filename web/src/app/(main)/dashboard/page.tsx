@@ -7,11 +7,11 @@ export default function DashBoardPage() {
     <>
       <section className="px-4 pt-8 text-center lg:px-6">
         <header className="mx-auto">
-          <h2 className="text-lg font-semibold">
+          <h2 className="text-xl font-semibold tracking-tight">
             Informasi Kost
           </h2>
           <small className="text-sm text-muted-foreground">
-            Gambaran umum dan fasilitas kost
+            Gambaran umum dan Deskripsi kost
           </small>
         </header>
       </section>
@@ -49,6 +49,15 @@ export default function DashBoardPage() {
             size="Single • 3 × 3 m"
           />
         </section>
+      </section>
+
+      <section className="px-4 pt-2 lg:px-6">
+        <article>
+          <h3 className="text-base font-medium">Deskripsi Kost</h3>
+          <small className="mt-2 block text-muted-foreground">
+            Kost nyaman, bagus, rapih, dan nyaman dengan fasilitas lengkap dan lokasi yang sangat strategis.
+          </small>
+        </article>
       </section>
 
       {/* FASILITAS */}
