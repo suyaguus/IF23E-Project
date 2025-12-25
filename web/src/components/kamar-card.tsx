@@ -18,7 +18,16 @@ export function KamarCard({
   size,
 }: KamarCardProps) {
   return (
-    
+    <article  className="overflow-hidden rounded-lg border bg-background">
+      <figure className="group relative">
+        <Image
+          src={image}
+          alt={title}
+          width={600}
+          height={400}
+          className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105"/>
+      </figure>
+    </article>
   )
 }
 
