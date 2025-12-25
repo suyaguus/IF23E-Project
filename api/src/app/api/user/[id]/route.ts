@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 const corsHeaders = {
     "Access-Control-Allow-Origin": "http://localhost:3000",
@@ -144,10 +145,15 @@ export async function PUT(
     context: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id } = await context.params;
+        // 1. Tangkap params (Wajib agar Next.js tidak error)
+        // Kita tidak menggunakannya untuk query database, hanya formalitas routing
+        const { id } = await context.params; 
+
+        // 2. Ambil Data dari Body
         const body = await req.json();
         const { email, username, notelp } = body;
 
+        // 3. Validasi: Email Wajib Ada (Kunci Pencarian Utama)
         if (!email) {
             return NextResponse.json(
                 { success: false, message: "Email user wajib disertakan." },
@@ -155,6 +161,7 @@ export async function PUT(
             );
         }
 
+        // 4. Cek User di Database berdasarkan EMAIL
         const existingUser = await prisma.tb_user.findUnique({
             where: { email: email },
         });
@@ -166,8 +173,10 @@ export async function PUT(
             );
         }
 
-        const dataToUpdate: Partial<{ username: string; notelp: string }> = {};
-
+        // 5. Siapkan Data Partial Update
+        const dataToUpdate: Prisma.tb_userUpdateInput = {};
+        
+        // Hanya update jika data dikirim dan valid
         if (username !== undefined && username !== null && username.trim() !== "") {
             dataToUpdate.username = username;
         }
@@ -175,6 +184,7 @@ export async function PUT(
             dataToUpdate.notelp = notelp;
         }
 
+        // Jika tidak ada data yang berubah
         if (Object.keys(dataToUpdate).length === 0) {
             return NextResponse.json(
                 { success: true, message: "Tidak ada data yang diubah.", data: existingUser },
@@ -182,6 +192,7 @@ export async function PUT(
             );
         }
 
+        // 6. Eksekusi Update berdasarkan EMAIL
         const updatedUser = await prisma.tb_user.update({
             where: { email: email },
             data: dataToUpdate,
