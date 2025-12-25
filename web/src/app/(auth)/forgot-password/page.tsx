@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation"; // 1. Import useSearchParams
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 
@@ -23,41 +23,35 @@ import {
 import { Loader2, ChevronLeft } from "lucide-react";
 
 export default function ForgotPasswordPage() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   const router = useRouter();
-  const searchParams = useSearchParams(); // 2. Hook untuk baca URL
+  const searchParams = useSearchParams();
 
-  // Ambil email dari URL jika ada (misal: ?email=user@test.com)
   const emailFromQuery = searchParams.get("email");
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  // State Input
-  const [emailInput, setEmailInput] = useState(""); // Input manual step 1
+  const [emailInput, setEmailInput] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  // Efek: Jika ada email di URL, otomatis pindah ke Step 2 (Opsional, biar UX enak)
   useEffect(() => {
     if (emailFromQuery && step === 1) {
       setStep(2);
     }
   }, [emailFromQuery, step]);
 
-  // --- STEP 1: KIRIM OTP ---
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const res = await fetch(
-        "http://localhost:3001/api/auth/forgot-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: emailInput }),
-        }
-      );
+      const res = await fetch(`${apiUrl}/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailInput }),
+      });
 
       const data = await res.json();
 
@@ -67,19 +61,13 @@ export default function ForgotPasswordPage() {
 
       toast.success("Kode OTP terkirim!");
 
-      // 3. PUSH EMAIL KE URL (PENTING)
-      // Ini akan mengubah URL menjadi: /auth/forgot-password?email=nama@email.com
       router.push(`/auth/forgot-password?email=${emailInput}`);
 
       setStep(2);
     } catch (error: unknown) {
-      // <--- Ganti 'any' menjadi 'unknown'
-
       let msg = "Terjadi kesalahan sistem";
 
-      // Pengecekan Tipe (Type Guarding)
       if (error instanceof Error) {
-        // TypeScript tahu sekarang error punya properti .message
         msg = error.message;
       } else if (typeof error === "string") {
         msg = error;
@@ -88,7 +76,6 @@ export default function ForgotPasswordPage() {
         error !== null &&
         "message" in error
       ) {
-        // Jika error adalah object custom { message: "..." }
         msg = String((error as { message: unknown }).message);
       }
 
@@ -98,12 +85,10 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  // --- STEP 2: VERIFIKASI OTP ---
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // 4. VALIDASI: Pastikan email ada di URL
     if (!emailFromQuery) {
       toast.error("Email tidak ditemukan. Silakan ulangi proses.");
       setStep(1);
@@ -112,14 +97,12 @@ export default function ForgotPasswordPage() {
     }
 
     try {
-      // 5. KIRIM DATA KE BACKEND
-      // Kita ambil email dari 'emailFromQuery' (URL), bukan dari state input
-      const res = await fetch("http://localhost:3001/api/auth/verify-otp", {
+      const res = await fetch(`${apiUrl}/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: emailFromQuery, // Ambil dari URL
-          otp: otp, // Ambil dari Input OTP
+          email: emailFromQuery,
+          otp: otp,
         }),
       });
 
@@ -140,19 +123,18 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  // --- STEP 3: RESET PASSWORD ---
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!emailFromQuery) return; // Guard clause
+    if (!emailFromQuery) return;
 
     try {
-      const res = await fetch("http://localhost:3001/api/auth/reset-password", {
+      const res = await fetch(`${apiUrl}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: emailFromQuery, // Tetap ambil dari URL agar konsisten
+          email: emailFromQuery,
           otp,
           newPassword,
         }),
@@ -167,7 +149,6 @@ export default function ForgotPasswordPage() {
       toast.success("Password berhasil diubah!");
       router.push("/auth/login");
     } catch (error: unknown) {
-      // ... error handling
       toast.error("Gagal ganti password");
     } finally {
       setIsLoading(false);
@@ -177,10 +158,8 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
-        {/* 2. UPDATE BAGIAN HEADER DI SINI */}
         <CardHeader>
           <div className="flex items-center gap-3">
-            {/* Tombol Back */}
             <Button
               variant="outline"
               size="icon"
@@ -205,7 +184,6 @@ export default function ForgotPasswordPage() {
         </CardHeader>
 
         <CardContent>
-          {/* STEP 1: INPUT EMAIL */}
           {step === 1 && (
             <form onSubmit={handleRequestOtp} className="space-y-4">
               <div className="space-y-2">
@@ -223,7 +201,6 @@ export default function ForgotPasswordPage() {
             </form>
           )}
 
-          {/* STEP 2: INPUT HANYA OTP */}
           {step === 2 && (
             <form onSubmit={handleVerifyOtp} className="space-y-6">
               <div className="flex justify-center">
@@ -257,7 +234,6 @@ export default function ForgotPasswordPage() {
             </form>
           )}
 
-          {/* STEP 3: PASSWORD BARU */}
           {step === 3 && (
             <form onSubmit={handleResetPassword} className="space-y-4">
               <div className="space-y-2">
