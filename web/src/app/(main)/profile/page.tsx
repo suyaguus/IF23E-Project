@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-// --- INTERFACE DEFINITIONS ---
+
 interface UserProfileState {
   id: number;
   username: string;
@@ -37,11 +37,9 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
 
-  // --- TAMBAHKAN STATE INI ---
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
-  // State Profil Umum
   const [user, setUser] = useState<UserProfileState>({
     id: 0,
     username: "",
@@ -50,13 +48,11 @@ export default function ProfilePage() {
     avatar: "",
   });
 
-  // State Password (REVISI: Hapus confirmPassword)
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
   });
 
-  // Load Data User
   useEffect(() => {
     const storedUserString = localStorage.getItem("user");
     if (storedUserString) {
@@ -77,17 +73,14 @@ export default function ProfilePage() {
     }
   }, [router]);
 
-  // Handler Input Profil
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.id]: e.target.value });
   };
 
-  // Handler Input Password
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordData({ ...passwordData, [e.target.id]: e.target.value });
   };
 
-  // --- FUNGSI 1: SIMPAN PROFIL ---
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);

@@ -11,7 +11,6 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    // SidebarProvider dipasang DI SINI, bukan di Root
     <SidebarProvider>
       <AppSidebar />
 
