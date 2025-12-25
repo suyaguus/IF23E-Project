@@ -155,7 +155,7 @@ export function NavUser({
                     Account
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => router.push("/dashboard/settings")}
+                    onClick={() => router.push("/settings")}
                   >
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
