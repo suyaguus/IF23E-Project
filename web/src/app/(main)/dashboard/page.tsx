@@ -1,42 +1,14 @@
-import Image from "next/image";
+import { MapPin } from "lucide-react"
+import { KamarCard } from "@/components/kamar-card";
+
 
 export default function DashBoardPage() {
   return (
-    <div className="flex flex-1 flex-col gap-4">
-      {/* --- SECTION GAMBAR KAMAR KOST --- */}
-      <div className="py-4">
-        <h2 className="mb-6 text-lg font-semibold">Galeri Kamar Kost</h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="w-full bg-muted rounded-lg overflow-hidden border">
-            <Image
-              src="/images/kamarkost1.jpg"
-              alt="Kamar Kost 1"
-              width={600}
-              height={400}
-              className="object-cover w-full h-64 hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-          <div className="w-full bg-muted rounded-lg overflow-hidden border">
-            <Image
-              src="/images/kamarkost2.png"
-              alt="Kamar Kost 2"
-              width={600}
-              height={400}
-              className="object-cover w-full h-64 hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-          <div className="w-full bg-muted rounded-lg overflow-hidden border">
-            <Image
-              src="/images/kamarkost3.png"
-              alt="Kamar Kost 3"
-              width={600}
-              height={400}
-              className="object-cover w-full h-64 hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-        </div>
-      </div>
+    <>
+      {/*  SECTION GAMBAR KAMAR KOST */}
+      <section className="px-4 py-10 lg:px-6">
+         <h2 className="mb-4 text-base font-medium">Galeri Kamar Kost</h2>
+      </section>
 
       {/* --- TEMPAT SECTION DATA LAINNYA --- */}
       {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -46,6 +18,6 @@ export default function DashBoardPage() {
       {/* <div className="min-h-[300px] rounded-xl border bg-muted/50 p-4">
           <ChartAreaInteractive />
       </div> */}
-    </div>
+    </>
   );
 }
