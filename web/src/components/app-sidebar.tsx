@@ -163,7 +163,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             name: storedUser.username || "User",
             email: storedUser.email || "No Email",
             // Gunakan avatar kosong atau default image jika tidak ada
-            avatar: "", 
+            avatar: "",
           });
         } catch (error) {
           console.error("Gagal parsing user data:", error);
