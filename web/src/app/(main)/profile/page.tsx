@@ -2,7 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { User, Mail, Phone, Camera, ChevronLeft, Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+  User,
+  Mail,
+  Phone,
+  Camera,
+  ChevronLeft,
+  Eye,
+  EyeOff,
+  Loader2,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -18,153 +27,147 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-// --- INTERFACE DEFINITIONS ---
-interface UserProfileState {
-  id: number;
-  username: string;
-  email: string;
-  notelp: string;
-  avatar: string;
-}
 
-interface ApiResponse {
-  success: boolean;
-  message: string;
-}
+// --- IMPORT HOOK & FETCHER ---
+import { useAuth } from "@/hooks/useAuth";
+import { authFetcher } from "@/lib/fetchers/authFetcher";
+import { getErrorMessage } from "@/types/auth";
 
 export default function ProfilePage() {
   const router = useRouter();
+
+  // 1. Ambil data user GLOBAL dari Context
+  // Kita namakan 'authUser' agar tidak bentrok dengan state local
+  const { user: authUser, login: updateAuthUser } = useAuth();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
 
-  // --- TAMBAHKAN STATE INI ---
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
-  // State Profil Umum
-  const [user, setUser] = useState<UserProfileState>({
-    id: 0,
+  // 2. State LOCAL untuk menampung inputan form
+  const [formData, setFormData] = useState({
     username: "",
     email: "",
     notelp: "",
     avatar: "",
   });
 
-  // State Password (REVISI: Hapus confirmPassword)
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
   });
 
-  // Load Data User
+  // 3. EFFECT: Cek Login & Isi Form saat halaman dimuat
   useEffect(() => {
-    const storedUserString = localStorage.getItem("user");
-    if (storedUserString) {
-      try {
-        const storedUser = JSON.parse(storedUserString);
-        setUser({
-          id: storedUser.id || 0,
-          username: storedUser.username || "",
-          email: storedUser.email || "",
-          notelp: storedUser.notelp || "",
-          avatar: "",
-        });
-      } catch (e) {
-        console.error("Error parsing user data", e);
-      }
-    } else {
-      router.push("/auth/login");
-    }
-  }, [router]);
+    // Cek manual localStorage sebagai fallback cepat jika context belum siap
+    const localUser = localStorage.getItem("user");
 
-  // Handler Input Profil
+    if (!localUser && !authUser) {
+      // Jika tidak ada data user, lempar ke login
+      router.push("/login"); // URL YANG BENAR (Tanpa /auth)
+    } else if (authUser) {
+      // Jika authUser ada, isi form dengan data tersebut
+      setFormData({
+        username: authUser.username || "",
+        email: authUser.email || "",
+        notelp: authUser.notelp || "",
+        avatar: authUser.avatar || "",
+      });
+    }
+  }, [authUser, router]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({ ...user, [e.target.id]: e.target.value });
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  // Handler Input Password
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordData({ ...passwordData, [e.target.id]: e.target.value });
   };
 
-  // --- FUNGSI 1: SIMPAN PROFIL ---
+  // --- FUNGSI 1: UPDATE PROFILE (Pakai authFetcher) ---
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!authUser) return; // Guard clause
+
     setIsLoading(true);
 
     try {
-      const payload = {
-        username: user.username,
-        notelp: user.notelp,
-      };
+      // PERBAIKAN DISINI:
+      // Kita kirim 1 object saja yang berisi email (kunci) dan data update
+      const result = await authFetcher.updateProfile({
+        email: authUser.email, // <--- PENTING: Email dari context user
+        username: formData.username,
+        notelp: formData.notelp,
+      });
 
-      const response = await fetch(
-        `http://localhost:3001/api/auth/change-password"`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
+      if (result.success) {
+        // Update Local Storage & Context
+        const updatedUser = {
+          ...authUser,
+          username: formData.username,
+          notelp: formData.notelp,
+        };
 
-      const result = (await response.json()) as ApiResponse;
+        // Update Context (dan localStorage otomatis di handle context biasanya, tapi kita paksa update disini juga)
+        updateAuthUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Gagal mengupdate data");
+        toast.success("Profil Berhasil Diperbarui", {
+          description: "Data diri Anda telah tersimpan.",
+        });
+        router.refresh();
+      } else {
+        toast.error("Gagal Update Profil", {
+          description: result.message,
+        });
       }
-
-      const oldLocalStorage = JSON.parse(localStorage.getItem("user") || "{}");
-      const newUserData = {
-        ...oldLocalStorage,
-        username: user.username,
-        notelp: user.notelp,
-      };
-      localStorage.setItem("user", JSON.stringify(newUserData));
-
-      toast.success(result.message);
-      router.refresh();
     } catch (error: unknown) {
       console.error("Update error:", error);
-      let msg = "Terjadi kesalahan saat menyimpan";
-      if (error instanceof Error) msg = error.message;
-      toast.error(msg);
+      const msg = getErrorMessage(error);
+      toast.error("Terjadi Kesalahan", { description: msg });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // --- FUNGSI 2: UPDATE PASSWORD (REVISI) ---
+  // --- FUNGSI 2: UPDATE PASSWORD (Pakai authFetcher) ---
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!authUser) return;
 
-    // Validasi Frontend (Hapus validasi confirm password)
     if (passwordData.newPassword.length < 6) {
-      toast.error("Password baru minimal 6 karakter");
+      toast.error("Password Terlalu Pendek", {
+        description: "Password baru minimal 6 karakter",
+      });
       return;
     }
 
     setIsPasswordLoading(true);
 
     try {
-      // PERBAIKAN DI SINI:
-      // Ganti '/api/user/change-password' menjadi '/api/auth/change-password'
-      // Sesuai dengan struktur folder di screenshot Anda (folder 'auth')
-      const response = await fetch(
-        "http://localhost:3001/api/auth/change-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: user.id,
-            currentPassword: passwordData.currentPassword,
-            newPassword: passwordData.newPassword,
-          }),
-        }
-      );
+      const result = await authFetcher.changePassword({
+        userId: authUser.id,
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
 
-      // ... sisa kode handling response sama ...
+      if (result.success) {
+        // 1. TOASTER SUKSES & INFO REDIRECT
+        toast.success("Password Berhasil Diubah!", {
+          description: "Silakan login kembali dengan password baru Anda.",
+          duration: 3000, // Tampil agak lama
+        });
+      } else {
+        toast.error("Gagal Mengubah Password", {
+          description: result.message || "Periksa password lama Anda.",
+        });
+      }
     } catch (error: unknown) {
-      // ... error handling ...
+      console.error("Password update error:", error);
+      const msg = getErrorMessage(error);
+      toast.error("Terjadi Kesalahan", { description: msg });
     } finally {
       setIsPasswordLoading(false);
     }
@@ -211,9 +214,11 @@ export default function ProfilePage() {
               <div className="flex items-center gap-6">
                 <div className="relative group cursor-pointer">
                   <Avatar className="h-24 w-24">
-                    <AvatarImage src={user.avatar} />
+                    <AvatarImage src={formData.avatar} />
                     <AvatarFallback className="text-lg">
-                      {user.username.substring(0, 2).toUpperCase()}
+                      {formData.username
+                        ? formData.username.substring(0, 2).toUpperCase()
+                        : "US"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -241,7 +246,7 @@ export default function ProfilePage() {
                     <Input
                       id="username"
                       className="pl-9"
-                      value={user.username}
+                      value={formData.username} // Pakai formData
                       onChange={handleChange}
                     />
                   </div>
@@ -254,7 +259,7 @@ export default function ProfilePage() {
                       id="email"
                       type="email"
                       className="pl-9 bg-muted"
-                      value={user.email}
+                      value={formData.email} // Pakai formData
                       disabled
                     />
                   </div>
@@ -269,7 +274,7 @@ export default function ProfilePage() {
                     <Input
                       id="notelp"
                       className="pl-9"
-                      value={user.notelp}
+                      value={formData.notelp} // Pakai formData
                       onChange={handleChange}
                     />
                   </div>
@@ -287,71 +292,58 @@ export default function ProfilePage() {
           </Card>
         </TabsContent>
 
-        {/* TAB 2: UPDATE PASSWORD (REVISI) */}
-
         {/* TAB 2: UPDATE PASSWORD */}
         <TabsContent value="security" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>Password</CardTitle>
               <CardDescription>
-                Ubah password akun Anda di sini. Anda akan diminta login ulang.
+                Ubah password akun Anda di sini.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleUpdatePassword} className="space-y-4">
-                {/* --- Input Password Lama --- */}
+                {/* Input Password Lama */}
                 <div className="grid gap-2">
                   <Label htmlFor="currentPassword">Password Saat Ini</Label>
                   <div className="relative">
                     <Input
                       id="currentPassword"
-                      // 1. Ubah type secara dinamis berdasarkan state
                       type={showCurrentPassword ? "text" : "password"}
                       value={passwordData.currentPassword}
                       onChange={handlePasswordChange}
                       required
-                      // 2. Tambahkan padding-right (pr-10) agar teks tidak menabrak ikon
                       className="pr-10"
                     />
-                    {/* 3. Tombol Icon Mata */}
                     <button
-                      type="button" // PENTING: gunakan type="button" agar tidak mensubmit form
+                      type="button"
                       onClick={() =>
                         setShowCurrentPassword(!showCurrentPassword)
                       }
                       className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground transition-all"
-                      tabIndex={-1} // Opsional: agar tombol ini dilewati saat user menekan Tab
+                      tabIndex={-1}
                     >
                       {showCurrentPassword ? (
                         <EyeOff className="h-4 w-4" />
                       ) : (
                         <Eye className="h-4 w-4" />
                       )}
-                      <span className="sr-only">
-                        {showCurrentPassword
-                          ? "Sembunyikan password"
-                          : "Lihat password"}
-                      </span>
                     </button>
                   </div>
                 </div>
 
-                {/* --- Input Password Baru --- */}
+                {/* Input Password Baru */}
                 <div className="grid gap-2">
                   <Label htmlFor="newPassword">Password Baru</Label>
                   <div className="relative">
                     <Input
                       id="newPassword"
-                      // 1. Ubah type secara dinamis berdasarkan state
                       type={showNewPassword ? "text" : "password"}
                       value={passwordData.newPassword}
                       onChange={handlePasswordChange}
                       required
-                      // 2. Tambahkan padding-right (pr-10)
                       className="pr-10"
                     />
-                    {/* 3. Tombol Icon Mata */}
                     <button
                       type="button"
                       onClick={() => setShowNewPassword(!showNewPassword)}
@@ -363,16 +355,10 @@ export default function ProfilePage() {
                       ) : (
                         <Eye className="h-4 w-4" />
                       )}
-                      <span className="sr-only">
-                        {showNewPassword
-                          ? "Sembunyikan password"
-                          : "Lihat password"}
-                      </span>
                     </button>
                   </div>
                 </div>
 
-                {/* Tombol Submit */}
                 <div className="flex justify-end pt-4">
                   <Button
                     type="submit"

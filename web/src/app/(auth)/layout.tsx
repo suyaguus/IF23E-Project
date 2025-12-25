@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Login - Aplikasi Kos",
+  title: "Login - Wisma Dempo",
   description: "Halaman masuk pengguna",
 };
 

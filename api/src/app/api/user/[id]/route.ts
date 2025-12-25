@@ -140,48 +140,66 @@ export const GET = async (
 }
 
 // buat putt data
-export const PUT = async (
+export async function PUT(
     req: NextRequest,
-    context: { params: Promise<{ id: string }> }
-) => {
+    // Kita harus menangkap params karena file ini bernama [slug]
+    // (Next.js 15 menggunakan Promise untuk params)
+    context: { params: Promise<{ slug: string }> }
+) {
     try {
-        const { id } = await context.params;
-        const userId = Number(id);
-        const body = await req.json();
+        // 1. Tangkap slug (misal: 'update' atau 'profile')
+        // Walaupun tidak dipakai untuk query DB, ini wajib ada di signature dynamic route
+        const { slug } = await context.params; 
 
-        // validasi id
-        if (isNaN(userId)) {
+        // 2. Ambil Data dari Body
+        const body = await req.json();
+        const { email, username, notelp } = body;
+
+        // 3. Validasi: Email Wajib Ada (Sebagai kunci pencarian)
+        if (!email) {
             return NextResponse.json(
-                { success: false, message: "ID Tidak Valid" },
+                { success: false, message: "Email user wajib disertakan." },
                 { status: 400, headers: corsHeaders }
             );
         }
 
-        // cek apakah user ada
+        // 4. Cek User di Database by Email
         const existingUser = await prisma.tb_user.findUnique({
-            where: { id: userId },
+            where: { email: email },
         });
 
-        // jika user tidak ditemukan
         if (!existingUser) {
             return NextResponse.json(
-                { success: false, message: "User Tidak Ditemukan" },
+                { success: false, message: "User tidak ditemukan." },
                 { status: 404, headers: corsHeaders }
             );
         }
 
-        // update user
-        const updatedUser = await prisma.tb_user.update({
-            where: { id: userId },
+        // 5. Siapkan Data Partial Update
+        const dataToUpdate: Partial<{ username: string; notelp: string }> = {};
+        
+        // Hanya update jika data dikirim dan tidak kosong
+        if (username !== undefined && username !== null && username.trim() !== "") {
+            dataToUpdate.username = username;
+        }
+        if (notelp !== undefined && notelp !== null && notelp.trim() !== "") {
+            dataToUpdate.notelp = notelp;
+        }
 
-            // update data
-            data: {
-                username: body.username,
-                notelp: body.notelp,
-            },
+        // Jika tidak ada yang berubah
+        if (Object.keys(dataToUpdate).length === 0) {
+            return NextResponse.json(
+                { success: true, message: "Tidak ada data yang diubah.", data: existingUser },
+                { status: 200, headers: corsHeaders }
+            );
+        }
+
+        // 6. Eksekusi Update
+        const updatedUser = await prisma.tb_user.update({
+            where: { email: email },
+            data: dataToUpdate,
         });
 
-        // tampilkan response
         return NextResponse.json(
             {
                 success: true,
@@ -190,14 +208,12 @@ export const PUT = async (
             },
             { status: 200, headers: corsHeaders }
         );
+
     } catch (error) {
-
-        console.error("PUT Error:", error);
-
-        // tampilkan error
+        console.error("[API Error] PUT /api/user/[slug]:", error);
         return NextResponse.json(
             { success: false, message: "Internal Server Error" },
             { status: 500, headers: corsHeaders }
         );
     }
-};
+}
