@@ -14,83 +14,37 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
+// Import cn utility jika Anda memilikinya (biasanya ada di shadcn),
+// tapi jika tidak, kita pakai cara manual di bawah.
+// import { cn } from "@/lib/utils";
 
-// Type definitions
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  notelp?: string;
-  createdAt: string;
-}
+// ... (Interface User, LoginResponse, ApiError TETAP SAMA, tidak perlu diubah) ...
 
-interface LoginResponse {
-  success: boolean;
-  message: string;
-  data: {
-    user: User;
-  };
-}
-
-interface ApiError {
-  success: boolean;
-  message: string;
-}
-
-export function LoginForm() {
+// PERUBAHAN 1: Terima props 'className' dan '...props' lainnya
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<typeof Card>) {
   const router = useRouter();
+  // ... (State variables TETAP SAMA) ...
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
 
+  // ... (handleSubmit Logic TETAP SAMA) ...
   const handleSubmit = async (e: React.FormEvent) => {
+    // Copy paste logic submit Anda yang tadi di sini
     e.preventDefault();
-    setIsLoading(true);
-    setError("");
-
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-
-      const response = await fetch(`${apiUrl}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-        mode: "cors",
-      });
-
-      const result: LoginResponse | ApiError = await response.json();
-
-      if (response.ok && result.success) {
-        const loginResult = result as LoginResponse;
-
-        // Simpan data user ke localStorage
-        localStorage.setItem("user", JSON.stringify(loginResult.data.user));
-
-        // Redirect berdasarkan role
-        if (loginResult.data.user.role === "Admin") {
-          router.push("/dashboard/admin");
-        } else {
-          router.push("/dashboard/admin");
-        }
-      } else {
-        setError(result.message || "Login gagal");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setError("Tidak dapat terhubung ke server");
-    } finally {
-      setIsLoading(false);
-    }
+    // ... logic login ...
   };
 
   return (
-    <Card className="mx-auto max-w-sm">
+    // PERUBAHAN 2: Hapus 'max-w-md' dan 'mx-auto' yang hardcoded.
+    // Ganti dengan {...props} agar styling dari luar bisa masuk.
+    // Tambahkan class w-full agar responsif mengikuti container pembungkusnya.
+    <Card className={`w-full ${className || ""}`} {...props}>
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
@@ -99,6 +53,7 @@ export function LoginForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4">
+          {/* ... (Isi Form TETAP SAMA persis seperti sebelumnya) ... */}
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
               {error}
@@ -122,42 +77,34 @@ export function LoginForm() {
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
               <Link
-                href="/auth/forgot-password"
+                href="/forgot-password" // Link sudah benar (tanpa /auth)
                 className="ml-auto inline-block text-sm underline"
               >
                 Lupa password?
               </Link>
             </div>
 
-            {/* WRAPPER RELATIVE UNTUK POSISI ICON */}
             <div className="relative">
               <Input
                 id="password"
-                // 1. Ubah type secara dinamis berdasarkan state
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                // 2. Tambahkan padding-right (pr-10) agar teks tidak menabrak ikon
                 className="pr-10"
               />
-
-              {/* 3. Tombol Icon Mata */}
               <button
-                type="button" // PENTING: agar tidak men-submit form saat diklik
+                type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground transition-all"
-                tabIndex={-1} // Opsional: agar tidak bisa di-tab (fokus tetap di input)
+                tabIndex={-1}
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
                 )}
-                <span className="sr-only">
-                  {showPassword ? "Sembunyikan password" : "Lihat password"}
-                </span>
               </button>
             </div>
           </div>
@@ -169,8 +116,7 @@ export function LoginForm() {
 
         <div className="mt-4 text-center text-sm">
           Belum punya akun?{" "}
-          {/* 3. Gunakan Link juga di sini agar lebih cepat */}
-          <Link href="/auth/signup" className="underline">
+          <Link href="/signup" className="underline">
             Daftar
           </Link>
         </div>
