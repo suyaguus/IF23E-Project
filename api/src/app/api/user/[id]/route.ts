@@ -139,23 +139,15 @@ export const GET = async (
     }
 }
 
-// buat putt data
 export async function PUT(
     req: NextRequest,
-    // Kita harus menangkap params karena file ini bernama [slug]
-    // (Next.js 15 menggunakan Promise untuk params)
-    context: { params: Promise<{ slug: string }> }
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
-        // 1. Tangkap slug (misal: 'update' atau 'profile')
-        // Walaupun tidak dipakai untuk query DB, ini wajib ada di signature dynamic route
-        const { slug } = await context.params; 
-
-        // 2. Ambil Data dari Body
+        const { id } = await context.params;
         const body = await req.json();
         const { email, username, notelp } = body;
 
-        // 3. Validasi: Email Wajib Ada (Sebagai kunci pencarian)
         if (!email) {
             return NextResponse.json(
                 { success: false, message: "Email user wajib disertakan." },
@@ -163,7 +155,6 @@ export async function PUT(
             );
         }
 
-        // 4. Cek User di Database by Email
         const existingUser = await prisma.tb_user.findUnique({
             where: { email: email },
         });
@@ -175,10 +166,8 @@ export async function PUT(
             );
         }
 
-        // 5. Siapkan Data Partial Update
         const dataToUpdate: Partial<{ username: string; notelp: string }> = {};
-        
-        // Hanya update jika data dikirim dan tidak kosong
+
         if (username !== undefined && username !== null && username.trim() !== "") {
             dataToUpdate.username = username;
         }
@@ -186,7 +175,6 @@ export async function PUT(
             dataToUpdate.notelp = notelp;
         }
 
-        // Jika tidak ada yang berubah
         if (Object.keys(dataToUpdate).length === 0) {
             return NextResponse.json(
                 { success: true, message: "Tidak ada data yang diubah.", data: existingUser },
@@ -194,7 +182,6 @@ export async function PUT(
             );
         }
 
-        // 6. Eksekusi Update
         const updatedUser = await prisma.tb_user.update({
             where: { email: email },
             data: dataToUpdate,
@@ -210,7 +197,7 @@ export async function PUT(
         );
 
     } catch (error) {
-        console.error("[API Error] PUT /api/user/[slug]:", error);
+        console.error("[API Error] PUT /api/user/[id]:", error);
         return NextResponse.json(
             { success: false, message: "Internal Server Error" },
             { status: 500, headers: corsHeaders }
