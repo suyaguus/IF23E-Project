@@ -9,3 +9,18 @@ type KamarCardProps = {
   size: string
 }
 
+export function KamarCard({
+  image,
+  title,
+  category,
+  status,
+  price,
+  size,
+}: KamarCardProps) {
+  return (
+    
+  )
+}
+
+
+
