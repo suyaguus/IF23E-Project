@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { Loader2, ChevronLeft, Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +21,6 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Loader2, ChevronLeft } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -32,9 +32,11 @@ export default function ForgotPasswordPage() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isLoading, setIsLoading] = useState(false);
 
+  // State Form
   const [emailInput, setEmailInput] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (emailFromQuery && step === 1) {
@@ -42,77 +44,56 @@ export default function ForgotPasswordPage() {
     }
   }, [emailFromQuery, step]);
 
+  // --- 1. REQUEST OTP ---
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
       const res = await fetch(`${apiUrl}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: emailInput }),
       });
-
       const data = await res.json();
-
-      if (!res.ok || data.code !== 200) {
+      if (!res.ok || data.code !== 200)
         throw new Error(data.message || "Gagal mengirim OTP");
-      }
 
-      toast.success("Kode OTP terkirim!");
+      toast.success("Kode OTP Terkirim!");
 
-      router.push(`/auth/forgot-password?email=${emailInput}`);
+      // PERBAIKAN URL: Gunakan '/forgot-password' (tanpa /auth)
+      router.push(`/forgot-password?email=${emailInput}`);
 
       setStep(2);
     } catch (error: unknown) {
-      let msg = "Terjadi kesalahan sistem";
-
-      if (error instanceof Error) {
-        msg = error.message;
-      } else if (typeof error === "string") {
-        msg = error;
-      } else if (
-        typeof error === "object" &&
-        error !== null &&
-        "message" in error
-      ) {
-        msg = String((error as { message: unknown }).message);
-      }
-
+      let msg = "Terjadi kesalahan";
+      if (error instanceof Error) msg = error.message;
       toast.error(msg);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // --- 2. VERIFY OTP ---
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
     if (!emailFromQuery) {
-      toast.error("Email tidak ditemukan. Silakan ulangi proses.");
+      toast.error("Email tidak ditemukan.");
       setStep(1);
       setIsLoading(false);
       return;
     }
-
     try {
       const res = await fetch(`${apiUrl}/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: emailFromQuery,
-          otp: otp,
-        }),
+        body: JSON.stringify({ email: emailFromQuery, otp }),
       });
-
       const data = await res.json();
-
-      if (!res.ok || !data.success) {
+      if (!res.ok || !data.success)
         throw new Error(data.message || "OTP Salah");
-      }
 
-      toast.success("OTP Valid! Silakan buat password baru.");
+      toast.success("OTP Valid!");
       setStep(3);
     } catch (error: unknown) {
       let msg = "Terjadi kesalahan";
@@ -123,134 +104,185 @@ export default function ForgotPasswordPage() {
     }
   };
 
+  // --- 3. RESET PASSWORD ---
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
     if (!emailFromQuery) return;
-
     try {
       const res = await fetch(`${apiUrl}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: emailFromQuery,
-          otp,
-          newPassword,
-        }),
+        body: JSON.stringify({ email: emailFromQuery, otp, newPassword }),
       });
-
       const data = await res.json();
+      if (!res.ok || !data.success)
+        throw new Error(data.message || "Gagal reset password");
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Gagal mereset password");
-      }
+      toast.success("Password Berhasil Diubah!");
 
-      toast.success("Password berhasil diubah!");
-      router.push("/auth/login");
+      // PERBAIKAN URL: Redirect ke login (sesuaikan jika login ada di /login atau /auth/login)
+      // Karena folder login biasanya juga di dalam (auth), maka URL-nya:
+      router.push("/login");
     } catch (error: unknown) {
-      toast.error("Gagal ganti password");
+      toast.error("Gagal mereset password.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => router.back()}
-              className="h-8 w-8"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
+    <Card className="w-full max-w-[500px] shadow-lg">
+      <CardHeader className="space-y-1">
+        <div className="flex items-center gap-2 mb-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.back()}
+            className="p-0 h-auto font-normal hover:bg-transparent text-muted-foreground hover:text-foreground"
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Kembali
+          </Button>
+        </div>
 
-            <CardTitle>
-              {step === 1 && "Lupa Password"}
-              {step === 2 && "Verifikasi OTP"}
-              {step === 3 && "Reset Password"}
-            </CardTitle>
-          </div>
-
-          <CardDescription className="pt-2">
-            {step === 1 && "Masukkan email untuk menerima kode."}
-            {step === 2 && `Masukkan kode yang dikirim ke ${emailFromQuery}`}
-            {step === 3 && "Buat password baru Anda."}
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent>
-          {step === 1 && (
-            <form onSubmit={handleRequestOtp} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Email</Label>
-                <Input
-                  type="email"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  required
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <Loader2 className="animate-spin" /> : "Kirim OTP"}
-              </Button>
-            </form>
-          )}
-
+        <CardTitle className="text-2xl font-bold">
+          {step === 1 && "Lupa Password"}
+          {step === 2 && "Verifikasi OTP"}
+          {step === 3 && "Reset Password"}
+        </CardTitle>
+        <CardDescription>
+          {step === 1 && "Masukkan email Anda untuk menerima kode verifikasi."}
           {step === 2 && (
-            <form onSubmit={handleVerifyOtp} className="space-y-6">
-              <div className="flex justify-center">
-                <InputOTP
-                  maxLength={6}
-                  pattern={REGEXP_ONLY_DIGITS}
-                  value={otp}
-                  onChange={setOtp}
-                >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading || otp.length < 6}
-              >
-                {isLoading ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  "Verifikasi"
-                )}
-              </Button>
-            </form>
+            <span>
+              Masukkan 6 digit kode yang telah dikirim ke{" "}
+              <span className="font-semibold text-foreground">
+                {emailFromQuery}
+              </span>
+            </span>
           )}
+          {step === 3 && "Buat password baru untuk akun Anda."}
+        </CardDescription>
+      </CardHeader>
 
-          {step === 3 && (
-            <form onSubmit={handleResetPassword} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Password Baru</Label>
+      <CardContent>
+        {/* STEP 1: INPUT EMAIL */}
+        {step === 1 && (
+          <form onSubmit={handleRequestOtp} className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="nama@email.com"
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                required
+                disabled={isLoading}
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <Loader2 className="animate-spin mr-2 h-4 w-4" />
+              ) : (
+                "Kirim OTP"
+              )}
+            </Button>
+          </form>
+        )}
+
+        {/* STEP 2: INPUT OTP */}
+        {step === 2 && (
+          <form onSubmit={handleVerifyOtp} className="grid gap-6">
+            <div className="flex justify-center w-full py-2">
+              <InputOTP
+                maxLength={6}
+                pattern={REGEXP_ONLY_DIGITS}
+                value={otp}
+                onChange={setOtp}
+                disabled={isLoading}
+              >
+                <InputOTPGroup className="gap-2">
+                  <InputOTPSlot
+                    index={0}
+                    className="h-12 w-10 text-lg border rounded-md"
+                  />
+                  <InputOTPSlot
+                    index={1}
+                    className="h-12 w-10 text-lg border rounded-md"
+                  />
+                  <InputOTPSlot
+                    index={2}
+                    className="h-12 w-10 text-lg border rounded-md"
+                  />
+                  <InputOTPSlot
+                    index={3}
+                    className="h-12 w-10 text-lg border rounded-md"
+                  />
+                  <InputOTPSlot
+                    index={4}
+                    className="h-12 w-10 text-lg border rounded-md"
+                  />
+                  <InputOTPSlot
+                    index={5}
+                    className="h-12 w-10 text-lg border rounded-md"
+                  />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading || otp.length < 6}
+            >
+              {isLoading ? (
+                <Loader2 className="animate-spin mr-2 h-4 w-4" />
+              ) : (
+                "Verifikasi"
+              )}
+            </Button>
+          </form>
+        )}
+
+        {/* STEP 3: INPUT PASSWORD BARU */}
+        {step === 3 && (
+          <form onSubmit={handleResetPassword} className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="newPassword">Password Baru</Label>
+              <div className="relative">
                 <Input
-                  type="password"
+                  id="newPassword"
+                  type={showPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="pr-10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground hover:text-foreground"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
               </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <Loader2 className="animate-spin" /> : "Simpan"}
-              </Button>
-            </form>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <Loader2 className="animate-spin mr-2 h-4 w-4" />
+              ) : (
+                "Simpan Password"
+              )}
+            </Button>
+          </form>
+        )}
+      </CardContent>
+    </Card>
   );
 }
