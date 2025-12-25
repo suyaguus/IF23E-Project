@@ -21,33 +21,39 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+// Sebaiknya gunakan Environment Variable untuk URL API agar tidak hardcode
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function Cards() {
   // Fetch semua data dari API
+  // Note: Saya uncomment User data jaga-jaga jika ingin dipakai,
+  // tapi tidak ditampilkan di return sesuai kode asli Anda.
   const {
     data: userData,
     error: userError,
     isLoading: userLoading,
-  } = useSWR("http://localhost:3001/api/user", fetcher);
+  } = useSWR(`${API_BASE_URL}/api/user`, fetcher);
 
   const {
     data: kamarData,
     error: kamarError,
     isLoading: kamarLoading,
-  } = useSWR("http://localhost:3001/api/kamar", fetcher);
+  } = useSWR(`${API_BASE_URL}/api/kamar`, fetcher);
 
   const {
     data: fasilitasData,
     error: fasilitasError,
     isLoading: fasilitasLoading,
-  } = useSWR("http://localhost:3001/api/fasilitas", fetcher);
+  } = useSWR(`${API_BASE_URL}/api/fasilitas`, fetcher);
 
   const {
     data: perabotanData,
     error: perabotanError,
     isLoading: perabotanLoading,
-  } = useSWR("http://localhost:3001/api/perabotan", fetcher);
+  } = useSWR(`${API_BASE_URL}/api/perabotan`, fetcher);
 
   // Hitung statistik
   const totalUsers = userData?.user?.length || 0;
@@ -63,20 +69,21 @@ export function Cards() {
   };
 
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      {/* Card Users */}
-      {/* <Card className="@container/card">
+    // PERUBAHAN UTAMA DI SINI (Layout Grid):
+    // grid-cols-1    : 1 kolom di HP
+    // md:grid-cols-2 : 2 kolom di Tablet
+    // lg:grid-cols-3 : 3 kolom di Laptop/PC (Sesuai jumlah card aktif Anda: Kamar, Fasilitas, Perabotan)
+    <div className="grid gap-4 px-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:px-6">
+      {/* Card Users (Dikomentari sesuai kode asli) */}
+      {/* <Card>
         <CardHeader>
           <CardDescription>Total Users</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+          <CardTitle className="text-3xl font-semibold tabular-nums">
             {getCardValue(userLoading, userError, totalUsers)}
           </CardTitle>
-          <CardAction>
-            
-          </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
+          <div className="flex gap-2 font-medium">
             <IconUser className="size-4" />
           </div>
           <div className="text-muted-foreground">Total Pengguna Aplikasi</div>
@@ -84,21 +91,16 @@ export function Cards() {
       </Card> */}
 
       {/* Card Kamar */}
-      <Card className="@container/card">
+      <Card className="bg-gradient-to-t from-primary/5 to-card shadow-xs">
         <CardHeader>
           <CardDescription>Total Kamar</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+          <CardTitle className="text-3xl font-semibold tabular-nums">
             {getCardValue(kamarLoading, kamarError, totalKamar)}
           </CardTitle>
-          <CardAction>
-            {/* <Badge variant="outline">
-              <IconTrendingUp />
-              +8.3%
-            </Badge> */}
-          </CardAction>
+          <CardAction>{/* Action/Badge jika diperlukan */}</CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
+          <div className="flex gap-2 font-medium">
             <IconBed className="size-4" />
           </div>
           <div className="text-muted-foreground">Total Kamar yang tersedia</div>
@@ -106,21 +108,16 @@ export function Cards() {
       </Card>
 
       {/* Card Fasilitas */}
-      <Card className="@container/card">
+      <Card className="bg-gradient-to-t from-primary/5 to-card shadow-xs">
         <CardHeader>
           <CardDescription>Total Fasilitas</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+          <CardTitle className="text-3xl font-semibold tabular-nums">
             {getCardValue(fasilitasLoading, fasilitasError, totalFasilitas)}
           </CardTitle>
-          <CardAction>
-            {/* <Badge variant="outline">
-              <IconTrendingUp />
-              +15%
-            </Badge> */}
-          </CardAction>
+          <CardAction></CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
+          <div className="flex gap-2 font-medium">
             <IconFridge className="size-4" />
           </div>
           <div className="text-muted-foreground">
@@ -130,21 +127,16 @@ export function Cards() {
       </Card>
 
       {/* Card Perabotan */}
-      <Card className="@container/card">
+      <Card className="bg-gradient-to-t from-primary/5 to-card shadow-xs">
         <CardHeader>
           <CardDescription>Total Perabotan</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+          <CardTitle className="text-3xl font-semibold tabular-nums">
             {getCardValue(perabotanLoading, perabotanError, totalPerabotan)}
           </CardTitle>
-          <CardAction>
-            {/* <Badge variant="outline">
-              <IconTrendingUp />
-              +10%
-            </Badge> */}
-          </CardAction>
+          <CardAction></CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
+          <div className="flex gap-2 font-medium">
             <IconArmchair className="size-4" />
           </div>
           <div className="text-muted-foreground">

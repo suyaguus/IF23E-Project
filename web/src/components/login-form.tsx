@@ -75,9 +75,14 @@ export function LoginForm({
             <span className="text-white font-medium">
               Selamat datang {result.data.user.username}!
             </span>
-          )
+          ),
         });
         login(result.data.user);
+        if (result.data.user.role === "Admin") {
+          router.push("/dashboard/admin");
+        } else {
+          router.push("/dashboard/user"); // Atau halaman lain untuk user biasa
+        }
       } else {
         // --- PERUBAHAN WARNA TEKS (Opsi HTML/JSX) ---
         toast.error("Login Gagal", {

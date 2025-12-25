@@ -115,7 +115,11 @@ export default function ProfilePage() {
         localStorage.setItem("user", JSON.stringify(updatedUser));
 
         toast.success("Profil Berhasil Diperbarui", {
-          description: "Data diri Anda telah tersimpan.",
+          description: (
+            <span className="text-white font-medium">
+              Data diri Anda telah tersimpan.
+            </span>
+          ),
         });
         router.refresh();
       } else {
@@ -126,7 +130,9 @@ export default function ProfilePage() {
     } catch (error: unknown) {
       console.error("Update error:", error);
       const msg = getErrorMessage(error);
-      toast.error("Terjadi Kesalahan", { description: msg });
+      toast.error("Terjadi Kesalahan", {
+        description: <span className="text-white font-medium">{msg}</span>,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -137,9 +143,14 @@ export default function ProfilePage() {
     e.preventDefault();
     if (!authUser) return;
 
+    // Validasi panjang password
     if (passwordData.newPassword.length < 6) {
       toast.error("Password Terlalu Pendek", {
-        description: "Password baru minimal 6 karakter",
+        description: (
+          <span className="text-white font-medium">
+            Password baru minimal 6 karakter
+          </span>
+        ),
       });
       return;
     }
@@ -147,27 +158,41 @@ export default function ProfilePage() {
     setIsPasswordLoading(true);
 
     try {
+      // PERBAIKAN DI SINI:
+      // Kirim 'email', bukan 'userId'
       const result = await authFetcher.changePassword({
-        userId: authUser.id,
+        email: authUser.email, // <--- Gunakan Email dari Context
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
       });
 
       if (result.success) {
-        // 1. TOASTER SUKSES & INFO REDIRECT
         toast.success("Password Berhasil Diubah!", {
-          description: "Silakan login kembali dengan password baru Anda.",
-          duration: 3000, // Tampil agak lama
+          description: (
+            <span className="text-white font-medium">
+              Silakan login kembali dengan password baru Anda.
+            </span>
+          ),
+          duration: 3000,
         });
+
+        // Opsional: Reset form
+        setPasswordData({ currentPassword: "", newPassword: "" });
       } else {
         toast.error("Gagal Mengubah Password", {
-          description: result.message || "Periksa password lama Anda.",
+          description: (
+            <span className="text-white font-medium">
+              {result.message || "Periksa password lama Anda."}
+            </span>
+          ),
         });
       }
     } catch (error: unknown) {
       console.error("Password update error:", error);
       const msg = getErrorMessage(error);
-      toast.error("Terjadi Kesalahan", { description: msg });
+      toast.error("Terjadi Kesalahan", {
+        description: <span className="text-white font-medium">{msg}</span>,
+      });
     } finally {
       setIsPasswordLoading(false);
     }
