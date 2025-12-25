@@ -48,12 +48,12 @@ export const authFetcher = {
   },
 
   // --- CHANGE PASSWORD ---
-  changePassword: async (data: { userId: number; currentPassword: string; newPassword: string }) => {
+  changePassword: async (data: { email: string; currentPassword: string; newPassword: string }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data), // Mengirim { email, currentPassword, newPassword }
       });
       return await handleResponse(response);
     } catch (error) {
