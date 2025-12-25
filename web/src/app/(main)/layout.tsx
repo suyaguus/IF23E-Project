@@ -3,7 +3,7 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import {AppSidebardashboard} from "@/components/app-sidebar-dashboard";
 
 export default function MainLayout({
   children,
@@ -13,7 +13,7 @@ export default function MainLayout({
   return (
     // SidebarProvider dipasang DI SINI, bukan di Root
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebardashboard />
 
       <SidebarInset className="overflow-x-hidden">
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background sticky top-0 z-10">
