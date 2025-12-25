@@ -8,7 +8,7 @@ export default function DashBoardPage() {
       {/*  SECTION GAMBAR KAMAR KOST */}
       <section className="px-4 py-10 lg:px-6">
          <h2 className="mb-4 text-base font-medium">Galeri Kamar Kost</h2>
-         
+
          <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <KamarCard
             image="/images/kamarkost1.jpg"
@@ -38,6 +38,22 @@ export default function DashBoardPage() {
           />
         </section>
       </section>
+
+       {/* FASILITAS */}
+       <section className="px-4 py-4 lg:px-6">
+        <h3 className="mb-4 text-base font-medium">Fasilitas</h3>
+
+        <section className="flex flex-wrap gap-3 text-sm">
+          <article className="rounded-full border px-4 py-1">✅ WiFi</article>
+          <article className="rounded-full border px-4 py-1">✅ Parkir</article>
+          <article className="rounded-full border px-4 py-1">✅ AC</article>
+          <article className="rounded-full border px-4 py-1">✅ Dapur</article>
+          <article className="rounded-full border px-4 py-1">✅ Kasur</article>
+          <article className="rounded-full border px-4 py-1">
+            ✅ Lemari Pakaian
+          </article>
+        </section>
+       </section>
 
       {/* --- TEMPAT SECTION DATA LAINNYA --- */}
       {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
