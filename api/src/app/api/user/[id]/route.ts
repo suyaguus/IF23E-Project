@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";  // Sesuaikan dengan path Prisma Anda
+import prisma from "@/lib/prisma";
 
-// --- CONFIG CORS ---
 const corsHeaders = {
     "Access-Control-Allow-Origin": "http://localhost:3000",
     "Access-Control-Allow-Methods": "GET, PUT, DELETE, OPTIONS",
@@ -12,6 +11,7 @@ export async function OPTIONS() {
     return NextResponse.json({}, { status: 200, headers: corsHeaders });
 }
 
+// buat service delete
 export const DELETE = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
@@ -19,6 +19,7 @@ export const DELETE = async (
     const { id } = await context.params;
     const userId = Number(id);
 
+    // validasi id
     if (isNaN(userId)) {
         return NextResponse.json(
             {
@@ -31,10 +32,12 @@ export const DELETE = async (
         );
     }
 
+    // cek apakah user ada
     const user = await prisma.tb_user.findUnique({
         where: { id: userId },
     });
 
+    // jika user tidak ditemukan
     if (!user) {
         return NextResponse.json(
             {
@@ -46,6 +49,7 @@ export const DELETE = async (
         );
     }
 
+    // hapus data
     await prisma.tb_order.deleteMany({
         where: { userId: userId },
     });
@@ -54,6 +58,7 @@ export const DELETE = async (
         where: { id: userId },
     });
 
+    // tampilkan response
     return NextResponse.json(
         {
             success: true,
@@ -63,8 +68,6 @@ export const DELETE = async (
             status: 200
         }
     );
-
-    // testing
 };
 
 
@@ -77,6 +80,7 @@ export const GET = async (
         const { id } = await context.params;
         const userId = Number(id);
 
+        // validasi id
         if (isNaN(userId)) {
             return NextResponse.json(
                 {
@@ -88,6 +92,7 @@ export const GET = async (
             );
         }
 
+        // cek apakah user ada
         const user = await prisma.tb_user.findUnique({
             where: { id: userId },
             select: {
@@ -99,6 +104,7 @@ export const GET = async (
             }
         });
 
+        // jika user tidak ditemukan
         if (!user) {
             return NextResponse.json(
                 {
@@ -110,6 +116,7 @@ export const GET = async (
             );
         }
 
+        // tampilkan response
         return NextResponse.json(
             {
                 success: true, message: "Data Berhasil Ditemukan", user
@@ -120,6 +127,7 @@ export const GET = async (
         );
 
     } catch (error) {
+        // tampilkan error
         return NextResponse.json(
             {
                 success: false, message: "SERVER ERROR", error: String(error)
@@ -134,13 +142,14 @@ export const GET = async (
 // buat putt data
 export const PUT = async (
     req: NextRequest,
-    context: { params: Promise<{ id: string }> } // Fix type params Next.js 15
+    context: { params: Promise<{ id: string }> }
 ) => {
     try {
         const { id } = await context.params;
         const userId = Number(id);
         const body = await req.json();
 
+        // validasi id
         if (isNaN(userId)) {
             return NextResponse.json(
                 { success: false, message: "ID Tidak Valid" },
@@ -148,11 +157,12 @@ export const PUT = async (
             );
         }
 
-        // Cek apakah user ada
+        // cek apakah user ada
         const existingUser = await prisma.tb_user.findUnique({
             where: { id: userId },
         });
 
+        // jika user tidak ditemukan
         if (!existingUser) {
             return NextResponse.json(
                 { success: false, message: "User Tidak Ditemukan" },
@@ -160,16 +170,18 @@ export const PUT = async (
             );
         }
 
-        // 2. UPDATE DATA
-        // Disarankan hanya mengambil field spesifik agar user tidak bisa inject data lain (misal ganti role)
+        // update user
         const updatedUser = await prisma.tb_user.update({
             where: { id: userId },
+
+            // update data
             data: {
-                username: body.username, // Ambil spesifik field
-                notelp: body.notelp,     // Ambil spesifik field
+                username: body.username,
+                notelp: body.notelp,
             },
         });
 
+        // tampilkan response
         return NextResponse.json(
             {
                 success: true,
@@ -179,7 +191,10 @@ export const PUT = async (
             { status: 200, headers: corsHeaders }
         );
     } catch (error) {
+
         console.error("PUT Error:", error);
+
+        // tampilkan error
         return NextResponse.json(
             { success: false, message: "Internal Server Error" },
             { status: 500, headers: corsHeaders }

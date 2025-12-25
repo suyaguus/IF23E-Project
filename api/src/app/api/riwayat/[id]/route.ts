@@ -9,6 +9,7 @@ export const DELETE = async (
     const { id } = await context.params;
     const riwayatId = Number(id);
 
+    // validasi id
     if (isNaN(riwayatId)) {
         return NextResponse.json(
             {
@@ -21,10 +22,12 @@ export const DELETE = async (
         );
     }
 
+    // cek apakah riwayat ada berdasarkan id
     const riwayat = await prisma.tb_riwayat_pembayaran.findUnique({
         where: { id: riwayatId },
     });
 
+    // jika riwayat tidak ditemukan
     if (!riwayat) {
         return NextResponse.json(
             {
@@ -37,10 +40,12 @@ export const DELETE = async (
         );
     }
 
+    // hapus riwayat
     await prisma.tb_riwayat_pembayaran.delete({
         where: { id: riwayatId },
     });
 
+    // tampilkan respon
     return NextResponse.json(
         {
             success: true,
@@ -61,6 +66,7 @@ export const PUT = async (
     const riwayatId = Number(id);
     const data = await req.json();
 
+    // validasi id
     if (isNaN(riwayatId)) {
         return NextResponse.json(
             {
@@ -73,10 +79,12 @@ export const PUT = async (
         );
     }
 
+    // cek apakah riwayat ada berdasarkan id
     const riwayat = await prisma.tb_riwayat_pembayaran.findUnique({
         where: { id: riwayatId },
     });
 
+    // jika riwayat tidak ditemukan
     if (!riwayat) {
         return NextResponse.json(
             {
@@ -89,11 +97,13 @@ export const PUT = async (
         );
     }
 
+    // update riwayat
     await prisma.tb_riwayat_pembayaran.update({
         where: { id: riwayatId },
         data: data,
     });
 
+    // tampilkan respon
     return NextResponse.json(
         {
             success: true,
@@ -114,6 +124,7 @@ export const GET = async (
     const { id } = await context.params;
     const riwayatId = Number(id);
 
+    // validasi id
     if (isNaN(riwayatId)) {
         return NextResponse.json(
             {
@@ -126,10 +137,12 @@ export const GET = async (
         );
     }
 
+    // cek apakah riwayat ada berdasarkan id
     const riwayat = await prisma.tb_riwayat_pembayaran.findUnique({
         where: { id: riwayatId },
     });
 
+    // jika riwayat tidak ditemukan
     if (!riwayat) {
         return NextResponse.json(
             {
@@ -142,6 +155,7 @@ export const GET = async (
         );
     }
 
+    // jika riwayat ditemukan
     return NextResponse.json(
         {
             success: true,

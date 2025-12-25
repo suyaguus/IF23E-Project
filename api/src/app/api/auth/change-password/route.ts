@@ -2,34 +2,30 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
-// --- KONFIGURASI CORS ---
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-// 1. HANDLE OPTIONS (Agar status 200 OK saat preflight check)
 export async function OPTIONS() {
     return NextResponse.json({}, { status: 200, headers: corsHeaders });
 }
-
-// 2. HANDLE POST (Logic Ganti Password)
 export async function POST(req: Request) {
     try {
-        const { userId, currentPassword, newPassword } = await req.json();
+        const { email, currentPassword, newPassword } = await req.json();
 
-        // Validasi
-        if (!userId || !currentPassword || !newPassword) {
+        // validasi
+        if (!email || !currentPassword || !newPassword) {
             return NextResponse.json(
                 { success: false, message: "Data tidak lengkap" },
                 { status: 400, headers: corsHeaders }
             );
         }
 
-        // Cari User
+        // cari user
         const user = await prisma.tb_user.findUnique({
-            where: { id: Number(userId) },
+            where: { email },
         });
 
         if (!user) {
@@ -39,7 +35,7 @@ export async function POST(req: Request) {
             );
         }
 
-        // Cek Password Lama
+        // cek password lama
         const isMatch = await bcrypt.compare(currentPassword, user.password);
         if (!isMatch) {
             return NextResponse.json(
@@ -48,10 +44,10 @@ export async function POST(req: Request) {
             );
         }
 
-        // Hash Password Baru
+        // hash password baru
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // Update
+        // update password
         await prisma.tb_user.update({
             where: { id: user.id },
             data: { password: hashedPassword },

@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
         console.log('Register attempt:', { email, username });
 
-        // Validasi input
+        // validasi input
         if (!username || !email || !password || !notelp) {
             return NextResponse.json(
                 {
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Validasi format email
+        // validasi format email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return NextResponse.json(
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Validasi panjang password
+        // validasi panjang password
         if (password.length < 6) {
             return NextResponse.json(
                 {
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Cek apakah email sudah terdaftar
+        // cek apakah email sudah terdaftar
         const existingUser = await prisma.tb_user.findUnique({
             where: { email }
         });
@@ -72,10 +72,10 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Hash password
+        // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Buat user baru
+        // buat user baru
         const newUser = await prisma.tb_user.create({
             data: {
                 username,
@@ -95,8 +95,8 @@ export async function POST(request: NextRequest) {
         });
 
         console.log('User created:', newUser.id);
-        
-        // 3. GUNAKAN sanitizeUser SEBELUM KIRIM RESPONSE
+
+        // gunakan fungsi sanitizeUser untuk menghapus data sensitif
         const userSafe = sanitizeUser(newUser);
 
         return NextResponse.json(

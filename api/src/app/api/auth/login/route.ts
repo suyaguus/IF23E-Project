@@ -1,16 +1,13 @@
-// api/src/app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 
-// CORS headers
 const corsHeaders = {
     'Access-Control-Allow-Origin': 'http://localhost:3000',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-// Handle preflight OPTIONS request
 export async function OPTIONS(request: NextRequest) {
     return NextResponse.json({}, {
         status: 200,
@@ -27,7 +24,7 @@ export async function POST(request: NextRequest) {
 
         console.log('Login attempt:', { email });
 
-        // 1. Validasi input
+        // validasi input
         if (!email || !password) {
             return NextResponse.json(
                 {
@@ -38,7 +35,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // 2. Cari user berdasarkan email
+        // cari data user berdasarkan email
         const user = await prisma.tb_user.findUnique({
             where: { email },
             select: {
@@ -62,7 +59,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // 3. Bandingkan password
+        // bandingkan password
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
@@ -75,7 +72,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // 4. Kirim response dengan data user (tanpa password)
+        // kirim response dengan data user (tanpa password)
         const { password: _password, ...userWithoutPassword } = user;
 
         console.log('Login successful:', userWithoutPassword.email);

@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     try {
         const { email, otp, newPassword } = await req.json();
 
-        // Validasi
+        // validasi input
         if (!email || !otp || !newPassword) {
             return NextResponse.json({
                 success: false,
@@ -15,8 +15,7 @@ export async function POST(req: Request) {
             }, { status: 400 });
         }
 
-        // 1. Verifikasi Ulang OTP (Security Check)
-        // Kita harus pastikan OTP-nya masih ada dan valid sebelum ganti password
+        // verifikasi kode otp
         const otpRecord = await prisma.tb_otp.findFirst({
             where: { email, otp },
         });
@@ -29,17 +28,16 @@ export async function POST(req: Request) {
             }, { status: 400 });
         }
 
-        // 2. Hash Password Baru
+        // hash password baru
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // 3. Update Password User
+        // update password user
         await prisma.tb_user.update({
             where: { email },
             data: { password: hashedPassword },
         });
 
-        // 4. HAPUS OTP (Final Step)
-        // Sekarang OTP baru dihapus karena password sudah berhasil diganti
+        // hapus otp yang sudah dipakai
         await prisma.tb_otp.delete({
             where: { id: otpRecord.id },
         });
@@ -48,7 +46,9 @@ export async function POST(req: Request) {
             success: true,
             message: "Password berhasil diubah. Silakan login.",
             code: 200
-        }, { status: 200 });
+        }, {
+            status: 200
+        });
 
     } catch (error) {
         console.error("RESET_EXECUTE_ERROR:", error);
@@ -56,6 +56,8 @@ export async function POST(req: Request) {
             success: false,
             message: "Gagal mengganti password",
             code: 500
-        }, { status: 500 });
+        }, {
+            status: 500
+        });
     }
 }

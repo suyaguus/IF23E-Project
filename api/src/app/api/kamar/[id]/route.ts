@@ -6,10 +6,12 @@ export const DELETE = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) => {
+
     try {
         const { id } = await context.params;
         const kamarId = Number(id);
 
+        // validasi id
         if (isNaN(kamarId)) {
             return NextResponse.json(
                 {
@@ -33,6 +35,7 @@ export const DELETE = async (
             }
         });
 
+        // jika kamar tidak ditemukan
         if (!kamar) {
             return NextResponse.json(
                 {
@@ -45,7 +48,7 @@ export const DELETE = async (
             );
         }
 
-        // Cek apakah kamar memiliki order atau riwayat pembayaran
+        // jika kamar memiliki relasi order maka tidak bisa dihapus
         if (kamar.orders.length > 0) {
             return NextResponse.json(
                 {
@@ -58,6 +61,7 @@ export const DELETE = async (
             );
         }
 
+        // jika kamar memiliki relasi riwayat pembayaran maka tidak bisa dihapus
         if (kamar.riwayatPembayaran.length > 0) {
             return NextResponse.json(
                 {
@@ -70,9 +74,10 @@ export const DELETE = async (
             );
         }
 
-        // Gunakan transaction untuk menghapus relasi dan kamar
+        // hapus kamar beserta relasinya dalam transaksi
         await prisma.$transaction(async (tx) => {
-            // Hapus relasi many-to-many terlebih dahulu
+
+            // hapus relasi many-to-many terlebih dahulu
             await tx.tb_kamar_fasilitas.deleteMany({
                 where: { kamarId: kamarId }
             });
@@ -81,12 +86,13 @@ export const DELETE = async (
                 where: { kamarId: kamarId }
             });
 
-            // Sekarang hapus kamar
+            // sekarang hapus kamar
             await tx.tb_kamar.delete({
                 where: { id: kamarId }
             });
         });
 
+        // response sukses
         return NextResponse.json(
             {
                 success: true,
@@ -100,6 +106,7 @@ export const DELETE = async (
     } catch (error) {
         console.error("Error saat menghapus kamar:", error);
 
+        // response error
         return NextResponse.json(
             {
                 success: false,
@@ -122,6 +129,7 @@ export const PUT = async (
     const kamarId = Number(id);
     const data = await req.json();
 
+    // validasi id
     if (isNaN(kamarId)) {
         return NextResponse.json(
             {
@@ -133,10 +141,12 @@ export const PUT = async (
         );
     }
 
+    // cek apakah kamar ada berdasarkan id
     const kamar = await prisma.tb_kamar.findUnique({
         where: { id: kamarId }
     });
 
+    // jika kamar tidak ditemukan
     if (!kamar) {
         return NextResponse.json(
             {
@@ -149,11 +159,13 @@ export const PUT = async (
         );
     }
 
+    // update kamar
     await prisma.tb_kamar.update({
         where: { id: kamarId },
         data: data
     });
 
+    // response sukses
     return NextResponse.json(
         {
             success: true,
@@ -173,6 +185,7 @@ export const GET = async (
     const { id } = await context.params;
     const kamarId = Number(id);
 
+    // validasi id
     if (isNaN(kamarId)) {
         return NextResponse.json(
             {
@@ -185,6 +198,7 @@ export const GET = async (
         );
     }
 
+    // ambil data kamar berdasarkan id
     const kamar = await prisma.tb_kamar.findUnique({
         where: { id: kamarId },
         select: {
@@ -195,6 +209,7 @@ export const GET = async (
         }
     });
 
+    // jika kamar tidak ditemukan
     if (!kamar) {
         return NextResponse.json(
             {
@@ -207,6 +222,7 @@ export const GET = async (
         );
     }
 
+    // response sukses
     return NextResponse.json({
         success: true,
         message: "Kamar Berhasil Ditemukan",

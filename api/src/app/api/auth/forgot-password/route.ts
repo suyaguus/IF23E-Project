@@ -1,4 +1,4 @@
-import { sendEmail } from "@/lib/mail"; // Pastikan nama export sesuai dengan file mail.ts Anda
+import { sendEmail } from "@/lib/mail";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -6,8 +6,7 @@ export async function POST(req: Request) {
   try {
     const { email } = await req.json();
 
-    // 1. Cek apakah user terdaftar di tb_user
-    // (Gunakan tb_user sesuai schema Anda sebelumnya, bukan prisma.user)
+    // validasi email
     const user = await prisma.tb_user.findUnique({
       where: { email }
     });
@@ -15,31 +14,28 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json({
         message: "Email tidak ditemukan",
-        code: 400 
+        code: 400
       });
     }
 
-    // 2. HAPUS OTP LAMA (PENTING)
-    // Sebelum buat baru, hapus OTP lama milik email ini agar database bersih
-    // dan user tidak bingung dengan kode lama.
+    // menghapus kode otp lama jika ada
     await prisma.tb_otp.deleteMany({
       where: { email }
     });
 
-    // 3. Generate Kode 6 Digit (lebih aman daripada 4 digit)
+    // generate kode otp
     const code = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // 4. Simpan ke tabel tb_otp
+    // simpan kode otp dan buat batas waktu kadaluarsa 5 menit
     await prisma.tb_otp.create({
       data: {
         email: email,
         otp: code,
-        // Set expired 5 menit dari sekarang (5 * 60 * 1000)
-        expiresAt: new Date(Date.now() + 5 * 60 * 1000) 
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000)
       }
     });
 
-    // 5. Kirim Email
+    // kirim email
     await sendEmail(
       email,
       "Kode Reset Password",
