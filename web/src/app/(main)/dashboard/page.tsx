@@ -8,7 +8,7 @@ export default function DashBoardPage() {
       <section className="px-4 pt-8 text-center lg:px-6">
         <header className="mx-auto">
           <h2 className="text-xl font-semibold tracking-tight">
-            Informasi Kost
+            Informasi Kost Wisma Dempo
           </h2>
           <article className="text-sm text-muted-foreground">
             Gambaran umum dan Deskripsi kost
