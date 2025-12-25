@@ -52,6 +52,16 @@ export interface UserProfileState {
     role: string;
     avatar?: string;
 }
+
+export interface AuthResponse {
+    success: boolean;
+    message: string;
+    data?: {
+        user?: User;
+        token?: string;
+        [key: string]: unknown;
+    };
+}
 export function getErrorMessage(error: unknown): string {
     if (error instanceof Error) return error.message;
     if (typeof error === "string") return error;
