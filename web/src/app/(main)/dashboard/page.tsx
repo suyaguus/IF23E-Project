@@ -55,10 +55,19 @@ export default function DashBoardPage() {
         </section>
        </section>
 
+       {/* Alamat Kost */}
+        <section className="px-4 py-6 lg:px-6">
+           <h3 className="mb-2 text-base font-medium">Alamat Kost</h3>
+
+            <address className="flex items-center gap-2 text-sm not-italic text-muted-foreground">
+          <MapPin className="h-4 w-4" />
+          Jl. Mawar Raya No. 123, Jakarta Selatan
+        </address>
+        </section>
+
+
       {/* --- TEMPAT SECTION DATA LAINNYA --- */}
-      {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <SectionCards />
-      </div> */}
+      {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"> */}
 
       {/* <div className="min-h-[300px] rounded-xl border bg-muted/50 p-4">
           <ChartAreaInteractive />
