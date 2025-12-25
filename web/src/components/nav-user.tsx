@@ -1,10 +1,12 @@
 "use client";
 
 import {
-  IconDotsVertical,
-  IconLogout,
-  IconUserCircle,
-} from "@tabler/icons-react";
+  ChevronsUpDown,
+  LogOut,
+  User,
+  Settings,
+  LogIn, // Import icon Login
+} from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -32,13 +34,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"; // 1. Import AlertDialog
+} from "@/components/ui/alert-dialog";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export function NavUser({
-  user,
+  user: propUser,
 }: {
-  user: {
+  user?: {
     name: string;
     email: string;
     avatar: string;
@@ -47,36 +51,47 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const router = useRouter();
 
-  // 2. Fungsi handleLogout (TANPA window.confirm)
-  // Fungsi ini hanya akan dipanggil jika user menekan "Continue/Keluar" di dialog
-  const handleLogout = async () => {
-    try {
-      const storedUserString = localStorage.getItem("user");
-      const storedUser = storedUserString ? JSON.parse(storedUserString) : null;
+  // Ambil data real-time dari AuthContext
+  const { user: authUser, logout } = useAuth();
 
-      const response = await fetch("http://localhost:3001/api/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: storedUser?.id,
-          email: storedUser?.email || user.email,
-        }),
-      });
+  // --- LOGIC PENENTUAN STATUS USER ---
+  const isLoggedIn = !!authUser;
 
-      if (response.ok) {
-        console.log("Log-out berhasil!!!");
-      } else {
-        console.warn("Gagal log di server, lanjut logout client");
-      }
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      localStorage.removeItem("user");
-      router.replace("/auth/login");
-      router.refresh();
+  const activeUser = {
+    // Tambahkan || "" di akhir agar TypeScript tahu ini PASTI string (bukan undefined)
+    name: isLoggedIn
+      ? authUser?.username || propUser?.name || ""
+      : "Tamu (Guest)",
+
+    // Lakukan hal yang sama untuk email
+    email: isLoggedIn
+      ? authUser?.email || propUser?.email || ""
+      : "Silakan Login",
+
+    avatar: isLoggedIn ? propUser?.avatar || "" : "",
+  };
+  // -----------------------------------
+
+  // Helper untuk inisial
+  const getInitials = (name: string) => {
+    if (!name || name === "Tamu (Guest)") return "GU"; // GU = Guest User
+    const parts = name.split(" ");
+    if (parts.length > 1) {
+      return parts
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .substring(0, 2);
     }
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  const handleLogoutConfirm = () => {
+    logout();
+  };
+
+  const handleLogin = () => {
+    router.push("/login"); // Arahkan ke halaman login
   };
 
   return (
@@ -88,21 +103,22 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage src={activeUser.avatar} alt={activeUser.name} />
+                <AvatarFallback className="rounded-lg">
+                  {getInitials(activeUser.name || "")}{" "}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
-                </span>
+                <span className="truncate font-medium">{activeUser.name}</span>
+                <span className="truncate text-xs">{activeUser.email}</span>
               </div>
-              <IconDotsVertical className="ml-auto size-4" />
+              <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -110,55 +126,85 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={activeUser.avatar} alt={activeUser.name} />
+                  <AvatarFallback className="rounded-lg">
+                    {getInitials(activeUser.name || "")}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
+                  <span className="truncate font-medium">
+                    {activeUser.name}
                   </span>
+                  <span className="truncate text-xs">{activeUser.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push(`/user/profile`)}>
-                <IconUserCircle />
-                Account
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
 
-            {/* 3. IMPLEMENTASI ALERT DIALOG DI SINI */}
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                {/* PENTING: onSelect={(e) => e.preventDefault()} 
-                  Ini wajib ada agar Dropdown tidak langsung tertutup saat diklik,
-                  sehingga Dialog bisa muncul dengan benar.
-                */}
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  <IconLogout />
-                  Log out
-                </DropdownMenuItem>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Apakah Anda yakin ingin keluar dari akun ini? Sesi Anda akan
-                    diakhiri.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Batal</AlertDialogCancel>
-                  {/* Panggil handleLogout di sini */}
-                  <AlertDialogAction onClick={handleLogout}>
-                    Ya, Keluar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            {/* --- KONDISI MENU --- */}
+
+            {isLoggedIn ? (
+              // JIKA USER LOGIN
+              <>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    onClick={() => router.push("/profile")}
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    Account
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => router.push("/dashboard/settings")}
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator />
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Log out
+                    </DropdownMenuItem>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Konfirmasi Keluar</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Apakah Anda yakin ingin keluar? Sesi Anda akan diakhiri.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Batal</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleLogoutConfirm}
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                      >
+                        Ya, Keluar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
+            ) : (
+              // JIKA BELUM LOGIN (GUEST)
+              <>
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={handleLogin}>
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Login
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/settings")}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
