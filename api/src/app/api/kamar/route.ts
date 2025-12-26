@@ -21,51 +21,70 @@ export const GET = async () => {
 
 // buat service simpan data
 export const POST = async (request: NextRequest) => {
+    try {
+        const data = await request.json();
 
-    // buat dalam format json
-    const data = await request.json();
-
-    // mengecek apakah data kamar sudah ada 
-    const check = await prisma.tb_kamar.findFirst({
-        where: {
-            nomorKamar: data.nomorKamar
-        },
-        select: {
-            nomorKamar: true
+        if (!data.nomorKamar || !data.hargaSewa) {
+            return NextResponse.json(
+                { message: "Nomor Kamar dan Harga Sewa wajib diisi", success: false },
+                { status: 400 }
+            );
         }
-    })
 
-    // jika nomor kamar ditemukan
-    if (check) {
+        const check = await prisma.tb_kamar.findFirst({
+            where: {
+                nomorKamar: data.nomorKamar,
+            },
+            select: {
+                id: true, 
+            },
+        });
+
+        // Jika ditemukan duplikat
+        if (check) {
+            return NextResponse.json(
+                {
+                    message: "Gagal: Nomor Kamar sudah digunakan!",
+                    success: false,
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+
+        await prisma.tb_kamar.create({
+            data: {
+                nomorKamar: data.nomorKamar,
+                hargaSewa: Number(data.hargaSewa), 
+                statusKamar: data.statusKamar, 
+                deskripsi: data.deskripsi,
+            },
+        });
+
+        // 5. Return Success
         return NextResponse.json(
             {
-                message: "Data Kamar Gagal Disimpan ! (Nomor Kamar sudah digunakan)",
-                success: false
+                message: "Data Kamar Berhasil Disimpan!",
+                success: true,
             },
             {
-                status: 400
+                status: 201,
             }
-        )
+        );
+    } catch (error: unknown) {
+        // 6. Error Handling
+        console.error("API Error (POST /kamar):", error);
+
+        return NextResponse.json(
+            {
+                message: "Terjadi kesalahan pada server",
+                success: false,
+                error: error instanceof Error ? error.message : String(error),
+            },
+            {
+                status: 500,
+            }
+        );
     }
-
-    // jika nomor kamar tidak ditemukan
-    await prisma.tb_kamar.create({
-        data: {
-            nomorKamar: data.nomorKamar,
-            hargaSewa: data.hargaSewa,
-            statusKamar: data.statusKamar || "Tersedia",
-            deskripsi: data.deskripsi
-        }
-    })
-
-    // tampilkan respon
-    return NextResponse.json(
-        {
-            message: "Data Kamar Berhasil DIbuat !",
-            success: true
-        },
-        {
-            status: 201
-        }
-    )
-}
+};
