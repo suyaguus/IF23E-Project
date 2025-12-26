@@ -27,7 +27,6 @@ export const POST = async (request: NextRequest) => {
 
         console.log("[API] Data Masuk:", data);
 
-        // Validasi Input Dasar
         if (!data.nomorKamar || !data.hargaSewa) {
             return NextResponse.json(
                 { message: "Nomor Kamar dan Harga wajib diisi", success: false },
@@ -35,7 +34,6 @@ export const POST = async (request: NextRequest) => {
             );
         }
 
-        // Konversi Harga
         const hargaFix = Number(data.hargaSewa);
         if (isNaN(hargaFix)) {
             return NextResponse.json(
@@ -44,7 +42,6 @@ export const POST = async (request: NextRequest) => {
             );
         }
 
-        // Cek Duplikat
         const check = await prisma.tb_kamar.findFirst({
             where: { nomorKamar: data.nomorKamar },
             select: { id: true },
@@ -57,30 +54,27 @@ export const POST = async (request: NextRequest) => {
             );
         }
 
-        // --- PERBAIKAN LOGIC MAPPING STATUS ---
-        // Inisialisasi variabel dengan Tipe Enum, bukan string biasa
         let statusKamarFix: StatusKamar = StatusKamar.Tersedia;
 
         if (data.statusKamar) {
-            const rawStatus = String(data.statusKamar).toUpperCase();
+            const rawStatus = String(data.statusKamar).replace(/\s/g, "").toUpperCase();
 
             if (rawStatus === "TERSEWA") {
-                statusKamarFix = StatusKamar.Tersewa; // Gunakan Enum
-            } else if (rawStatus === "TIDAKTERSEDIA" || rawStatus === "TIDAK TERSEDIA") {
-                statusKamarFix = StatusKamar.TidakTersedia; // Gunakan Enum
-            } else {
-                // Default ke Tersedia jika input tidak dikenali
-                statusKamarFix = StatusKamar.Tersedia; // Gunakan Enum
+                statusKamarFix = StatusKamar.Tersewa;
+            }
+            else if (rawStatus === "TIDAKTERSEDIA") {
+                statusKamarFix = StatusKamar.TidakTersedia;
+            }
+            else {
+                statusKamarFix = StatusKamar.Tersedia;
             }
         }
-        // --------------------------------------
 
-        // Simpan ke Database
         const kamarBaru = await prisma.tb_kamar.create({
             data: {
                 nomorKamar: data.nomorKamar,
                 hargaSewa: hargaFix,
-                statusKamar: statusKamarFix, // Sekarang tipe datanya sudah cocok (StatusKamar)
+                statusKamar: statusKamarFix, 
                 deskripsi: data.deskripsi,
             },
         });
