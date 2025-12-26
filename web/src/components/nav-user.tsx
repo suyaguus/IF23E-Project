@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  ChevronsUpDown,
-  LogOut,
-  User,
-  Settings,
-  LogIn, // Import icon Login
-} from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChevronsUpDown, LogOut, User, Settings, LogIn } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -33,11 +29,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
-import { redirect } from "next/navigation";
 
 export function NavUser({
   user: propUser,
@@ -51,6 +44,9 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const router = useRouter();
 
+  // State untuk Dialog Logout
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+
   // Ambil data real-time dari AuthContext
   const { user: authUser, logout } = useAuth();
 
@@ -58,23 +54,19 @@ export function NavUser({
   const isLoggedIn = !!authUser;
 
   const activeUser = {
-    // Tambahkan || "" di akhir agar TypeScript tahu ini PASTI string (bukan undefined)
     name: isLoggedIn
       ? authUser?.username || propUser?.name || ""
       : "Tamu (Guest)",
-
-    // Lakukan hal yang sama untuk email
     email: isLoggedIn
       ? authUser?.email || propUser?.email || ""
       : "Silakan Login",
-
     avatar: isLoggedIn ? propUser?.avatar || "" : "",
   };
   // -----------------------------------
 
   // Helper untuk inisial
   const getInitials = (name: string) => {
-    if (!name || name === "Tamu (Guest)") return "GU"; // GU = Guest User
+    if (!name || name === "Tamu (Guest)") return "GU";
     const parts = name.split(" ");
     if (parts.length > 1) {
       return parts
@@ -88,43 +80,21 @@ export function NavUser({
 
   const handleLogoutConfirm = () => {
     logout();
-  };
-
-  const handleLogin = () => {
-    router.push("/login"); // Arahkan ke halaman login
+    setShowLogoutDialog(false); // Tutup dialog setelah logout
   };
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={activeUser.avatar} alt={activeUser.name} />
-                <AvatarFallback className="rounded-lg">
-                  {getInitials(activeUser.name || "")}{" "}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeUser.name}</span>
-                <span className="truncate text-xs">{activeUser.email}</span>
-              </div>
-              <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+    <>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            {/* asChild WAJIB ada agar SidebarMenuButton menjadi trigger langsung 
+                tanpa membuat button baru di luarnya */}
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              >
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={activeUser.avatar} alt={activeUser.name} />
                   <AvatarFallback className="rounded-lg">
@@ -137,77 +107,98 @@ export function NavUser({
                   </span>
                   <span className="truncate text-xs">{activeUser.email}</span>
                 </div>
-              </div>
-            </DropdownMenuLabel>
+                <ChevronsUpDown className="ml-auto size-4" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
 
-            <DropdownMenuSeparator />
+            <DropdownMenuContent
+              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              side={isMobile ? "bottom" : "right"}
+              align="end"
+              sideOffset={4}
+            >
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage
+                      src={activeUser.avatar}
+                      alt={activeUser.name}
+                    />
+                    <AvatarFallback className="rounded-lg">
+                      {getInitials(activeUser.name || "")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">
+                      {activeUser.name}
+                    </span>
+                    <span className="truncate text-xs">{activeUser.email}</span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
 
-            {/* --- KONDISI MENU --- */}
+              <DropdownMenuSeparator />
 
-            {isLoggedIn ? (
-              // JIKA USER LOGIN
-              <>
-                <DropdownMenuGroup>
-                  <DropdownMenuItem
-                    onClick={() => router.push("/profile")}
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    Account
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => router.push("/settings")}
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-
-                <DropdownMenuSeparator />
-
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Log out
+              {isLoggedIn ? (
+                <>
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={() => router.push("/profile")}>
+                      <User className="mr-2 h-4 w-4" />
+                      Account
                     </DropdownMenuItem>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Konfirmasi Keluar</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Apakah Anda yakin ingin keluar? Sesi Anda akan diakhiri.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Batal</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={handleLogoutConfirm}
-                        className="bg-red-600 hover:bg-red-700 text-white"
-                      >
-                        Ya, Keluar
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </>
-            ) : (
-              // JIKA BELUM LOGIN (GUEST)
-              <>
-                <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={handleLogin}>
-                    <LogIn className="mr-2 h-4 w-4" />
-                    Login
+                    <DropdownMenuItem onClick={() => router.push("/settings")}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+
+                  <DropdownMenuSeparator />
+
+                  {/* PERBAIKAN LOGOUT: Gunakan state, jangan wrap dengan Trigger */}
+                  <DropdownMenuItem onClick={() => setShowLogoutDialog(true)}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push("/settings")}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={() => router.push("/login")}>
+                      <LogIn className="mr-2 h-4 w-4" />
+                      Login
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/settings")}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+
+      {/* Dialog Logout ditaruh di luar struktur Menu untuk menghindari nesting error */}
+      <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Keluar</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin keluar? Sesi Anda akan diakhiri.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleLogoutConfirm}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Ya, Keluar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
