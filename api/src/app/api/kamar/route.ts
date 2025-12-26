@@ -36,7 +36,7 @@ export const POST = async (request: NextRequest) => {
                 nomorKamar: data.nomorKamar,
             },
             select: {
-                id: true, 
+                id: true,
             },
         });
 
@@ -53,11 +53,14 @@ export const POST = async (request: NextRequest) => {
             );
         }
 
-        await prisma.tb_kamar.create({
+        const kamarBaru = await prisma.tb_kamar.create({
             data: {
                 nomorKamar: data.nomorKamar,
-                hargaSewa: Number(data.hargaSewa), 
-                statusKamar: data.statusKamar, 
+                // Pastikan hargaSewa menjadi number/int
+                hargaSewa: Number(data.hargaSewa),
+                // Pastikan statusKamar sesuai dengan Enum di database
+                // Jika data.statusKamar kosong, default ke "Tersedia"
+                statusKamar: data.statusKamar || "Tersedia",
                 deskripsi: data.deskripsi,
             },
         });
@@ -66,21 +69,25 @@ export const POST = async (request: NextRequest) => {
         return NextResponse.json(
             {
                 message: "Data Kamar Berhasil Disimpan!",
+                data: kamarBaru,
                 success: true,
             },
             {
-                status: 201,
+                status: 201, // 201 Created
             }
         );
-    } catch (error: unknown) {
-        // 6. Error Handling
-        console.error("API Error (POST /kamar):", error);
+    } catch (error: unknown) { // 1. Definisikan sebagai unknown
+        console.error("API Error (POST /api/kamar):", error);
+
+        // 2. Lakukan pengecekan tipe (Type Narrowing)
+        const errorMessage = error instanceof Error ? error.message : String(error);
 
         return NextResponse.json(
             {
-                message: "Terjadi kesalahan pada server",
+                message: "Terjadi kesalahan pada server (Internal Server Error)",
                 success: false,
-                error: error instanceof Error ? error.message : String(error),
+                // 3. Gunakan variabel errorMessage yang sudah aman
+                error: process.env.NODE_ENV === "development" ? errorMessage : undefined,
             },
             {
                 status: 500,
