@@ -24,74 +24,80 @@ export const POST = async (request: NextRequest) => {
     try {
         const data = await request.json();
 
+        // --- LOG DEBUGGING (Cek Terminal VS Code Anda saat submit) ---
+        console.log("====================================");
+        console.log("[API] Data Masuk:", data);
+
+        // 1. Validasi Input Dasar
         if (!data.nomorKamar || !data.hargaSewa) {
+            console.log("[API] Gagal: Data tidak lengkap");
             return NextResponse.json(
-                { message: "Nomor Kamar dan Harga Sewa wajib diisi", success: false },
+                { message: "Nomor Kamar dan Harga wajib diisi", success: false },
                 { status: 400 }
             );
         }
 
-        const check = await prisma.tb_kamar.findFirst({
-            where: {
-                nomorKamar: data.nomorKamar,
-            },
-            select: {
-                id: true,
-            },
-        });
-
-        // Jika ditemukan duplikat
-        if (check) {
+        // 2. Konversi Harga ke Number
+        const hargaFix = Number(data.hargaSewa);
+        if (isNaN(hargaFix)) {
+            console.log("API] Gagal: Harga bukan angka valid");
             return NextResponse.json(
-                {
-                    message: "Gagal: Nomor Kamar sudah digunakan!",
-                    success: false,
-                },
-                {
-                    status: 400,
-                }
+                { message: "Harga harus berupa angka", success: false },
+                { status: 400 }
             );
         }
+
+        // 3. Cek Duplikat Nomor Kamar
+        const check = await prisma.tb_kamar.findFirst({
+            where: { nomorKamar: data.nomorKamar },
+            select: { id: true },
+        });
+
+        if (check) {
+            console.log("[API] Gagal: Duplikat Nomor Kamar");
+            return NextResponse.json(
+                { message: "Nomor Kamar sudah digunakan!", success: false },
+                { status: 400 }
+            );
+        }
+
+        // 4. Simpan ke Database
+        console.log("[API] Sedang menyimpan ke Prisma...");
 
         const kamarBaru = await prisma.tb_kamar.create({
             data: {
                 nomorKamar: data.nomorKamar,
-                // Pastikan hargaSewa menjadi number/int
-                hargaSewa: Number(data.hargaSewa),
-                // Pastikan statusKamar sesuai dengan Enum di database
-                // Jika data.statusKamar kosong, default ke "Tersedia"
+                hargaSewa: hargaFix,
                 statusKamar: data.statusKamar || "Tersedia",
                 deskripsi: data.deskripsi,
             },
         });
 
-        // 5. Return Success
+        console.log("[API] Berhasil Disimpan:", kamarBaru);
+        console.log("====================================");
+
         return NextResponse.json(
             {
                 message: "Data Kamar Berhasil Disimpan!",
                 data: kamarBaru,
                 success: true,
             },
-            {
-                status: 201, // 201 Created
-            }
+            { status: 201 }
         );
-    } catch (error: unknown) { // 1. Definisikan sebagai unknown
-        console.error("API Error (POST /api/kamar):", error);
 
-        // 2. Lakukan pengecekan tipe (Type Narrowing)
+    } catch (error: unknown) {
+        // 5. Tangkap Error Server
+        console.error("[API CRASH] Error Detail:", error); // <-- Cek pesan ini di Terminal VS Code
+
         const errorMessage = error instanceof Error ? error.message : String(error);
 
         return NextResponse.json(
             {
-                message: "Terjadi kesalahan pada server (Internal Server Error)",
+                message: "Terjadi kesalahan pada server",
                 success: false,
-                // 3. Gunakan variabel errorMessage yang sudah aman
-                error: process.env.NODE_ENV === "development" ? errorMessage : undefined,
+                error: errorMessage,
             },
-            {
-                status: 500,
-            }
+            { status: 500 }
         );
     }
 };
