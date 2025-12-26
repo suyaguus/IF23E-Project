@@ -21,51 +21,83 @@ export const GET = async () => {
 
 // buat service simpan data
 export const POST = async (request: NextRequest) => {
+    try {
+        const data = await request.json();
 
-    // buat dalam format json
-    const data = await request.json();
+        // --- LOG DEBUGGING (Cek Terminal VS Code Anda saat submit) ---
+        console.log("====================================");
+        console.log("[API] Data Masuk:", data);
 
-    // mengecek apakah data kamar sudah ada 
-    const check = await prisma.tb_kamar.findFirst({
-        where: {
-            nomorKamar: data.nomorKamar
-        },
-        select: {
-            nomorKamar: true
+        // 1. Validasi Input Dasar
+        if (!data.nomorKamar || !data.hargaSewa) {
+            console.log("[API] Gagal: Data tidak lengkap");
+            return NextResponse.json(
+                { message: "Nomor Kamar dan Harga wajib diisi", success: false },
+                { status: 400 }
+            );
         }
-    })
 
-    // jika nomor kamar ditemukan
-    if (check) {
+        // 2. Konversi Harga ke Number
+        const hargaFix = Number(data.hargaSewa);
+        if (isNaN(hargaFix)) {
+            console.log("API] Gagal: Harga bukan angka valid");
+            return NextResponse.json(
+                { message: "Harga harus berupa angka", success: false },
+                { status: 400 }
+            );
+        }
+
+        // 3. Cek Duplikat Nomor Kamar
+        const check = await prisma.tb_kamar.findFirst({
+            where: { nomorKamar: data.nomorKamar },
+            select: { id: true },
+        });
+
+        if (check) {
+            console.log("[API] Gagal: Duplikat Nomor Kamar");
+            return NextResponse.json(
+                { message: "Nomor Kamar sudah digunakan!", success: false },
+                { status: 400 }
+            );
+        }
+
+        // 4. Simpan ke Database
+        console.log("[API] Sedang menyimpan ke Prisma...");
+
+        const kamarBaru = await prisma.tb_kamar.create({
+            data: {
+                nomorKamar: data.nomorKamar,
+                hargaSewa: hargaFix,
+                statusKamar: data.statusKamar || "Tersedia",
+                deskripsi: data.deskripsi,
+            },
+        });
+
+        console.log("[API] Berhasil Disimpan:", kamarBaru);
+        console.log("====================================");
+
         return NextResponse.json(
             {
-                message: "Data Kamar Gagal Disimpan ! (Nomor Kamar sudah digunakan)",
-                success: false
+                message: "Data Kamar Berhasil Disimpan!",
+                data: kamarBaru,
+                success: true,
             },
+            { status: 201 }
+        );
+
+    } catch (error: unknown) {
+        // 5. Tangkap Error Server
+        console.error("[API CRASH] Error Detail:", error); // <-- Cek pesan ini di Terminal VS Code
+
+        const errorMessage = error instanceof Error ? error.message : String(error);
+
+        return NextResponse.json(
             {
-                status: 400
-            }
-        )
+                message: "Terjadi kesalahan pada server",
+                success: false,
+                error: errorMessage,
+            },
+            { status: 500 }
+        );
     }
-
-    // jika nomor kamar tidak ditemukan
-    await prisma.tb_kamar.create({
-        data: {
-            nomorKamar: data.nomorKamar,
-            hargaSewa: data.hargaSewa,
-            statusKamar: data.statusKamar || "Tersedia",
-            deskripsi: data.deskripsi
-        }
-    })
-
-    // tampilkan respon
-    return NextResponse.json(
-        {
-            message: "Data Kamar Berhasil DIbuat !",
-            success: true
-        },
-        {
-            status: 201
-        }
-    )
-}
+};
