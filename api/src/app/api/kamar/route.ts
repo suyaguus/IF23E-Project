@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { StatusKamar } from "@prisma/client";
 
 // buat service ambil data
 export const GET = async () => {
@@ -24,57 +25,67 @@ export const POST = async (request: NextRequest) => {
     try {
         const data = await request.json();
 
-        // --- LOG DEBUGGING (Cek Terminal VS Code Anda saat submit) ---
-        console.log("====================================");
         console.log("[API] Data Masuk:", data);
 
-        // 1. Validasi Input Dasar
+        // Validasi Input Dasar
         if (!data.nomorKamar || !data.hargaSewa) {
-            console.log("[API] Gagal: Data tidak lengkap");
             return NextResponse.json(
                 { message: "Nomor Kamar dan Harga wajib diisi", success: false },
                 { status: 400 }
             );
         }
 
-        // 2. Konversi Harga ke Number
+        // Konversi Harga
         const hargaFix = Number(data.hargaSewa);
         if (isNaN(hargaFix)) {
-            console.log("API] Gagal: Harga bukan angka valid");
             return NextResponse.json(
                 { message: "Harga harus berupa angka", success: false },
                 { status: 400 }
             );
         }
 
-        // 3. Cek Duplikat Nomor Kamar
+        // Cek Duplikat
         const check = await prisma.tb_kamar.findFirst({
             where: { nomorKamar: data.nomorKamar },
             select: { id: true },
         });
 
         if (check) {
-            console.log("[API] Gagal: Duplikat Nomor Kamar");
             return NextResponse.json(
                 { message: "Nomor Kamar sudah digunakan!", success: false },
                 { status: 400 }
             );
         }
 
-        // 4. Simpan ke Database
-        console.log("[API] Sedang menyimpan ke Prisma...");
+        // --- PERBAIKAN LOGIC MAPPING STATUS ---
+        // Inisialisasi variabel dengan Tipe Enum, bukan string biasa
+        let statusKamarFix: StatusKamar = StatusKamar.Tersedia;
 
+        if (data.statusKamar) {
+            const rawStatus = String(data.statusKamar).toUpperCase();
+
+            if (rawStatus === "TERSEWA") {
+                statusKamarFix = StatusKamar.Tersewa; // Gunakan Enum
+            } else if (rawStatus === "TIDAKTERSEDIA" || rawStatus === "TIDAK TERSEDIA") {
+                statusKamarFix = StatusKamar.TidakTersedia; // Gunakan Enum
+            } else {
+                // Default ke Tersedia jika input tidak dikenali
+                statusKamarFix = StatusKamar.Tersedia; // Gunakan Enum
+            }
+        }
+        // --------------------------------------
+
+        // Simpan ke Database
         const kamarBaru = await prisma.tb_kamar.create({
             data: {
                 nomorKamar: data.nomorKamar,
                 hargaSewa: hargaFix,
-                statusKamar: data.statusKamar || "Tersedia",
+                statusKamar: statusKamarFix, // Sekarang tipe datanya sudah cocok (StatusKamar)
                 deskripsi: data.deskripsi,
             },
         });
 
         console.log("[API] Berhasil Disimpan:", kamarBaru);
-        console.log("====================================");
 
         return NextResponse.json(
             {
@@ -86,8 +97,7 @@ export const POST = async (request: NextRequest) => {
         );
 
     } catch (error: unknown) {
-        // 5. Tangkap Error Server
-        console.error("[API CRASH] Error Detail:", error); // <-- Cek pesan ini di Terminal VS Code
+        console.error("[API CRASH] Error Detail:", error);
 
         const errorMessage = error instanceof Error ? error.message : String(error);
 
