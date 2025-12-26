@@ -62,7 +62,9 @@ export const POST = async (request: NextRequest) => {
             if (rawStatus === "TERSEWA") {
                 statusKamarFix = StatusKamar.Tersewa;
             }
-            else if (rawStatus === "TIDAKTERSEDIA") {
+            else if (rawStatus === "TIDAK_TERSEDIA" ||
+                rawStatus === "TIDAKTERSEDIA" ||
+                rawStatus === "TIDAK TERSEDIA") {
                 statusKamarFix = StatusKamar.TidakTersedia;
             }
             else {
@@ -74,7 +76,7 @@ export const POST = async (request: NextRequest) => {
             data: {
                 nomorKamar: data.nomorKamar,
                 hargaSewa: hargaFix,
-                statusKamar: statusKamarFix, 
+                statusKamar: statusKamarFix,
                 deskripsi: data.deskripsi,
             },
         });
