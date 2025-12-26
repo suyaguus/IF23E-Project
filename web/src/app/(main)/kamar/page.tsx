@@ -9,7 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
-import useSWR from "swr";
 import { Pencil, Trash } from "lucide-react";
 import {
   AlertDialog,
@@ -22,58 +21,81 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import axios from "axios";
 import { toast } from "sonner";
 import Link from "next/link";
-
-interface ModelKamar {
-  id: number;
-  nomorKamar: string;
-  hargaSewa: number;
-  statusKamar: string;
-  deskripsi: string;
-}
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { useKamar } from "@/hooks/useKamar";
+import { kamarFetcher } from "@/lib/fetchers/kamarFetcher";
+import { Kamar, StatusKamar } from "@/types/interfaces";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export default function KamarPage() {
-  const { data, error, isLoading, mutate } = useSWR(
-    "http://localhost:3001/api/kamar",
-    fetcher
-  );
+  const { data: kamarList, isLoading, isError, mutate } = useKamar();
 
-  const deleteData = async (id: number) => {
+  const handleDelete = async (id: number) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:3001/api/kamar/${id}`
-      );
-
-      if (response.data.success) {
-        toast.success(response.data.message);
-        mutate();
+      const result = await kamarFetcher.deleteKamar(id);
+      if (result.success) {
+        toast.success(result.message || "Data berhasil dihapus");
       } else {
-        toast.error(response.data.message);
+        toast.success("Data berhasil dihapus");
       }
-    } catch (error) {
-      toast.error("Gagal menghapus data");
-      console.error(error);
+      mutate();
+    } catch (error: unknown) {
+      console.error("Gagal menghapus:", error);
+      const errMsg =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Gagal menghapus data";
+      toast.error(errMsg);
     }
+  };
+
+  // --- HELPER WARNA & TEXT ---
+  const getStatusBadge = (status: string | StatusKamar) => {
+    const normalizedStatus = String(status)
+      .toUpperCase()
+      .replace(/_/g, "")
+      .replace(/\s/g, "");
+
+    // 2. Cek Kondisi
+    if (normalizedStatus === "TERSEDIA") {
+      return {
+        color: "bg-green-100 text-green-700 border-green-200",
+        label: "Tersedia",
+      };
+    } else if (normalizedStatus === "TERSEWA") {
+      return {
+        color: "bg-red-100 text-red-700 border-red-200",
+        label: "Tersewa",
+      };
+    } else if (normalizedStatus === "TIDAKTERSEDIA") {
+      return {
+        color: "bg-slate-200 text-slate-700 border-slate-300", // Abu-abu lebih gelap sedikit biar terlihat
+        label: "Tidak Tersedia",
+      };
+    }
+
+    // Default (Jika status tidak dikenali)
+    return {
+      color: "bg-gray-50 text-gray-500 border-gray-200",
+      label: status,
+    };
   };
 
   return (
     <div>
+      <AppSidebar />
       <section className="flex items-center justify-between px-5 py-2">
         <h1 className="text-xl font-semibold">Halaman Kamar</h1>
         <nav className="flex space-x-4">
           <Link
             href="/kamar/tambah"
-            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 text-sm flex items-center justify-center"
+            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 text-sm flex items-center justify-center transition-colors"
           >
             Tambah Kamar
           </Link>
           <Link
-            href="/"
-            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 text-sm flex items-center justify-center"
+            href="/dashboard/admin"
+            className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 text-sm flex items-center justify-center transition-colors"
           >
             Kembali
           </Link>
@@ -81,91 +103,124 @@ export default function KamarPage() {
       </section>
 
       <article className="p-4">
-        {error ? (
-          <div className="text-center text-red-500">
-            Gagal Mengambil Data: {error.message}
+        {isError ? (
+          <div className="text-center text-red-500 py-10 bg-red-50 rounded-md">
+            Gagal Mengambil Data. Pastikan server berjalan.
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center w-[15%]">Aksi</TableHead>
-                <TableHead className="text-center w-[20%]">
-                  Nomor Kamar
-                </TableHead>
-                <TableHead className="text-center w-[20%]">
-                  Harga Sewa
-                </TableHead>
-                <TableHead className="text-center w-[20%]">
-                  Status Kamar
-                </TableHead>
-                <TableHead className="text-center w-[25%]">Deskripsi</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
+          <div className="border rounded-md shadow-sm">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    Mohon Tunggu...
-                  </TableCell>
+                  <TableHead className="text-center w-[15%]">Aksi</TableHead>
+                  <TableHead className="text-center w-[15%]">
+                    Nomor Kamar
+                  </TableHead>
+                  <TableHead className="text-center w-[20%]">
+                    Harga Sewa Bulanan
+                  </TableHead>
+                  <TableHead className="text-center w-[20%]">
+                    Status Kamar
+                  </TableHead>
+                  <TableHead className="text-center w-[30%]">
+                    Deskripsi
+                  </TableHead>
                 </TableRow>
-              ) : data && data.kamar && data.kamar.length > 0 ? (
-                data.kamar.map((item: ModelKamar) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="text-center">
-                      <Link href={`/kamar/edit/${item.id}`}>
-                        <button className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded mr-2">
-                          <Pencil size={15} />
-                        </button>
-                      </Link>
-
-                      <AlertDialog>
-                        <AlertDialogTrigger className="bg-red-500 hover:bg-red-600 text-white p-2 rounded">
-                          <Trash size={15} color="white" />
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Apakah anda yakin ingin menghapus data ini?
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Kamar Nomor: {item.nomorKamar} akan dihapus?
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Tidak</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => deleteData(item.id)}
-                            >
-                              Ya
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {item.nomorKamar}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      Rp {item.hargaSewa.toLocaleString("id-ID")}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {item.statusKamar}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {item.deskripsi}
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center h-24">
+                      <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                        <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                        Mohon Tunggu...
+                      </div>
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    Tidak ada data
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                ) : kamarList && kamarList.length > 0 ? (
+                  kamarList.map((item: Kamar) => {
+                    // Ambil config warna & label
+                    const badge = getStatusBadge(item.statusKamar);
+
+                    return (
+                      <TableRow key={item.id}>
+                        <TableCell className="text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <Link href={`/kamar/edit/${item.id}`}>
+                              <button
+                                className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded transition-colors"
+                                title="Edit"
+                              >
+                                <Pencil size={16} />
+                              </button>
+                            </Link>
+
+                            <AlertDialog>
+                              <AlertDialogTrigger
+                                className="bg-red-500 hover:bg-red-600 text-white p-2 rounded transition-colors"
+                                title="Hapus"
+                              >
+                                <Trash size={16} />
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Konfirmasi Hapus
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Apakah Anda yakin ingin menghapus{" "}
+                                    <b>Kamar {item.nomorKamar}</b>? Data yang
+                                    dihapus tidak dapat dikembalikan.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Batal</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDelete(item.id)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Hapus
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center font-medium">
+                          {item.nomorKamar}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          Rp {Number(item.hargaSewa).toLocaleString("id-ID")}
+                        </TableCell>
+
+                        {/* KOLOM STATUS DENGAN WARNA BARU */}
+                        <TableCell className="text-center">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium border ${badge.color}`}
+                          >
+                            {badge.label}
+                          </span>
+                        </TableCell>
+
+                        <TableCell className="text-center text-muted-foreground text-sm truncate max-w-[200px]">
+                          {item.deskripsi}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={5}
+                      className="text-center h-24 text-muted-foreground"
+                    >
+                      Tidak ada data kamar ditemukan.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </article>
     </div>

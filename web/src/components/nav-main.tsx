@@ -48,7 +48,7 @@ export function NavMain({
           </SidebarMenuItem>
 
           {/* bagian user */}
-          <Link href="/user">
+          {/* <Link href="/user">
             <SidebarMenuItem className="flex items-center gap-2">
               <SidebarMenuButton
                 tooltip="Menu User"
@@ -58,7 +58,7 @@ export function NavMain({
                 <span>Menu User</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          </Link>
+          </Link> */}
 
           {/* bagian kamar */}
           <Link href="/kamar">

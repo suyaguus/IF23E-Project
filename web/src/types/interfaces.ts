@@ -4,9 +4,9 @@ export enum Role {
 }
 
 export enum StatusKamar {
-  Tersedia = 'Tersedia',
-  Tersewa = 'Tersewa',
-  TidakTersedia = 'TidakTersedia',
+  Tersedia = 'TERSEDIA',
+  Tersewa = 'TERSEWA',
+  TidakTersedia = 'TIDAK_TERSEDIA',
 }
 
 export enum StatusPembayaran {
