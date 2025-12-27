@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Helper untuk parameter Next.js 15
 type Params = { params: Promise<{ id: string }> };
 
 // GET By ID (Untuk Detail/Edit)
 export const GET = async (req: NextRequest, { params }: Params) => {
     try {
-        const { id } = await params; 
+        const { id } = await params; // Await params (Wajib di Next.js 15)
 
         const data = await prisma.tb_fasilitas.findUnique({
             where: { id: Number(id) },
@@ -19,8 +20,10 @@ export const GET = async (req: NextRequest, { params }: Params) => {
             );
         }
 
+        // PERBAIKAN DI SINI:
+        // Ganti "fasilitas: data" menjadi "data: data"
         return NextResponse.json(
-            { fasilitas: data, success: true }, 
+            { data: data, success: true },
             { status: 200 }
         );
     } catch (error) {
@@ -35,22 +38,23 @@ export const GET = async (req: NextRequest, { params }: Params) => {
 export const PUT = async (req: NextRequest, { params }: Params) => {
     try {
         const { id } = await params;
-        const data = await req.json();
+        const dataInput = await req.json();
 
         // Validasi
-        if (!data.namaFasilitas || !data.kodeFasilitas) {
+        if (!dataInput.namaFasilitas || !dataInput.kodeFasilitas) {
             return NextResponse.json({ message: "Data tidak lengkap", success: false }, { status: 400 });
         }
 
         const updated = await prisma.tb_fasilitas.update({
             where: { id: Number(id) },
             data: {
-                namaFasilitas: data.namaFasilitas,
-                kodeFasilitas: data.kodeFasilitas,
-                deskripsi: data.deskripsi,
+                namaFasilitas: dataInput.namaFasilitas,
+                kodeFasilitas: dataInput.kodeFasilitas,
+                deskripsi: dataInput.deskripsi,
             },
         });
 
+        // Pastikan response PUT juga menggunakan format yang standar
         return NextResponse.json(
             { message: "Data Berhasil Diupdate", data: updated, success: true },
             { status: 200 }
