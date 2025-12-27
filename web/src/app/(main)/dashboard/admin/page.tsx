@@ -1,5 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import { Cards } from "@/components/card";
+import Cards from "@/components/card";
 
 export default function DashboardAdminPage() {
   return (

@@ -7,20 +7,10 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardUserPage() {
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "280px",
-          "--header-height": "64px",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebarUser variant="inset" />
+    <SidebarProvider>
+
 
       <SidebarInset>
-        <SiteHeader />
-
-        {/* Kontainer Utama */}
         <div className="flex flex-1 flex-col p-4 md:p-6 lg:p-8">
           <div className="@container/main flex flex-1 flex-col gap-8">
             {/* 1. Header & Statistik Utama */}
