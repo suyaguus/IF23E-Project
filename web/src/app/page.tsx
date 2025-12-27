@@ -25,16 +25,15 @@ export default function DashBoardPage() {
         <AppSidebardashboard />
 
         <SidebarInset>
-          <section className="px-4 pt-8 text-center lg:px-6">
-            <header className="mx-auto">
-              <h2 className="text-xl font-semibold tracking-tight">
-                Informasi Kost Wisma Dempo
-              </h2>
-              <article className="text-sm text-muted-foreground">
-                Gambaran umum dan Deskripsi kost
-              </article>
-            </header>
-          </section>
+          <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur flex h-14 items-center px-4 gap-2">
+            {/* 2. PASANG TOMBOL TOGGLE DI SINI */}
+            <SidebarTrigger className="-ml-1" />
+            <div className="h-4 w-px bg-slate-200 mx-2" />{" "}
+            {/* Separator kecil (opsional) */}
+            <div className="flex flex-1 items-center justify-between">
+              <h1 className="font-bold text-lg truncate">Kost Wisma Dempo</h1>
+            </div>
+          </header>
 
           {/*  SECTION GAMBAR KAMAR KOST */}
           <section className="px-4 py-10 lg:px-6">
