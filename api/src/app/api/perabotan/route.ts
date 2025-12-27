@@ -1,73 +1,109 @@
-import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-// buat service tampil data
+// GET: Ambil Semua Data
 export const GET = async () => {
+     try {
+          const data = await prisma.tb_perabotan.findMany(
+               {
+                    orderBy: {
+                         id: "asc"
+                    }
+               }
+          );
 
-     // ambil data
-     const data = await prisma.tb_perabotan.findMany({
-          orderBy: {
-               id: 'asc'
-          }
-     });
-
-     // tampilkan respon
-     return NextResponse.json(
-          {
-               perabotan: data
-          },
-          {
-               status: 200
-          }
-     );
-};
-
-// buat service simpan data
-export const POST = async (request: NextRequest) => {
-
-     // buat dalam format json
-     const data = await request.json();
-
-     // mengecek apakah data perabotan sudah ada 
-     const check = await prisma.tb_perabotan.findFirst({
-          where: {
-               namaPerabotan: data.namaPerabotan
-          },
-          select: {
-               namaPerabotan: true
-          }
-     })
-
-     // jika perabotan sudah ditemukan
-     if (check) {
           return NextResponse.json(
                {
-                    message: "Data Gagal Dibuat ! (Perabotan Sudah Ada)",
+                    data: data,
+                    success: true
+               },
+               {
+                    status: 200
+               }
+          );
+     } catch (error) {
+          return NextResponse.json(
+               {
+                    message: "Gagal mengambil data",
                     success: false
                },
                {
-                    status: 400
+                    status: 500
                }
-          )
+          );
      }
+};
 
-     // jika perabotan tidak ditemukan
-     await prisma.tb_perabotan.create({
-          data: {
-               namaPerabotan: data.namaPerabotan,
-               kodePerabotan: data.kodePerabotan,
-               deskripsi: data.deskripsi
-          }
-     });
+// POST: Tambah Data Baru
+export const POST = async (request: NextRequest) => {
+     try {
+          const dataInput = await request.json();
 
-     //  tampilkan respon
-     return NextResponse.json(
-          {
-               message: "Data Berhasil Dibuat !",
-               success: true
-          },
-          {
-               status: 201
+          if (!dataInput.namaPerabotan || !dataInput.kodePerabotan) {
+               return NextResponse.json(
+                    {
+                         message: "Nama dan Kode wajib diisi",
+                         success: false
+                    },
+                    {
+                         status: 400
+                    }
+               );
           }
-     );
-}
+
+          const check = await prisma.tb_perabotan.findFirst(
+               {
+                    where: {
+                         OR: [
+                              { namaPerabotan: dataInput.namaPerabotan },
+                              { kodePerabotan: dataInput.kodePerabotan }
+                         ]
+                    }
+               }
+          );
+
+          if (check) {
+               return NextResponse.json(
+                    {
+                         message: "Data Perabotan sudah ada!",
+                         success: false
+                    },
+                    {
+                         status: 400
+                    }
+               );
+          }
+
+          const newData = await prisma.tb_perabotan.create(
+               {
+                    data: {
+                         namaPerabotan: dataInput.namaPerabotan,
+                         kodePerabotan: dataInput.kodePerabotan,
+                         deskripsi: dataInput.deskripsi || "",
+                    }
+               }
+          );
+
+          return NextResponse.json(
+               {
+                    message: "Data Berhasil Disimpan!",
+                    data: newData,
+                    success: true
+               },
+               {
+                    status: 201
+               }
+          );
+     } catch (error) {
+          console.error(error);
+          return NextResponse.json(
+               {
+                    message: "Terjadi kesalahan server",
+                    success: false
+               },
+               {
+                    status: 500
+               }
+          );
+     }
+};
