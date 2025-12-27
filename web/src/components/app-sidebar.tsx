@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react"; // 1. Import Hooks
 import {
+  IconBed,
   IconInnerShadowTop,
   // ... icon lainnya
 } from "@tabler/icons-react";
@@ -175,19 +176,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <a href="/dashboard/admin">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Dashboard Admin</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
+          {/* Icon Logo Kecil */}
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <IconBed className="size-4" />
+          </div>
+          {/* Teks Logo */}
+          <span className="group-data-[collapsible=icon]:hidden">
+            <span className="text-primary">Kost Wisma Dempo</span>
+          </span>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroupLabel>Menu Utama</SidebarGroupLabel>

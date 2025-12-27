@@ -31,13 +31,28 @@ export default function DashBoardPage() {
             <div className="h-4 w-px bg-slate-200 mx-2" />{" "}
             {/* Separator kecil (opsional) */}
             <div className="flex flex-1 items-center justify-between">
-              <h1 className="font-bold text-lg truncate">Kost Wisma Dempo</h1>
+              <h1 className="font-bold text-lg truncate">Home Page</h1>
             </div>
           </header>
 
+          <section className="px-4 pt-2 lg:px-6">
+            <article>
+              <h3 className="text-xl font-bold">Deskripsi Kost</h3>
+              <article className="mt-2 text-justify leading-relaxed text-muted-foreground">
+                Kost ini merupakan pilihan ideal bagi Anda yang menginginkan
+                hunian nyaman dengan lokasi strategis di Bandar Lampung.
+                Didukung oleh fasilitas yang lengkap, lingkungan yang bersih
+                serta aman, dan akses yang mudah ke kampus, perkantoran, maupun
+                transportasi umum, kost ini dirancang untuk memberikan
+                kenyamanan maksimal dan mendukung aktivitas harian secara
+                optimal bagi mahasiswa maupun karyawan.
+              </article>
+            </article>
+          </section>
+
           {/*  SECTION GAMBAR KAMAR KOST */}
           <section className="px-4 py-10 lg:px-6">
-            <h2 className="mb-4 text-base font-medium">Galeri Kamar Kost</h2>
+            <h2 className="mb-4 text-xl font-bold">Galeri Kamar Kost</h2>
 
             <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <KamarCard
@@ -69,24 +84,9 @@ export default function DashBoardPage() {
             </section>
           </section>
 
-          <section className="px-4 pt-2 lg:px-6">
-            <article>
-              <h3 className="text-base font-medium">Deskripsi Kost</h3>
-              <article className="mt-2 text-justify leading-relaxed text-muted-foreground">
-                Kost ini merupakan pilihan ideal bagi Anda yang menginginkan
-                hunian nyaman dengan lokasi strategis di Bandar Lampung.
-                Didukung oleh fasilitas yang lengkap, lingkungan yang bersih
-                serta aman, dan akses yang mudah ke kampus, perkantoran, maupun
-                transportasi umum, kost ini dirancang untuk memberikan
-                kenyamanan maksimal dan mendukung aktivitas harian secara
-                optimal bagi mahasiswa maupun karyawan.
-              </article>
-            </article>
-          </section>
-
           {/* FASILITAS */}
           <section className="px-4 py-4 lg:px-6">
-            <h3 className="mb-4 text-base font-medium">Fasilitas</h3>
+            <h3 className="mb-4 text-xl font-bold">Fasilitas</h3>
 
             <section className="flex flex-wrap gap-3 text-sm">
               <article className="rounded-full border px-4 py-1">
@@ -110,7 +110,7 @@ export default function DashBoardPage() {
 
           {/* Alamat Kost */}
           <section className="px-4 py-6 lg:px-6">
-            <h3 className="mb-2 text-base font-medium">Alamat Kost</h3>
+            <h3 className="mb-2 text-xl font-bold">Alamat Kost</h3>
 
             <address className="flex items-center gap-2 text-sm not-italic text-muted-foreground">
               <MapPin className="h-4 w-4" />

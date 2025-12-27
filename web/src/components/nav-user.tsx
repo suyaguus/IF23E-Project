@@ -59,6 +59,10 @@ export function NavUser({
     ? "/dashboard/admin/profile"
     : "/dashboard/user/profile";
 
+  const settingUrl = isAdmin
+    ? "/dashboard/admin/settings"
+    : "/dashboard/user/settings";
+
   const activeUser = {
     name: isLoggedIn
       ? authUser?.username || propUser?.name || ""
@@ -150,7 +154,7 @@ export function NavUser({
                       <User className="mr-2 h-4 w-4" />
                       Account
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/settings")}>
+                    <DropdownMenuItem onClick={() => router.push(settingUrl)}>
                       <Settings className="mr-2 h-4 w-4" />
                       Settings
                     </DropdownMenuItem>

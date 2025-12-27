@@ -1,0 +1,27 @@
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import {AppSidebardashboard} from "@/components/app-sidebar-dashboard";
+
+export default function SettingLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <SidebarProvider>
+      <AppSidebardashboard />
+
+      <SidebarInset className="overflow-x-hidden">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background sticky top-0 z-10">
+          <SidebarTrigger className="-ml-1" />
+          <div className="h-4 w-px bg-border" />
+        </header>
+
+        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
