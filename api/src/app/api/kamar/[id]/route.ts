@@ -124,87 +124,92 @@ export const DELETE = async (
 
 // buat fungsi update data
 export const PUT = async (
-  request: NextRequest,
-  { params }: { params: { id: string } }
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ) => {
-  try {
-    const id = Number(params.id);
-    const data = await request.json();
+    try {
+        // 1. AWAIT params terlebih dahulu
+        const resolvedParams = await params;
+        const id = Number(resolvedParams.id);
 
-    console.log(`[API UPDATE] ID: ${id}`, data);
+        const data = await request.json();
 
-    // Validasi
-    if (!data.nomorKamar || !data.hargaSewa) {
-      return NextResponse.json(
-        { message: "Nomor Kamar dan Harga wajib diisi", success: false },
-        { status: 400 }
-      );
+        console.log(`[API UPDATE] ID: ${id}`, data);
+
+        // Validasi
+        if (!data.nomorKamar || !data.hargaSewa) {
+            return NextResponse.json(
+                { message: "Nomor Kamar dan Harga wajib diisi", success: false },
+                { status: 400 }
+            );
+        }
+
+        const checkDuplicate = await prisma.tb_kamar.findFirst({
+            where: {
+                nomorKamar: data.nomorKamar,
+                NOT: {
+                    id: id,
+                },
+            },
+        });
+
+        if (checkDuplicate) {
+            return NextResponse.json(
+                { message: "Nomor Kamar sudah digunakan oleh kamar lain!", success: false },
+                { status: 400 }
+            );
+        }
+
+        let statusKamarFix: StatusKamar = StatusKamar.Tersedia;
+
+        // Pastikan logic mapping ini sesuai dengan Enum di Prisma Client Anda
+        // (Gunakan StatusKamar.Tersedia / StatusKamar.TERSEDIA sesuai generated client)
+        if (data.statusKamar) {
+            const rawStatus = String(data.statusKamar)
+                .toUpperCase()
+                .replace(/\s/g, "_")
+                .replace(/[^A-Z_]/g, "");
+
+            // Mapping Manual
+            if (rawStatus.includes("TERSEWA")) {
+                statusKamarFix = StatusKamar.Tersewa;
+            } else if (rawStatus.includes("TIDAK") || rawStatus.includes("NOT")) {
+                statusKamarFix = StatusKamar.TidakTersedia;
+            } else {
+                statusKamarFix = StatusKamar.Tersedia;
+            }
+        }
+        // -------------------------------------------------
+
+        // Update Database
+        const updatedKamar = await prisma.tb_kamar.update({
+            where: { id: id },
+            data: {
+                nomorKamar: data.nomorKamar,
+                hargaSewa: Number(data.hargaSewa),
+                statusKamar: statusKamarFix,
+                deskripsi: data.deskripsi,
+            },
+        });
+
+        return NextResponse.json(
+            {
+                message: "Data Kamar Berhasil Diupdate!",
+                data: updatedKamar,
+                success: true,
+            },
+            { status: 200 }
+        );
+
+    } catch (error: unknown) {
+        console.error("🔥 [API EDIT ERROR]:", error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json(
+            { message: "Gagal mengupdate data", success: false, error: errorMessage },
+            { status: 500 }
+        );
     }
-
-    const checkDuplicate = await prisma.tb_kamar.findFirst({
-      where: {
-        nomorKamar: data.nomorKamar,
-        NOT: {
-          id: id, 
-        },
-      },
-    });
-
-    if (checkDuplicate) {
-      return NextResponse.json(
-        { message: "Nomor Kamar sudah digunakan oleh kamar lain!", success: false },
-        { status: 400 }
-      );
-    }
-
-    let statusKamarFix: StatusKamar = StatusKamar.Tersedia; 
-    if (data.statusKamar) {
-      const rawStatus = String(data.statusKamar)
-        .toUpperCase()
-        .replace(/\s/g, "_") 
-        .replace(/[^A-Z_]/g, ""); 
-
-      // Mapping Manual untuk keamanan
-      if (rawStatus.includes("TERSEWA")) {
-        statusKamarFix = StatusKamar.Tersewa;
-      } else if (rawStatus.includes("TIDAK") || rawStatus.includes("NOT")) {
-        statusKamarFix = StatusKamar.TidakTersedia;
-      } else {
-        statusKamarFix = StatusKamar.Tersedia;
-      }
-    }
-    // -------------------------------------------------
-
-    // Update Database
-    const updatedKamar = await prisma.tb_kamar.update({
-      where: { id: id },
-      data: {
-        nomorKamar: data.nomorKamar,
-        hargaSewa: Number(data.hargaSewa),
-        statusKamar: statusKamarFix,
-        deskripsi: data.deskripsi,
-      },
-    });
-
-    return NextResponse.json(
-      {
-        message: "Data Kamar Berhasil Diupdate!",
-        data: updatedKamar,
-        success: true,
-      },
-      { status: 200 }
-    );
-
-  } catch (error: unknown) {
-    console.error("🔥 [API EDIT ERROR]:", error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    return NextResponse.json(
-      { message: "Gagal mengupdate data", success: false, error: errorMessage },
-      { status: 500 }
-    );
-  }
 };
-
 // buat fungsi get data berdasarkan id
 export const GET = async (
     req: NextRequest,
