@@ -53,6 +53,12 @@ export function NavUser({
   // --- LOGIC PENENTUAN STATUS USER ---
   const isLoggedIn = !!authUser;
 
+  const isAdmin = authUser?.role === "Admin";
+
+  const profileUrl = isAdmin
+    ? "/dashboard/admin/profile"
+    : "/dashboard/user/profile";
+
   const activeUser = {
     name: isLoggedIn
       ? authUser?.username || propUser?.name || ""
@@ -62,9 +68,7 @@ export function NavUser({
       : "Silakan Login",
     avatar: isLoggedIn ? propUser?.avatar || "" : "",
   };
-  // -----------------------------------
 
-  // Helper untuk inisial
   const getInitials = (name: string) => {
     if (!name || name === "Tamu (Guest)") return "GU";
     const parts = name.split(" ");
@@ -142,7 +146,7 @@ export function NavUser({
               {isLoggedIn ? (
                 <>
                   <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => router.push("/profile")}>
+                    <DropdownMenuItem onClick={() => router.push(profileUrl)}>
                       <User className="mr-2 h-4 w-4" />
                       Account
                     </DropdownMenuItem>
