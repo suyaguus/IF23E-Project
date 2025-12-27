@@ -1,70 +1,74 @@
-import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-// buat service tampil data
+// GET: Ambil Semua Data
 export const GET = async () => {
-    const data = await prisma.tb_fasilitas.findMany({
-        orderBy: {
-            id: 'asc'
-        }
-    })
+    try {
+        const data = await prisma.tb_fasilitas.findMany({
+            orderBy: { id: "asc" },
+        });
 
-    return NextResponse.json(
-        {
-            fasilitas: data
-        },
-        {
-            status: 200
-        }
-    )
+        return NextResponse.json(
+            { fasilitas: data, success: true },
+            { status: 200 }
+        );
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Gagal mengambil data fasilitas", success: false },
+            { status: 500 }
+        );
+    }
 };
 
-// buat service simpan data
+// POST: Tambah Data Baru
 export const POST = async (request: NextRequest) => {
+    try {
+        const data = await request.json();
 
-    // buat fungsi dalam format json
-    const data = await request.json();
-
-    // mengecek apakah data fasilitas sudah ada 
-    const check = await prisma.tb_fasilitas.findFirst({
-        where: {
-            namaFasilitas: data.namaFasilitas
-        },
-        select: {
-            namaFasilitas: true
+        // 1. Validasi Input
+        if (!data.namaFasilitas || !data.kodeFasilitas) {
+            return NextResponse.json(
+                { message: "Nama dan Kode Fasilitas wajib diisi", success: false },
+                { status: 400 }
+            );
         }
-    })
 
-    // jika faslitias sudah ditemukan
-    if (check) {
-        return NextResponse.json(
-            {
-                message: "Data Gagal Disimpan ! (Fasilitas Sudah Ada)",
-                success: false
+        // 2. Cek Duplikat (Opsional: berdasarkan Kode atau Nama)
+        const check = await prisma.tb_fasilitas.findFirst({
+            where: {
+                OR: [
+                    { kodeFasilitas: data.kodeFasilitas },
+                    { namaFasilitas: data.namaFasilitas }
+                ]
             },
-            {
-                status: 400
-            }
-        )
+            select: { id: true },
+        });
+
+        if (check) {
+            return NextResponse.json(
+                { message: "Fasilitas dengan nama atau kode tersebut sudah ada!", success: false },
+                { status: 400 }
+            );
+        }
+
+        // 3. Simpan ke DB
+        const newData = await prisma.tb_fasilitas.create({
+            data: {
+                namaFasilitas: data.namaFasilitas,
+                kodeFasilitas: data.kodeFasilitas,
+                deskripsi: data.deskripsi || "",
+            },
+        });
+
+        return NextResponse.json(
+            { message: "Fasilitas Berhasil Disimpan!", data: newData, success: true },
+            { status: 201 }
+        );
+    } catch (error: unknown) {
+        console.error("[API FASILITAS POST]", error);
+        return NextResponse.json(
+            { message: "Terjadi kesalahan server", success: false },
+            { status: 500 }
+        );
     }
-
-    // jika fasilitas tidak ditemukan
-    await prisma.tb_fasilitas.create({
-        data: {
-            namaFasilitas: data.namaFasilitas,
-            kodeFasilitas: data.kodeFasilitas,
-            deskripsi: data.deskripsi
-        }
-    })
-
-    // tampilkan respon
-    return NextResponse.json(
-        {
-            message: "Data Berhasil Disimpan !",
-            success: true
-        },
-        {
-            status: 200
-        }
-    )
-}
+};
