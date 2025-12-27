@@ -1,5 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { StatusKamar } from "@prisma/client";
+
 
 // fungsi untuk menghapus data
 export const DELETE = async (
@@ -122,61 +124,92 @@ export const DELETE = async (
 
 // buat fungsi update data
 export const PUT = async (
-    req: NextRequest,
-    context: { params: Promise<{ id: string }> }
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ) => {
-    const { id } = await context.params;
-    const kamarId = Number(id);
-    const data = await req.json();
+    try {
+        // 1. AWAIT params terlebih dahulu
+        const resolvedParams = await params;
+        const id = Number(resolvedParams.id);
 
-    // validasi id
-    if (isNaN(kamarId)) {
-        return NextResponse.json(
-            {
-                success: false, message: "ID Tidak Valid"
-            },
-            {
-                status: 400
-            }
-        );
-    }
+        const data = await request.json();
 
-    // cek apakah kamar ada berdasarkan id
-    const kamar = await prisma.tb_kamar.findUnique({
-        where: { id: kamarId }
-    });
+        console.log(`[API UPDATE] ID: ${id}`, data);
 
-    // jika kamar tidak ditemukan
-    if (!kamar) {
-        return NextResponse.json(
-            {
-                success: false,
-                message: "Kamar Tidak Ditemukan"
-            },
-            {
-                status: 404
-            }
-        );
-    }
-
-    // update kamar
-    await prisma.tb_kamar.update({
-        where: { id: kamarId },
-        data: data
-    });
-
-    // response sukses
-    return NextResponse.json(
-        {
-            success: true,
-            message: "Kamar Berhasil Diubah"
-        },
-        {
-            status: 200
+        // Validasi
+        if (!data.nomorKamar || !data.hargaSewa) {
+            return NextResponse.json(
+                { message: "Nomor Kamar dan Harga wajib diisi", success: false },
+                { status: 400 }
+            );
         }
-    );
-};
 
+        const checkDuplicate = await prisma.tb_kamar.findFirst({
+            where: {
+                nomorKamar: data.nomorKamar,
+                NOT: {
+                    id: id,
+                },
+            },
+        });
+
+        if (checkDuplicate) {
+            return NextResponse.json(
+                { message: "Nomor Kamar sudah digunakan oleh kamar lain!", success: false },
+                { status: 400 }
+            );
+        }
+
+        let statusKamarFix: StatusKamar = StatusKamar.Tersedia;
+
+        // Pastikan logic mapping ini sesuai dengan Enum di Prisma Client Anda
+        // (Gunakan StatusKamar.Tersedia / StatusKamar.TERSEDIA sesuai generated client)
+        if (data.statusKamar) {
+            const rawStatus = String(data.statusKamar)
+                .toUpperCase()
+                .replace(/\s/g, "_")
+                .replace(/[^A-Z_]/g, "");
+
+            // Mapping Manual
+            if (rawStatus.includes("TERSEWA")) {
+                statusKamarFix = StatusKamar.Tersewa;
+            } else if (rawStatus.includes("TIDAK") || rawStatus.includes("NOT")) {
+                statusKamarFix = StatusKamar.TidakTersedia;
+            } else {
+                statusKamarFix = StatusKamar.Tersedia;
+            }
+        }
+        // -------------------------------------------------
+
+        // Update Database
+        const updatedKamar = await prisma.tb_kamar.update({
+            where: { id: id },
+            data: {
+                nomorKamar: data.nomorKamar,
+                hargaSewa: Number(data.hargaSewa),
+                statusKamar: statusKamarFix,
+                deskripsi: data.deskripsi,
+            },
+        });
+
+        return NextResponse.json(
+            {
+                message: "Data Kamar Berhasil Diupdate!",
+                data: updatedKamar,
+                success: true,
+            },
+            { status: 200 }
+        );
+
+    } catch (error: unknown) {
+        console.error("🔥 [API EDIT ERROR]:", error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json(
+            { message: "Gagal mengupdate data", success: false, error: errorMessage },
+            { status: 500 }
+        );
+    }
+};
 // buat fungsi get data berdasarkan id
 export const GET = async (
     req: NextRequest,
