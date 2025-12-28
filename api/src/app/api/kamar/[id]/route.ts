@@ -231,38 +231,55 @@ export const GET = async (
         );
     }
 
-    // ambil data kamar berdasarkan id
-    const kamar = await prisma.tb_kamar.findUnique({
-        where: { id: kamarId },
-        select: {
-            nomorKamar: true,
-            hargaSewa: true,
-            statusKamar: true,
-            deskripsi: true
-        }
-    });
+    try {
+        // ambil data kamar berdasarkan id beserta relasinya
+        const kamar = await prisma.tb_kamar.findUnique({
+            where: { id: kamarId },
+            include: {
+                fasilitas: {
+                    include: {
+                        fasilitas: true
+                    }
+                },
+                perabotan: {
+                    include: {
+                        perabotan: true
+                    }
+                },
+            }
+        });
 
-    // jika kamar tidak ditemukan
-    if (!kamar) {
+        if (!kamar) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Kamar Tidak Ditemukan"
+                },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Kamar Berhasil Ditemukan",
+                kamar: kamar
+            },
+            {
+                status: 200
+            }
+        );
+
+    } catch (error) {
+        console.error("Error fetching kamar detail:", error);
         return NextResponse.json(
             {
                 success: false,
-                message: "Kamar Tidak Ditemukan"
+                message: "Terjadi Kesalahan Server"
             },
             {
-                status: 404
+                status: 500
             }
         );
     }
-
-    // response sukses
-    return NextResponse.json({
-        success: true,
-        message: "Kamar Berhasil Ditemukan",
-        data: kamar
-    },
-        {
-            status: 200
-        }
-    );
-};  
+};
