@@ -1,33 +1,39 @@
 import useSWR from 'swr';
-import { fetcher } from "@/utils/fetcher"; 
+import { perabotanFetcher } from "@/lib/fetchers/perabotanFetcher";
 import { Perabotan } from '@/types/interfaces';
 
 interface PerabotanResponse {
-    perabotan: Perabotan[];
+  data: Perabotan[];
+  message?: string;
+  success?: boolean;
 }
 
 interface PerabotanDetailResponse {
-  perabotan: Perabotan; 
+  data: Perabotan;
 }
 
 export function usePerabotan() {
-    const { data, error, isLoading, mutate } = useSWR<PerabotanResponse>("/perabotan", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<PerabotanResponse>(
+    "/perabotan",
+    perabotanFetcher.getAllPerabotan
+  );
 
-    return {
-        data: data?.perabotan || [],
-        isLoading,
-        isError: error,
-        mutate,
-    };
+  return {
+    data: data?.data || [],
+    isLoading,
+    isError: error,
+    mutate,
+  };
 }
 
 export function usePerabotanDetail(id: number | null) {
   const { data, error, isLoading, mutate } = useSWR<PerabotanDetailResponse>(
     id ? `/perabotan/${id}` : null,
-    fetcher
+    () => perabotanFetcher.getPerabotanById(Number(id))
   );
+
   return {
-    data: data?.perabotan,
+    data: data?.data,
     isLoading,
     isError: error,
     mutate,

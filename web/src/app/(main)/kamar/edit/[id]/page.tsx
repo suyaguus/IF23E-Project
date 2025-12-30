@@ -6,18 +6,12 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { ChevronLeft, Loader2, Save } from "lucide-react";
+import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
 // Imports Components shadcn/ui
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -39,7 +33,7 @@ import {
 
 // Imports Logic
 import { kamarFetcher } from "@/lib/fetchers/kamarFetcher";
-import { StatusKamar } from "@/types/interfaces"; // Pastikan Enum ini sudah benar (TERSEDIA, dll)
+import { StatusKamar } from "@/types/interfaces";
 import { formatRibuan, filterHarga } from "@/lib/scripts";
 import { AppSidebar } from "@/components/app-sidebar";
 
@@ -53,13 +47,13 @@ const formSchema = z.object({
 
 export default function EditKamarPage() {
   const router = useRouter();
-  const params = useParams(); // Hook untuk ambil ID dari URL
+  const params = useParams();
 
   // Ambil ID dan pastikan konversi aman
   const idKamar = params?.id ? Number(params.id) : null;
 
-  const [isLoading, setIsLoading] = useState(false); // Loading saat Simpan
-  const [isFetching, setIsFetching] = useState(true); // Loading saat Ambil Data Awal
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
   // 2. Setup Form Hook
   const form = useForm({
@@ -72,7 +66,7 @@ export default function EditKamarPage() {
     },
   });
 
-  // 3. Fetch Data Saat Halaman Dibuka (useEffect)
+  // 3. Fetch Data Saat Halaman Dibuka
   useEffect(() => {
     const fetchData = async () => {
       if (!idKamar) return;
@@ -83,18 +77,14 @@ export default function EditKamarPage() {
         if (result.success && result.data) {
           const dataDB = result.data;
 
-          // --- LOGIC NORMALISASI STATUS ---
-          // Kita pastikan string dari DB cocok dengan ENUM Frontend
-          let normalizedStatus = StatusKamar.Tersedia; // Default
-
+          // Normalisasi Status
+          let normalizedStatus = StatusKamar.Tersedia;
           if (dataDB.statusKamar) {
-            // Ubah jadi huruf besar & buang spasi/underscore untuk pencocokan fleksibel
             const rawStatus = String(dataDB.statusKamar)
               .toUpperCase()
               .replace(/_/g, "")
               .replace(/\s/g, "");
 
-            // Cek kondisi
             if (rawStatus === "TERSEWA") {
               normalizedStatus = StatusKamar.Tersewa;
             } else if (rawStatus === "TIDAKTERSEDIA") {
@@ -103,13 +93,11 @@ export default function EditKamarPage() {
               normalizedStatus = StatusKamar.Tersedia;
             }
           }
-          // --------------------------------
 
-          // Reset form dengan data yang sudah dinormalisasi
           form.reset({
             nomorKamar: dataDB.nomorKamar,
             hargaSewa: Number(dataDB.hargaSewa),
-            statusKamar: normalizedStatus, // Gunakan status yang sudah "bersih"
+            statusKamar: normalizedStatus,
             deskripsi: dataDB.deskripsi,
           });
         } else {
@@ -146,7 +134,7 @@ export default function EditKamarPage() {
           ),
         });
         router.push("/kamar");
-        router.refresh(); // Refresh agar data di tabel terupdate
+        router.refresh();
       } else {
         toast.error("Gagal Update", {
           description: <span className="text-white">{result.message}</span>,
@@ -166,10 +154,10 @@ export default function EditKamarPage() {
     }
   }
 
-  // Tampilan Loading saat Fetching Data
+  // Tampilan Loading
   if (isFetching) {
     return (
-      <div className="flex flex-col gap-4 p-4 h-screen">
+      <div className="flex flex-col gap-4 p-4 h-screen bg-gray-50/30">
         <AppSidebar />
         <div className="flex flex-1 items-center justify-center flex-col gap-2">
           <Loader2 className="h-10 w-10 animate-spin text-sky-700" />
@@ -180,164 +168,178 @@ export default function EditKamarPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" asChild>
-          <Link href="/kamar">
-            <ChevronLeft className="h-4 w-4" />
+
+      {/* --- HEADER SECTION (Judul Besar) --- */}
+      <section className="flex items-center justify-between px-5 pt-2 pb-1">
+        <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
+          Edit Kamar
+        </h1>
+        <nav>
+          <Link
+            href="/kamar"
+            className="bg-white border border-gray-300 text-gray-700 py-2.5 px-5 rounded-full hover:bg-gray-50 text-sm flex items-center justify-center transition-colors shadow-sm font-medium"
+          >
+            Kembali
           </Link>
-        </Button>
-        <h1 className="text-xl font-semibold tracking-tight">Edit Kamar</h1>
-      </div>
+        </nav>
+      </section>
 
-      {/* Form Card */}
-      <div className="mx-auto w-full max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit Informasi Kamar</CardTitle>
-            <CardDescription>
-              Ubah detail kamar. Pastikan nomor kamar tidak duplikat dengan
-              kamar lain.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
-                {/* Field 1: Nomor Kamar */}
-                <FormField
-                  control={form.control}
-                  name="nomorKamar"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nomor Kamar</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Contoh: 101, A-01" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+      {/* --- DESCRIPTION SECTION (Article Penjelasan) --- */}
+      <section className="px-5">
+        <p className="text-muted-foreground text-lg">
+          Silakan lakukan perubahan data pada formulir di bawah ini. Pastikan
+          data yang dimasukkan sudah benar sebelum menyimpan perubahan.
+        </p>
+      </section>
 
-                {/* Field 2: Harga Sewa */}
-                <FormField
-                  control={form.control}
-                  name="hargaSewa"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Harga Sewa (Rp)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          placeholder="500.000"
-                          {...field}
-                          value={
-                            field.value
-                              ? formatRibuan(field.value.toString())
-                              : ""
-                          }
-                          maxLength={15}
-                          onChange={(e) => {
-                            const rawInput = e.target.value;
-                            const cleanValue = filterHarga(rawInput);
-                            field.onChange(Number(cleanValue));
-                          }}
-                        />
-                      </FormControl>
-                      <FormDescription>Per bulan</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Field 3: Status Kamar */}
-                {/* Field 3: Status Kamar */}
-                <FormField
-                  control={form.control}
-                  name="statusKamar"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Status Kamar</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        value={field.value} // <--- WAJIB ADA agar nilai tampil!
-                      >
+      {/* --- FORM SECTION (Ukuran Card Disesuaikan) --- */}
+      <section className="px-5 mt-4">
+        <div className="mx-auto w-full max-w-3xl">
+          <Card className="bg-white border rounded-xl shadow-sm">
+            <CardHeader>
+              <CardTitle>Formulir Edit Kamar</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
+                  {/* Field 1: Nomor Kamar */}
+                  <FormField
+                    control={form.control}
+                    name="nomorKamar"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nomor Kamar</FormLabel>
                         <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Pilih status" />
-                          </SelectTrigger>
+                          <Input placeholder="Contoh: 101, A-01" {...field} />
                         </FormControl>
-                        <SelectContent>
-                          {/* Pastikan value ini adalah Enum (TERSEDIA, TERSEWA, dll) */}
-                          <SelectItem value={StatusKamar.Tersedia}>
-                            Tersedia
-                          </SelectItem>
-                          <SelectItem value={StatusKamar.Tersewa}>
-                            Tersewa
-                          </SelectItem>
-                          <SelectItem value={StatusKamar.TidakTersedia}>
-                            Tidak Tersedia
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Field 4: Deskripsi */}
-                <FormField
-                  control={form.control}
-                  name="deskripsi"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Deskripsi & Fasilitas</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Jelaskan kondisi kamar..."
-                          className="resize-none h-32"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Action Buttons */}
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => router.back()}
-                    disabled={isLoading}
-                  >
-                    Batal
-                  </Button>
-                  <Button type="submit" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Menyimpan...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="mr-2 h-4 w-4" />
-                        Simpan Perubahan
-                      </>
+                        <FormMessage />
+                      </FormItem>
                     )}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </div>
+                  />
+
+                  {/* Field 2: Harga Sewa */}
+                  <FormField
+                    control={form.control}
+                    name="hargaSewa"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Harga Sewa (Rp)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="500.000"
+                            {...field}
+                            value={
+                              field.value
+                                ? formatRibuan(field.value.toString())
+                                : ""
+                            }
+                            maxLength={15}
+                            onChange={(e) => {
+                              const rawInput = e.target.value;
+                              const cleanValue = filterHarga(rawInput);
+                              field.onChange(Number(cleanValue));
+                            }}
+                          />
+                        </FormControl>
+                        <FormDescription>Per bulan</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Field 3: Status Kamar */}
+                  <FormField
+                    control={form.control}
+                    name="statusKamar"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Status Kamar</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Pilih status" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={StatusKamar.Tersedia}>
+                              Tersedia
+                            </SelectItem>
+                            <SelectItem value={StatusKamar.Tersewa}>
+                              Tersewa
+                            </SelectItem>
+                            <SelectItem value={StatusKamar.TidakTersedia}>
+                              Tidak Tersedia
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Field 4: Deskripsi */}
+                  <FormField
+                    control={form.control}
+                    name="deskripsi"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Deskripsi & Fasilitas</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Jelaskan kondisi kamar..."
+                            className="resize-none h-32"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Action Buttons */}
+                  <div className="flex justify-end gap-2 pt-4 border-t mt-6">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => router.back()}
+                      disabled={isLoading}
+                    >
+                      Batal
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="bg-sky-700 hover:bg-sky-800 text-white"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Menyimpan...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="mr-2 h-4 w-4" />
+                          Simpan Perubahan
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
     </div>
   );
 }
