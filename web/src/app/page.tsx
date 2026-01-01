@@ -118,6 +118,24 @@ export default function DashBoardPage() {
             </address>
           </section>
 
+          {/* MAPS */}
+          <section className="px-4 py-8 lg:px-6">
+            <h3 className="mb-4 text-xl font-bold text-center">
+              Lokasi Kost
+            </h3>
+
+            <div className="flex justify-center">
+              <div className="w-full max-w-4xl overflow-hidden rounded-xl border">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3972.2558836600215!2d105.25290367474365!3d-5.377902094600988!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e40dadaba212f15%3A0x95f37fafe88ecffb!2sWisma%20Dempo!5e0!3m2!1sid!2sid!4v1767277670809!5m2!1sid!2sid"
+                  className="h-[350px] w-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </div>
+          </section>
+
           {/* --- TEMPAT SECTION DATA LAINNYA --- */}
           {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"> */}
 
