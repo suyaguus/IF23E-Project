@@ -114,7 +114,7 @@ export default function DashBoardPage() {
 
             <address className="flex items-center gap-2 text-sm not-italic text-muted-foreground">
               <MapPin className="h-4 w-4" />
-              Jl. Jend. Sudirman No.123, Bandar Lampung
+              Jl. Dempo, Labuhan Ratu, Kec. Kedaton, Kota Bandar Lampung, Lampung 35132
             </address>
           </section>
 
