@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronsUpDown, LogOut, User, Settings, LogIn } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -43,18 +42,10 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
-
-  // State untuk Dialog Logout
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-
-  // Ambil data real-time dari AuthContext
   const { user: authUser, logout } = useAuth();
-
-  // --- LOGIC PENENTUAN STATUS USER ---
   const isLoggedIn = !!authUser;
-
   const isAdmin = authUser?.role === "Admin";
-
   const profileUrl = isAdmin
     ? "/dashboard/admin/profile"
     : "/dashboard/user/profile";
@@ -88,7 +79,7 @@ export function NavUser({
 
   const handleLogoutConfirm = () => {
     logout();
-    setShowLogoutDialog(false); // Tutup dialog setelah logout
+    setShowLogoutDialog(false);
   };
 
   return (
@@ -96,8 +87,6 @@ export function NavUser({
       <SidebarMenu>
         <SidebarMenuItem>
           <DropdownMenu>
-            {/* asChild WAJIB ada agar SidebarMenuButton menjadi trigger langsung 
-                tanpa membuat button baru di luarnya */}
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 size="lg"
@@ -159,10 +148,7 @@ export function NavUser({
                       Settings
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
-
                   <DropdownMenuSeparator />
-
-                  {/* PERBAIKAN LOGOUT: Gunakan state, jangan wrap dengan Trigger */}
                   <DropdownMenuItem onClick={() => setShowLogoutDialog(true)}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
@@ -187,7 +173,6 @@ export function NavUser({
         </SidebarMenuItem>
       </SidebarMenu>
 
-      {/* Dialog Logout ditaruh di luar struktur Menu untuk menghindari nesting error */}
       <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
