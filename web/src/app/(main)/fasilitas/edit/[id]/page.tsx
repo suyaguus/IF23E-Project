@@ -8,8 +8,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
-
-// Imports Components shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -23,12 +21,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-// Imports Logic
 import { fasilitasFetcher } from "@/lib/fetchers/fasilitasFetcher";
 import { AppSidebar } from "@/components/app-sidebar";
 
-// 1. Definisikan Schema Validasi
 const formSchema = z.object({
   namaFasilitas: z.string().min(1, "Nama fasilitas wajib diisi"),
   kodeFasilitas: z.string().min(1, "Kode fasilitas wajib diisi"),
@@ -39,13 +34,11 @@ export default function EditFasilitasPage() {
   const router = useRouter();
   const params = useParams();
 
-  // Ambil ID dari URL
   const idFasilitas = params?.id ? Number(params.id) : null;
 
-  const [isLoading, setIsLoading] = useState(false); // Loading saat simpan
-  const [isFetching, setIsFetching] = useState(true); // Loading saat ambil data awal
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
-  // 2. Setup Form Hook
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,7 +48,6 @@ export default function EditFasilitasPage() {
     },
   });
 
-  // 3. Fetch Data Saat Halaman Dibuka
   useEffect(() => {
     const fetchData = async () => {
       if (!idFasilitas) return;
@@ -66,7 +58,6 @@ export default function EditFasilitasPage() {
         if (result.success && result.data) {
           const dataDB = result.data;
 
-          // Isi form dengan data dari database
           form.reset({
             namaFasilitas: dataDB.namaFasilitas,
             kodeFasilitas: dataDB.kodeFasilitas,
@@ -91,7 +82,6 @@ export default function EditFasilitasPage() {
     fetchData();
   }, [idFasilitas, router, form]);
 
-  // 4. Handle Submit (Update)
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!idFasilitas) return;
 
@@ -131,7 +121,6 @@ export default function EditFasilitasPage() {
     }
   }
 
-  // Tampilan Loading Awal
   if (isFetching) {
     return (
       <div className="flex flex-col gap-4 p-4 h-screen bg-gray-50/30">
@@ -150,7 +139,6 @@ export default function EditFasilitasPage() {
     <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      {/* --- HEADER SECTION --- */}
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Edit Fasilitas
@@ -165,7 +153,6 @@ export default function EditFasilitasPage() {
         </nav>
       </section>
 
-      {/* --- DESCRIPTION SECTION --- */}
       <section className="px-5">
         <p className="text-muted-foreground text-lg">
           Lakukan perubahan pada detail fasilitas di bawah ini. Pastikan kode
@@ -173,7 +160,6 @@ export default function EditFasilitasPage() {
         </p>
       </section>
 
-      {/* --- FORM SECTION --- */}
       <section className="px-5 mt-4">
         <div className="mx-auto w-full max-w-3xl">
           <Card className="bg-white border rounded-xl shadow-sm">
@@ -186,7 +172,6 @@ export default function EditFasilitasPage() {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-6"
                 >
-                  {/* Field 1: Nama Fasilitas */}
                   <FormField
                     control={form.control}
                     name="namaFasilitas"
@@ -204,7 +189,6 @@ export default function EditFasilitasPage() {
                     )}
                   />
 
-                  {/* Field 2: Kode Fasilitas */}
                   <FormField
                     control={form.control}
                     name="kodeFasilitas"
@@ -222,7 +206,6 @@ export default function EditFasilitasPage() {
                     )}
                   />
 
-                  {/* Field 3: Deskripsi */}
                   <FormField
                     control={form.control}
                     name="deskripsi"
@@ -241,7 +224,6 @@ export default function EditFasilitasPage() {
                     )}
                   />
 
-                  {/* Action Buttons */}
                   <div className="flex justify-end gap-2 pt-4 border-t mt-6">
                     <Button
                       type="button"
