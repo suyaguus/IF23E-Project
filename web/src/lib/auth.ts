@@ -1,4 +1,3 @@
-// web/lib/auth.ts
 export function getLoggedInUser() {
     if (typeof window === 'undefined') return null;
 
@@ -21,11 +20,10 @@ export function isLoggedIn() {
     return getLoggedInUser() !== null;
 }
 
-// web/lib/auth.ts
 export async function logout() {
     try {
         const user = getLoggedInUser();
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+        const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
         await fetch(`${apiUrl}/api/auth/logout`, {
             method: 'POST',

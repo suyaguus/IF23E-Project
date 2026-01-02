@@ -9,6 +9,7 @@ export const DELETE = async (
     const { id } = await context.params;
     const orderId = Number(id);
 
+    // validasi id
     if (isNaN(orderId)) {
         return NextResponse.json(
             {
@@ -21,10 +22,12 @@ export const DELETE = async (
         );
     }
 
+    // cek apakah order ada berdasarkan id
     const order = await prisma.tb_order.findUnique({
         where: { id: orderId },
     });
 
+    // jika order tidak ditemukan
     if (!order) {
         return NextResponse.json(
             {
@@ -37,10 +40,12 @@ export const DELETE = async (
         );
     }
 
+    // hapus order
     await prisma.tb_order.delete({
         where: { id: orderId },
     });
 
+    // tampilkan response
     return NextResponse.json(
         {
             success: true,
@@ -57,10 +62,13 @@ export const PUT = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) => {
+
+    // ambil id dari params
     const { id } = await context.params;
     const orderId = Number(id);
     const data = await req.json();
 
+    // validasi id
     if (isNaN(orderId)) {
         return NextResponse.json(
             {
@@ -73,10 +81,12 @@ export const PUT = async (
         );
     }
 
+    // cek apakah order ada berdasarkan id
     const order = await prisma.tb_order.findUnique({
         where: { id: orderId },
     });
 
+    // jika order tidak ditemukan
     if (!order) {
         return NextResponse.json(
             {
@@ -89,11 +99,13 @@ export const PUT = async (
         );
     }
 
+    // update order
     await prisma.tb_order.update({
         where: { id: orderId },
         data: data,
     });
 
+    // response sukses
     return NextResponse.json(
         {
             success: true,
@@ -113,6 +125,7 @@ export const GET = async (
     const { id } = await context.params;
     const orderId = Number(id);
 
+    // validasi id
     if (isNaN(orderId)) {
         return NextResponse.json(
             {
@@ -125,10 +138,12 @@ export const GET = async (
         );
     }
 
+    // cari data order berdasarkan id
     const order = await prisma.tb_order.findUnique({
         where: { id: orderId },
     });
 
+    // jika order tidak ditemukan
     if (!order) {
         return NextResponse.json(
             {
@@ -141,6 +156,7 @@ export const GET = async (
         );
     }
 
+    // tampilkan response
     return NextResponse.json(
         {
             success: true,

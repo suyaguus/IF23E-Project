@@ -14,83 +14,103 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { authFetcher } from "@/lib/fetchers/authFetcher";
+import { getErrorMessage } from "@/types/auth";
+import { toast } from "sonner";
 
-// Type definitions
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  notelp?: string;
-  createdAt: string;
-}
+// ... (Interface User, LoginResponse, ApiError TETAP SAMA, tidak perlu diubah) ...
 
-interface LoginResponse {
-  success: boolean;
-  message: string;
-  data: {
-    user: User;
-  };
-}
-
-interface ApiError {
-  success: boolean;
-  message: string;
-}
-
-export function LoginForm() {
+// PERUBAHAN 1: Terima props 'className' dan '...props' lainnya
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<typeof Card>) {
+  const { login } = useAuth(); // Kita ambil fungsi login dari Context
   const router = useRouter();
+  // ... (State variables TETAP SAMA) ...
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
+  // const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const [fieldErrors, setFieldErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  // ... (handleSubmit Logic TETAP SAMA) ...
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 1. Reset error & Validasi Manual
+    let isValid = true;
+    const newErrors = { email: "", password: "" };
+
+    if (!email) {
+      newErrors.email = "Email wajib diisi";
+      isValid = false;
+    }
+
+    if (!password) {
+      newErrors.password = "Password wajib diisi";
+      isValid = false;
+    }
+
+    setFieldErrors(newErrors);
+
+    // 2. STOP jika tidak valid (Jangan nyalakan loading)
+    if (!isValid) return;
+
+    // 3. Baru nyalakan loading
     setIsLoading(true);
-    setError("");
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const result = await authFetcher.login({ email, password });
 
-      const response = await fetch(`${apiUrl}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-        mode: "cors",
-      });
-
-      const result: LoginResponse | ApiError = await response.json();
-
-      if (response.ok && result.success) {
-        const loginResult = result as LoginResponse;
-
-        // Simpan data user ke localStorage
-        localStorage.setItem("user", JSON.stringify(loginResult.data.user));
-
-        // Redirect berdasarkan role
-        if (loginResult.data.user.role === "Admin") {
+      if (result.success && result.data && result.data.user) {
+        toast.success("Login Berhasil!", {
+          description: (
+            <span className="text-white font-medium">
+              Selamat datang {result.data.user.username}!
+            </span>
+          ),
+        });
+        login(result.data.user);
+        if (result.data.user.role === "Admin") {
           router.push("/dashboard/admin");
         } else {
-          router.push("/dashboard/admin");
+          router.push("/dashboard/user"); // Atau halaman lain untuk user biasa
         }
       } else {
-        setError(result.message || "Login gagal");
+        // --- PERUBAHAN WARNA TEKS (Opsi HTML/JSX) ---
+        toast.error("Login Gagal", {
+          description: (
+            <span className="text-white font-medium">
+              {result.message || "Periksa kembali email dan password Anda."}
+            </span>
+          ),
+        });
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      setError("Tidak dapat terhubung ke server");
+    } catch (err: unknown) {
+      console.error("Login error:", err);
+      const msg = getErrorMessage(err);
+
+      // --- PERUBAHAN WARNA TEKS (Catch Block) ---
+      toast.error("Terjadi Kesalahan", {
+        description: <span className="text-red-500 font-medium">{msg}</span>,
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Card className="mx-auto max-w-sm">
+    // PERUBAHAN 2: Hapus 'max-w-md' dan 'mx-auto' yang hardcoded.
+    // Ganti dengan {...props} agar styling dari luar bisa masuk.
+    // Tambahkan class w-full agar responsif mengikuti container pembungkusnya.
+    <Card className={`w-full ${className || ""}`} {...props}>
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
@@ -98,12 +118,8 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="grid gap-4">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
-              {error}
-            </div>
-          )}
+        <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
+          {/* ... (Isi Form TETAP SAMA persis seperti sebelumnya) ... */}
 
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
@@ -112,54 +128,73 @@ export function LoginForm() {
               type="email"
               placeholder="m@example.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (fieldErrors.email)
+                  setFieldErrors({ ...fieldErrors, email: "" });
+              }}
               required
               disabled={isLoading}
+              className={
+                fieldErrors.email
+                  ? "border-red-500 focus-visible:ring-red-500"
+                  : ""
+              }
             />
+            {fieldErrors.email && (
+              <span className="text-xs text-red-500 font-medium">
+                {fieldErrors.email}
+              </span>
+            )}
           </div>
 
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
               <Link
-                href="/auth/forgot-password"
+                href="/forgot-password"
                 className="ml-auto inline-block text-sm underline"
               >
                 Lupa password?
               </Link>
             </div>
 
-            {/* WRAPPER RELATIVE UNTUK POSISI ICON */}
             <div className="relative">
               <Input
                 id="password"
-                // 1. Ubah type secara dinamis berdasarkan state
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (fieldErrors.password)
+                    setFieldErrors({ ...fieldErrors, password: "" });
+                }}
                 required
                 disabled={isLoading}
-                // 2. Tambahkan padding-right (pr-10) agar teks tidak menabrak ikon
-                className="pr-10"
+                className={`pr-10 ${
+                  fieldErrors.password
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
-
-              {/* 3. Tombol Icon Mata */}
               <button
-                type="button" // PENTING: agar tidak men-submit form saat diklik
+                type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground transition-all"
-                tabIndex={-1} // Opsional: agar tidak bisa di-tab (fokus tetap di input)
+                tabIndex={-1}
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
                 )}
-                <span className="sr-only">
-                  {showPassword ? "Sembunyikan password" : "Lihat password"}
-                </span>
               </button>
             </div>
+            {fieldErrors.password && (
+              <span className="text-xs text-red-500 font-medium">
+                {fieldErrors.password}
+              </span>
+            )}
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
@@ -169,8 +204,7 @@ export function LoginForm() {
 
         <div className="mt-4 text-center text-sm">
           Belum punya akun?{" "}
-          {/* 3. Gunakan Link juga di sini agar lebih cepat */}
-          <Link href="/auth/signup" className="underline">
+          <Link href="/signup" className="underline">
             Daftar
           </Link>
         </div>

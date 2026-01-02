@@ -1,15 +1,19 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { StatusKamar } from "@prisma/client";
+
 
 // fungsi untuk menghapus data
 export const DELETE = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
 ) => {
+
     try {
         const { id } = await context.params;
         const kamarId = Number(id);
 
+        // validasi id
         if (isNaN(kamarId)) {
             return NextResponse.json(
                 {
@@ -33,6 +37,7 @@ export const DELETE = async (
             }
         });
 
+        // jika kamar tidak ditemukan
         if (!kamar) {
             return NextResponse.json(
                 {
@@ -45,7 +50,7 @@ export const DELETE = async (
             );
         }
 
-        // Cek apakah kamar memiliki order atau riwayat pembayaran
+        // jika kamar memiliki relasi order maka tidak bisa dihapus
         if (kamar.orders.length > 0) {
             return NextResponse.json(
                 {
@@ -58,6 +63,7 @@ export const DELETE = async (
             );
         }
 
+        // jika kamar memiliki relasi riwayat pembayaran maka tidak bisa dihapus
         if (kamar.riwayatPembayaran.length > 0) {
             return NextResponse.json(
                 {
@@ -70,9 +76,10 @@ export const DELETE = async (
             );
         }
 
-        // Gunakan transaction untuk menghapus relasi dan kamar
+        // hapus kamar beserta relasinya dalam transaksi
         await prisma.$transaction(async (tx) => {
-            // Hapus relasi many-to-many terlebih dahulu
+
+            // hapus relasi many-to-many terlebih dahulu
             await tx.tb_kamar_fasilitas.deleteMany({
                 where: { kamarId: kamarId }
             });
@@ -81,12 +88,13 @@ export const DELETE = async (
                 where: { kamarId: kamarId }
             });
 
-            // Sekarang hapus kamar
+            // sekarang hapus kamar
             await tx.tb_kamar.delete({
                 where: { id: kamarId }
             });
         });
 
+        // response sukses
         return NextResponse.json(
             {
                 success: true,
@@ -100,6 +108,7 @@ export const DELETE = async (
     } catch (error) {
         console.error("Error saat menghapus kamar:", error);
 
+        // response error
         return NextResponse.json(
             {
                 success: false,
@@ -115,56 +124,92 @@ export const DELETE = async (
 
 // buat fungsi update data
 export const PUT = async (
-    req: NextRequest,
-    context: { params: Promise<{ id: string }> }
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ) => {
-    const { id } = await context.params;
-    const kamarId = Number(id);
-    const data = await req.json();
+    try {
+        // 1. AWAIT params terlebih dahulu
+        const resolvedParams = await params;
+        const id = Number(resolvedParams.id);
 
-    if (isNaN(kamarId)) {
-        return NextResponse.json(
-            {
-                success: false, message: "ID Tidak Valid"
-            },
-            {
-                status: 400
-            }
-        );
-    }
+        const data = await request.json();
 
-    const kamar = await prisma.tb_kamar.findUnique({
-        where: { id: kamarId }
-    });
+        console.log(`[API UPDATE] ID: ${id}`, data);
 
-    if (!kamar) {
-        return NextResponse.json(
-            {
-                success: false,
-                message: "Kamar Tidak Ditemukan"
-            },
-            {
-                status: 404
-            }
-        );
-    }
-
-    await prisma.tb_kamar.update({
-        where: { id: kamarId },
-        data: data
-    });
-
-    return NextResponse.json(
-        {
-            success: true,
-            message: "Kamar Berhasil Diubah"
-        },
-        {
-            status: 200
+        // Validasi
+        if (!data.nomorKamar || !data.hargaSewa) {
+            return NextResponse.json(
+                { message: "Nomor Kamar dan Harga wajib diisi", success: false },
+                { status: 400 }
+            );
         }
-    );
-};
 
+        const checkDuplicate = await prisma.tb_kamar.findFirst({
+            where: {
+                nomorKamar: data.nomorKamar,
+                NOT: {
+                    id: id,
+                },
+            },
+        });
+
+        if (checkDuplicate) {
+            return NextResponse.json(
+                { message: "Nomor Kamar sudah digunakan oleh kamar lain!", success: false },
+                { status: 400 }
+            );
+        }
+
+        let statusKamarFix: StatusKamar = StatusKamar.Tersedia;
+
+        // Pastikan logic mapping ini sesuai dengan Enum di Prisma Client Anda
+        // (Gunakan StatusKamar.Tersedia / StatusKamar.TERSEDIA sesuai generated client)
+        if (data.statusKamar) {
+            const rawStatus = String(data.statusKamar)
+                .toUpperCase()
+                .replace(/\s/g, "_")
+                .replace(/[^A-Z_]/g, "");
+
+            // Mapping Manual
+            if (rawStatus.includes("TERSEWA")) {
+                statusKamarFix = StatusKamar.Tersewa;
+            } else if (rawStatus.includes("TIDAK") || rawStatus.includes("NOT")) {
+                statusKamarFix = StatusKamar.TidakTersedia;
+            } else {
+                statusKamarFix = StatusKamar.Tersedia;
+            }
+        }
+        // -------------------------------------------------
+
+        // Update Database
+        const updatedKamar = await prisma.tb_kamar.update({
+            where: { id: id },
+            data: {
+                nomorKamar: data.nomorKamar,
+                hargaSewa: Number(data.hargaSewa),
+                statusKamar: statusKamarFix,
+                deskripsi: data.deskripsi,
+            },
+        });
+
+        return NextResponse.json(
+            {
+                message: "Data Kamar Berhasil Diupdate!",
+                data: updatedKamar,
+                success: true,
+            },
+            { status: 200 }
+        );
+
+    } catch (error: unknown) {
+        console.error("🔥 [API EDIT ERROR]:", error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json(
+            { message: "Gagal mengupdate data", success: false, error: errorMessage },
+            { status: 500 }
+        );
+    }
+};
 // buat fungsi get data berdasarkan id
 export const GET = async (
     req: NextRequest,
@@ -173,6 +218,7 @@ export const GET = async (
     const { id } = await context.params;
     const kamarId = Number(id);
 
+    // validasi id
     if (isNaN(kamarId)) {
         return NextResponse.json(
             {
@@ -185,35 +231,55 @@ export const GET = async (
         );
     }
 
-    const kamar = await prisma.tb_kamar.findUnique({
-        where: { id: kamarId },
-        select: {
-            nomorKamar: true,
-            hargaSewa: true,
-            statusKamar: true,
-            deskripsi: true
-        }
-    });
+    try {
+        // ambil data kamar berdasarkan id beserta relasinya
+        const kamar = await prisma.tb_kamar.findUnique({
+            where: { id: kamarId },
+            include: {
+                fasilitas: {
+                    include: {
+                        fasilitas: true
+                    }
+                },
+                perabotan: {
+                    include: {
+                        perabotan: true
+                    }
+                },
+            }
+        });
 
-    if (!kamar) {
+        if (!kamar) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Kamar Tidak Ditemukan"
+                },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Kamar Berhasil Ditemukan",
+                kamar: kamar
+            },
+            {
+                status: 200
+            }
+        );
+
+    } catch (error) {
+        console.error("Error fetching kamar detail:", error);
         return NextResponse.json(
             {
                 success: false,
-                message: "Kamar Tidak Ditemukan"
+                message: "Terjadi Kesalahan Server"
             },
             {
-                status: 404
+                status: 500
             }
         );
     }
-
-    return NextResponse.json({
-        success: true,
-        message: "Kamar Berhasil Ditemukan",
-        data: kamar
-    },
-        {
-            status: 200
-        }
-    );
-};  
+};

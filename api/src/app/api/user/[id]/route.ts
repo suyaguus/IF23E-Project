@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";  // Sesuaikan dengan path Prisma Anda
+import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
-// --- CONFIG CORS ---
 const corsHeaders = {
     "Access-Control-Allow-Origin": "http://localhost:3000",
     "Access-Control-Allow-Methods": "GET, PUT, DELETE, OPTIONS",
@@ -12,6 +12,7 @@ export async function OPTIONS() {
     return NextResponse.json({}, { status: 200, headers: corsHeaders });
 }
 
+// buat service delete
 export const DELETE = async (
     req: NextRequest,
     context: { params: Promise<{ id: string }> }
@@ -19,6 +20,7 @@ export const DELETE = async (
     const { id } = await context.params;
     const userId = Number(id);
 
+    // validasi id
     if (isNaN(userId)) {
         return NextResponse.json(
             {
@@ -31,10 +33,12 @@ export const DELETE = async (
         );
     }
 
+    // cek apakah user ada
     const user = await prisma.tb_user.findUnique({
         where: { id: userId },
     });
 
+    // jika user tidak ditemukan
     if (!user) {
         return NextResponse.json(
             {
@@ -46,6 +50,7 @@ export const DELETE = async (
         );
     }
 
+    // hapus data
     await prisma.tb_order.deleteMany({
         where: { userId: userId },
     });
@@ -54,6 +59,7 @@ export const DELETE = async (
         where: { id: userId },
     });
 
+    // tampilkan response
     return NextResponse.json(
         {
             success: true,
@@ -63,10 +69,9 @@ export const DELETE = async (
             status: 200
         }
     );
-
-    // testing
 };
 
+export const dynamic = "force-dynamic";
 
 // get user berdasarkan id
 export const GET = async (
@@ -77,6 +82,7 @@ export const GET = async (
         const { id } = await context.params;
         const userId = Number(id);
 
+        // validasi id
         if (isNaN(userId)) {
             return NextResponse.json(
                 {
@@ -88,6 +94,7 @@ export const GET = async (
             );
         }
 
+        // cek apakah user ada
         const user = await prisma.tb_user.findUnique({
             where: { id: userId },
             select: {
@@ -99,6 +106,7 @@ export const GET = async (
             }
         });
 
+        // jika user tidak ditemukan
         if (!user) {
             return NextResponse.json(
                 {
@@ -110,6 +118,7 @@ export const GET = async (
             );
         }
 
+        // tampilkan response
         return NextResponse.json(
             {
                 success: true, message: "Data Berhasil Ditemukan", user
@@ -120,6 +129,7 @@ export const GET = async (
         );
 
     } catch (error) {
+        // tampilkan error
         return NextResponse.json(
             {
                 success: false, message: "SERVER ERROR", error: String(error)
@@ -131,43 +141,68 @@ export const GET = async (
     }
 }
 
-// buat putt data
-export const PUT = async (
+export async function PUT(
     req: NextRequest,
-    context: { params: Promise<{ id: string }> } // Fix type params Next.js 15
-) => {
+    context: { params: Promise<{ id: string }> }
+) {
     try {
+        // 1. Tangkap parameter dari URL (Wajib agar Next.js tidak error)
+        // KITA HANYA TANGKAP, TIDAK KITA CEK APAKAH INI ANGKA ATAU BUKAN
         const { id } = await context.params;
-        const userId = Number(id);
-        const body = await req.json();
 
-        if (isNaN(userId)) {
+        // --- BAGIAN INI YANG DULU BIKIN ERROR, SUDAH KITA HAPUS: ---
+        // const userId = Number(id);
+        // if (isNaN(userId)) { return ... "ID Tidak Valid" } 
+        // -----------------------------------------------------------
+
+        // 2. Ambil Data dari Body (Kita fokus ke sini sekarang)
+        const body = await req.json();
+        const { email, username, notelp } = body;
+
+        // 3. Validasi: Email Wajib Ada (Sebagai kunci pencarian)
+        if (!email) {
             return NextResponse.json(
-                { success: false, message: "ID Tidak Valid" },
+                { success: false, message: "Email user wajib disertakan." },
                 { status: 400, headers: corsHeaders }
             );
         }
 
-        // Cek apakah user ada
+        // 4. Cari User berdasarkan EMAIL
         const existingUser = await prisma.tb_user.findUnique({
-            where: { id: userId },
+            where: { email: email },
         });
 
         if (!existingUser) {
             return NextResponse.json(
-                { success: false, message: "User Tidak Ditemukan" },
+                { success: false, message: "User tidak ditemukan." },
                 { status: 404, headers: corsHeaders }
             );
         }
 
-        // 2. UPDATE DATA
-        // Disarankan hanya mengambil field spesifik agar user tidak bisa inject data lain (misal ganti role)
+        // 5. Siapkan Data Update
+        // Gunakan 'tb_userUpdateInput' (huruf kecil) sesuai pesan error TypeScript Anda sebelumnya
+        const dataToUpdate: Prisma.tb_userUpdateInput = {};
+
+        // Masukkan data hanya jika valid
+        if (username !== undefined && username !== null && username.trim() !== "") {
+            dataToUpdate.username = username;
+        }
+        if (notelp !== undefined && notelp !== null && notelp.trim() !== "") {
+            dataToUpdate.notelp = notelp;
+        }
+
+        // Cek jika tidak ada perubahan
+        if (Object.keys(dataToUpdate).length === 0) {
+            return NextResponse.json(
+                { success: true, message: "Tidak ada data yang diubah.", data: existingUser },
+                { status: 200, headers: corsHeaders }
+            );
+        }
+
+        // 6. Eksekusi Update ke Database
         const updatedUser = await prisma.tb_user.update({
-            where: { id: userId },
-            data: {
-                username: body.username, // Ambil spesifik field
-                notelp: body.notelp,     // Ambil spesifik field
-            },
+            where: { email: email },
+            data: dataToUpdate,
         });
 
         return NextResponse.json(
@@ -178,11 +213,12 @@ export const PUT = async (
             },
             { status: 200, headers: corsHeaders }
         );
+
     } catch (error) {
-        console.error("PUT Error:", error);
+        console.error("[API Error] PUT /api/user/[id]:", error);
         return NextResponse.json(
             { success: false, message: "Internal Server Error" },
             { status: 500, headers: corsHeaders }
         );
     }
-};
+}

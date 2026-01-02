@@ -37,18 +37,20 @@ export function NavMain({
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           {/* bagian judul */}
-          <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton
-              tooltip="Menu Sidebar"
-              className="bg-transparent text-black hover:bg-transparent hover:text-black min-w-8 duration-200 ease-linear"
-            >
-              <IconMenu />
-              <span>Menu Sidebar</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <Link href="/dashboard/admin">
+            <SidebarMenuItem className="flex items-center gap-2">
+              <SidebarMenuButton
+                tooltip="Menu Dashboard"
+                className="bg-transparent text-black hover:bg-transparent hover:border-2 hover:border-primary hover:text-black min-w-8 duration-200 ease-linear"
+              >
+                <IconDashboard />
+                <span>Menu Dashboard</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </Link>
 
           {/* bagian user */}
-          <Link href="/user">
+          {/* <Link href="/user">
             <SidebarMenuItem className="flex items-center gap-2">
               <SidebarMenuButton
                 tooltip="Menu User"
@@ -58,7 +60,7 @@ export function NavMain({
                 <span>Menu User</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          </Link>
+          </Link> */}
 
           {/* bagian kamar */}
           <Link href="/kamar">

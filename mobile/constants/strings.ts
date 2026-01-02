@@ -1,6 +1,4 @@
-const IP_ADDRESS = '172.29.80.1';
-const PORT = '3001';
-const BASE_URL = `http://${IP_ADDRESS}:${PORT}/api`;
+const BASE_URL = `https://if-23-e-project.vercel.app/api`;
 
 export const Strings = {
     api_kamar: `${BASE_URL}/kamar`,
