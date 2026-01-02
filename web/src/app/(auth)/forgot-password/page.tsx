@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader2, ChevronLeft, Eye, EyeOff } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -44,7 +43,7 @@ export default function ForgotPasswordPage() {
     }
   }, [emailFromQuery, step]);
 
-  // --- 1. REQUEST OTP ---
+  // hanle otp
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -60,7 +59,6 @@ export default function ForgotPasswordPage() {
 
       toast.success("Kode OTP Terkirim!");
 
-      // PERBAIKAN URL: Gunakan '/forgot-password' (tanpa /auth)
       router.push(`/forgot-password?email=${emailInput}`);
 
       setStep(2);
@@ -73,7 +71,7 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  // --- 2. VERIFY OTP ---
+  // handle verify otp
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -104,7 +102,7 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  // --- 3. RESET PASSWORD ---
+  // reset password
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -121,8 +119,6 @@ export default function ForgotPasswordPage() {
 
       toast.success("Password Berhasil Diubah!");
 
-      // PERBAIKAN URL: Redirect ke login (sesuaikan jika login ada di /login atau /auth/login)
-      // Karena folder login biasanya juga di dalam (auth), maka URL-nya:
       router.push("/login");
     } catch (error: unknown) {
       toast.error("Gagal mereset password.");
@@ -166,7 +162,6 @@ export default function ForgotPasswordPage() {
       </CardHeader>
 
       <CardContent>
-        {/* STEP 1: INPUT EMAIL */}
         {step === 1 && (
           <form onSubmit={handleRequestOtp} className="grid gap-4">
             <div className="grid gap-2">
@@ -191,7 +186,6 @@ export default function ForgotPasswordPage() {
           </form>
         )}
 
-        {/* STEP 2: INPUT OTP */}
         {step === 2 && (
           <form onSubmit={handleVerifyOtp} className="grid gap-6">
             <div className="flex justify-center w-full py-2">
@@ -244,7 +238,6 @@ export default function ForgotPasswordPage() {
           </form>
         )}
 
-        {/* STEP 3: INPUT PASSWORD BARU */}
         {step === 3 && (
           <form onSubmit={handleResetPassword} className="grid gap-4">
             <div className="grid gap-2">
