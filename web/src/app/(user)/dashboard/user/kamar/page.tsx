@@ -1,14 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Users,
-  MapPin,
-  ArrowRight,
-  Loader2,
-  ImageOff,
-  AlertCircle,
-} from "lucide-react";
+import { Users, MapPin, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +19,6 @@ import { Kamar } from "@/types/interfaces";
 export default function KamarListPage() {
   const { data: kamars, isLoading, isError } = useKamar();
 
-  // Helper: Format Rupiah
   const formatRupiah = (angka: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -35,13 +27,8 @@ export default function KamarListPage() {
     }).format(angka);
   };
 
-  // Helper: Get Image Path
-  // Mengubah "Kamar 001" menjadi "001" untuk mencocokkan nama file
   const getImagePath = (nomorKamar: string) => {
     const cleanNumber = nomorKamar.replace(/Kamar\s*/i, "").trim();
-    // Default coba load .jpg dulu.
-    // Jika gagal, onError akan menangani fallback atau ekstensi lain (jika logic kompleks).
-    // Untuk simplisitas, pastikan file Anda konsisten atau gunakan logic onError di bawah.
     return `/images/kamar/${cleanNumber}.jpg`;
   };
 
@@ -90,14 +77,10 @@ export default function KamarListPage() {
 }
 
 interface RoomCardProps {
-  room: Kamar; // Gunakan interface Kamar yang sudah ada
-  formatRupiah: (angka: number) => string; // Definisikan fungsi formatter
+  room: Kamar;
+  formatRupiah: (angka: number) => string;
 }
 
-// --- KOMPONEN ROOM CARD TERPISAH (Untuk menangani Logic Gambar per Item) ---
-// ... import tetap sama
-
-// --- KOMPONEN ROOM CARD TERPISAH ---
 function RoomCard({ room, formatRupiah }: RoomCardProps) {
   const cleanName = room.nomorKamar.replace(/Kamar\s*/i, "").trim();
   const [imgSrc, setImgSrc] = useState(`/images/kamar/${cleanName}.jpg`);
@@ -114,22 +97,19 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
     }
   };
 
-  // --- LOGIC WARNA STATUS ---
   const getStatusColor = (status: string) => {
-    // Normalisasi string ke huruf kecil agar aman
     const s = String(status).toLowerCase();
 
     if (s === "tersedia") {
-      return "bg-green-600 hover:bg-green-700 text-white border-transparent"; // Hijau
+      return "bg-green-600 hover:bg-green-700 text-white border-transparent";
     }
     if (s === "tersewa" || s === "penuh") {
-      return "bg-red-600 hover:bg-red-700 text-white border-transparent"; // Merah
+      return "bg-red-600 hover:bg-red-700 text-white border-transparent";
     }
     if (s === "tidak tersedia" || s === "perbaikan") {
-      return "bg-gray-500 hover:bg-gray-600 text-white border-transparent"; // Abu-abu
+      return "bg-gray-500 hover:bg-gray-600 text-white border-transparent";
     }
 
-    // Default (jika status tidak dikenali)
     return "bg-primary text-primary-foreground";
   };
 
@@ -144,7 +124,6 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
         />
 
         <div className="absolute top-2 right-2">
-          {/* Implementasi ClassName Dinamis */}
           <Badge className={getStatusColor(String(room.statusKamar))}>
             {String(room.statusKamar)}
           </Badge>
@@ -186,7 +165,6 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
         <Link href={`/dashboard/user/kamar/${room.id}`}>
           <Button
             size="sm"
-            // Update logic disabled agar mencakup "Tersewa" dan "Tidak Tersedia"
             disabled={
               String(room.statusKamar) === "Penuh" ||
               String(room.statusKamar) === "Tersewa" ||
@@ -196,7 +174,6 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
               String(room.statusKamar) !== "Tersedia" ? "opacity-70" : ""
             }
           >
-            {/* Logic Label Tombol */}
             {String(room.statusKamar) === "Tersedia"
               ? "Lihat Detail"
               : String(room.statusKamar)}
