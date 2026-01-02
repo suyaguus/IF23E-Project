@@ -28,4 +28,3 @@ export const filterHarga = (value: string) => {
 export const filterHargaRaw = (value: string) => {
     return value.replace(/\./g, "");
 };
-
