@@ -6,10 +6,8 @@ interface ApiErrorResponse {
     error?: string;
 }
 
-// buat variable api
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// buat export axios instance
 export const api = axios.create({
     baseURL,
     headers: {
@@ -18,7 +16,6 @@ export const api = axios.create({
     timeout: 10000,
 });
 
-// Request interceptor
 api.interceptors.request.use(
     (config) => {
         if (typeof window !== 'undefined') {
@@ -37,7 +34,6 @@ api.interceptors.request.use(
     }
 );
 
-// Response interceptor
 api.interceptors.response.use(
     (response) => {
         console.log('Response:', response.status, response.config.url);
@@ -84,7 +80,5 @@ api.interceptors.response.use(
     }
 );
 
-// fetcher global
 export const fetcher = (url: string) => api.get(url).then((res) => res.data);
-
 export default api;
