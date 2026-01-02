@@ -1,15 +1,12 @@
-// src/lib/fetchers/authFetcher.ts
-
 import { LoginRequest, RegisterRequest, AuthResponse } from "@/types/auth";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// Cek safety: jika env belum diload, beri peringatan di console
 if (!API_BASE_URL) {
   console.error("API_BASE_URL tidak ditemukan. Pastikan file .env sudah benar dan server direstart.");
 }
 
 export const authFetcher = {
-  // --- LOGIN ---
   login: async (credentials: LoginRequest): Promise<AuthResponse> => {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -19,7 +16,6 @@ export const authFetcher = {
     return handleResponse(response);
   },
 
-  // --- REGISTER ---
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
@@ -29,31 +25,25 @@ export const authFetcher = {
     return handleResponse(response);
   },
 
-  // --- UPDATE PROFILE ---
   updateProfile: async (data: { email: string; username?: string; notelp?: string }) => {
     try {
-      // PERHATIKAN URL INI: /user/profile
-      // Kata "profile" disini akan masuk sebagai [slug], 
-      // sehingga file src/app/api/user/[slug]/route.ts akan terpanggil.
       const response = await fetch(`${API_BASE_URL}/user/profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data), // Kita kirim { email, username, notelp }
+        body: JSON.stringify(data),
       });
-
       return await handleResponse(response);
     } catch (error) {
       throw error;
     }
   },
 
-  // --- CHANGE PASSWORD ---
   changePassword: async (data: { email: string; currentPassword: string; newPassword: string }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data), // Mengirim { email, currentPassword, newPassword }
+        body: JSON.stringify(data),
       });
       return await handleResponse(response);
     } catch (error) {
@@ -62,12 +52,8 @@ export const authFetcher = {
   }
 };
 
-// --- HELPER UNTUK MENGATASI ERROR JSON ---
-// Fungsi ini mencegah error "Unexpected end of JSON input"
 async function handleResponse(response: Response) {
   const text = await response.text();
-
-  // LOG DEBUG: Lihat apa yang sebenarnya dikirim server
   console.log(`[API DEBUG] ${response.url} | Status: ${response.status}`);
   console.log(`[API DEBUG] Response Body:`, text);
 
@@ -80,7 +66,6 @@ async function handleResponse(response: Response) {
   }
 
   if (!response.ok) {
-    // Coba ambil pesan error dari berbagai kemungkinan format
     const errorMessage =
       data.message ||
       data.error ||
@@ -89,6 +74,5 @@ async function handleResponse(response: Response) {
 
     throw new Error(errorMessage);
   }
-
   return data;
 }
