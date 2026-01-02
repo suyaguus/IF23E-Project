@@ -1,4 +1,3 @@
-
 export interface ApiResponse<T = unknown> {
     success: boolean;
     message: string;
@@ -63,19 +62,18 @@ export interface AuthResponse {
 }
 
 export interface User {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  notelp?: string;
-  avatar?: string; 
-  createdAt?: string;
+    id: number;
+    username: string;
+    email: string;
+    role: string;
+    notelp?: string;
+    avatar?: string;
+    createdAt?: string;
 }
 
 export function getErrorMessage(error: unknown): string {
     if (error instanceof Error) return error.message;
     if (typeof error === "string") return error;
-
     if (
         typeof error === "object" &&
         error !== null &&
@@ -83,6 +81,5 @@ export function getErrorMessage(error: unknown): string {
     ) {
         return String((error as { message: unknown }).message);
     }
-
     return "Terjadi kesalahan yang tidak diketahui";
 }
