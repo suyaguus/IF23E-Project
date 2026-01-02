@@ -1,19 +1,14 @@
-import { AppSidebarUser } from "@/components/app-sidebar-user";
 import { UserStatsCards } from "@/components/user-cards";
-import { QuickActions } from "@/components/quick-actions"; // Komponen baru
-import { RecentActivity } from "@/components/recent-activity"; // Komponen baru
-import { SiteHeader } from "@/components/site-header";
+import { QuickActions } from "@/components/quick-actions";
+import { RecentActivity } from "@/components/recent-activity";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardUserPage() {
   return (
     <SidebarProvider>
-
-
       <SidebarInset>
         <div className="flex flex-1 flex-col p-4 md:p-6 lg:p-8">
           <div className="@container/main flex flex-1 flex-col gap-8">
-            {/* 1. Header & Statistik Utama */}
             <section className="space-y-4">
               <div>
                 <h2 className="text-2xl font-bold tracking-tight">
@@ -26,7 +21,6 @@ export default function DashboardUserPage() {
               <UserStatsCards />
             </section>
 
-            {/* 2. Bagian Aksi Cepat (Quick Actions) */}
             <section className="space-y-4">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Layanan Mandiri
@@ -34,9 +28,7 @@ export default function DashboardUserPage() {
               <QuickActions />
             </section>
 
-            {/* 3. Grid untuk Pengumuman & Aktivitas */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Kolom Kiri: Pengumuman (Lebar) */}
               <div className="lg:col-span-2 space-y-4">
                 <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-h-[200px]">
                   <div className="flex items-center justify-between mb-4">
@@ -55,7 +47,6 @@ export default function DashboardUserPage() {
                 </div>
               </div>
 
-              {/* Kolom Kanan: Aktivitas Terakhir (Sempit) */}
               <div className="lg:col-span-1">
                 <RecentActivity />
               </div>
