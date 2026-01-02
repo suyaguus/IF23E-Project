@@ -19,20 +19,15 @@ import { authFetcher } from "@/lib/fetchers/authFetcher";
 import { getErrorMessage } from "@/types/auth";
 import { toast } from "sonner";
 
-// ... (Interface User, LoginResponse, ApiError TETAP SAMA, tidak perlu diubah) ...
-
-// PERUBAHAN 1: Terima props 'className' dan '...props' lainnya
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<typeof Card>) {
-  const { login } = useAuth(); // Kita ambil fungsi login dari Context
+  const { login } = useAuth();
   const router = useRouter();
-  // ... (State variables TETAP SAMA) ...
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const [fieldErrors, setFieldErrors] = useState({
@@ -40,11 +35,9 @@ export function LoginForm({
     password: "",
   });
 
-  // ... (handleSubmit Logic TETAP SAMA) ...
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 1. Reset error & Validasi Manual
     let isValid = true;
     const newErrors = { email: "", password: "" };
 
@@ -60,10 +53,8 @@ export function LoginForm({
 
     setFieldErrors(newErrors);
 
-    // 2. STOP jika tidak valid (Jangan nyalakan loading)
     if (!isValid) return;
 
-    // 3. Baru nyalakan loading
     setIsLoading(true);
 
     try {
@@ -81,10 +72,9 @@ export function LoginForm({
         if (result.data.user.role === "Admin") {
           router.push("/dashboard/admin");
         } else {
-          router.push("/dashboard/user"); // Atau halaman lain untuk user biasa
+          router.push("/dashboard/user");
         }
       } else {
-        // --- PERUBAHAN WARNA TEKS (Opsi HTML/JSX) ---
         toast.error("Login Gagal", {
           description: (
             <span className="text-white font-medium">
@@ -96,8 +86,6 @@ export function LoginForm({
     } catch (err: unknown) {
       console.error("Login error:", err);
       const msg = getErrorMessage(err);
-
-      // --- PERUBAHAN WARNA TEKS (Catch Block) ---
       toast.error("Terjadi Kesalahan", {
         description: <span className="text-red-500 font-medium">{msg}</span>,
       });
@@ -107,9 +95,6 @@ export function LoginForm({
   };
 
   return (
-    // PERUBAHAN 2: Hapus 'max-w-md' dan 'mx-auto' yang hardcoded.
-    // Ganti dengan {...props} agar styling dari luar bisa masuk.
-    // Tambahkan class w-full agar responsif mengikuti container pembungkusnya.
     <Card className={`w-full ${className || ""}`} {...props}>
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
@@ -119,8 +104,6 @@ export function LoginForm({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="grid gap-4" noValidate>
-          {/* ... (Isi Form TETAP SAMA persis seperti sebelumnya) ... */}
-
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input

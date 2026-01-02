@@ -8,8 +8,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
-
-// Imports Components shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -23,12 +21,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-// Imports Logic & Layout
 import { fasilitasFetcher } from "@/lib/fetchers/fasilitasFetcher";
 import { AppSidebar } from "@/components/app-sidebar";
 
-// 1. Definisikan Schema Validasi
 const formSchema = z.object({
   namaFasilitas: z.string().min(1, "Nama fasilitas wajib diisi"),
   kodeFasilitas: z.string().min(1, "Kode fasilitas wajib diisi"),
@@ -39,7 +34,6 @@ export default function TambahFasilitasPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  // 2. Setup Form Hook
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,7 +43,6 @@ export default function TambahFasilitasPage() {
     },
   });
 
-  // 3. Handle Submit
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
@@ -88,7 +81,6 @@ export default function TambahFasilitasPage() {
     <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      {/* --- HEADER SECTION --- */}
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Tambah Fasilitas
@@ -103,7 +95,6 @@ export default function TambahFasilitasPage() {
         </nav>
       </section>
 
-      {/* --- DESCRIPTION SECTION --- */}
       <section className="px-5">
         <p className="text-muted-foreground text-lg">
           Silakan isi formulir di bawah ini untuk menambahkan fasilitas baru ke
@@ -112,7 +103,6 @@ export default function TambahFasilitasPage() {
         </p>
       </section>
 
-      {/* --- FORM SECTION --- */}
       <section className="px-5 mt-4">
         <div className="mx-auto w-full max-w-3xl">
           <Card className="bg-white border rounded-xl shadow-sm">
@@ -125,7 +115,6 @@ export default function TambahFasilitasPage() {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-6"
                 >
-                  {/* Field 1: Nama Fasilitas */}
                   <FormField
                     control={form.control}
                     name="namaFasilitas"
@@ -143,7 +132,6 @@ export default function TambahFasilitasPage() {
                     )}
                   />
 
-                  {/* Field 2: Kode Fasilitas */}
                   <FormField
                     control={form.control}
                     name="kodeFasilitas"
@@ -162,7 +150,6 @@ export default function TambahFasilitasPage() {
                     )}
                   />
 
-                  {/* Field 3: Deskripsi */}
                   <FormField
                     control={form.control}
                     name="deskripsi"
@@ -181,7 +168,6 @@ export default function TambahFasilitasPage() {
                     )}
                   />
 
-                  {/* Action Buttons */}
                   <div className="flex justify-end gap-2 pt-4 border-t mt-6">
                     <Button
                       type="button"

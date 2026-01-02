@@ -12,7 +12,6 @@ interface UserDetailResponse {
 
 export function useUsers() {
   const { data, error, isLoading, mutate } = useSWR<UserResponse>("/user", fetcher);
-
   return {
     data: data?.user,
     isLoading,

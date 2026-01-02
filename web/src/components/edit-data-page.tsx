@@ -9,11 +9,8 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 interface EditDataPageProps {
-  // Tentukan tipe data yang akan diedit
   dataType: "user" | "kamar" | "fasilitas" | "perabotan";
-  // Path untuk redirect setelah berhasil update
   redirectPath: string;
-  // Judul halaman
   title: string;
 }
 

@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  IconTrendingDown,
-  IconTrendingUp,
-  IconUser,
-  IconDoor,
-  IconArmchair,
-  IconSparkles,
-} from "@tabler/icons-react";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import {
   Table,
   TableBody,
@@ -17,16 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash } from "lucide-react";
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -78,7 +61,6 @@ interface ModelPerabotan {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function SectionCards() {
-  // Fetch semua data dari API
   const {
     data: userData,
     error: userError,

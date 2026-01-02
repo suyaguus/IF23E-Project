@@ -10,7 +10,6 @@ interface OrderDetailResponse {
     order: Order;
 }
 
-// hook untuk admin
 export function useOrders() {
     const { data, error, isLoading, mutate } = useSWR<OrdersResponse>("/orders", fetcher);
     return {
@@ -21,7 +20,6 @@ export function useOrders() {
     };
 }
 
-// hook untuk user
 export function useMyOrders(userId: number | null) {
     const { data, error, isLoading, mutate } = useSWR<OrdersResponse>(
         userId ? `/orders/user/${userId}` : null,
@@ -35,7 +33,6 @@ export function useMyOrders(userId: number | null) {
     };
 }
 
-// hook untuk detail order
 export function useOrderDetail(id: number | null) {
     const { data, error, isLoading, mutate } = useSWR<OrderDetailResponse>(
         id ? `/orders/${id}` : null,

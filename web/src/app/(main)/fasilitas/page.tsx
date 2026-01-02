@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Pencil, Trash, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { toast } from "sonner";
-
-// UI Components
 import {
   Table,
   TableBody,
@@ -28,29 +26,24 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AppSidebar } from "@/components/app-sidebar";
-
-// Logic & Types
 import { useFasilitas } from "@/hooks/useFasilitas";
 import { fasilitasFetcher } from "@/lib/fetchers/fasilitasFetcher";
 import { Fasilitas } from "@/types/interfaces";
 
 export default function FasilitasPage() {
-  // 1. Gunakan Hook Custom
   const { data: listFasilitas, isLoading, isError, mutate } = useFasilitas();
 
-  // --- STATE PAGINATION & SEARCH ---
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Jumlah data per halaman
+  const itemsPerPage = 5;
   const [searchTerm, setSearchTerm] = useState("");
 
-  // --- LOGIC DELETE ---
   const handleDelete = async (id: number) => {
     try {
       const result = await fasilitasFetcher.deleteFasilitas(id);
 
       if (result.success) {
         toast.success(result.message || "Berhasil dihapus");
-        mutate(); // Refresh data otomatis
+        mutate();
       } else {
         toast.error(result.message || "Gagal menghapus");
       }
@@ -60,8 +53,6 @@ export default function FasilitasPage() {
     }
   };
 
-  // --- LOGIC FILTER & PAGINATION ---
-  // 1. Filter data berdasarkan search (Nama, Kode, atau Deskripsi)
   const filteredData =
     listFasilitas?.filter(
       (item: Fasilitas) =>
@@ -70,14 +61,12 @@ export default function FasilitasPage() {
         item.deskripsi.toLowerCase().includes(searchTerm.toLowerCase())
     ) || [];
 
-  // 2. Hitung pagination
   const totalItems = filteredData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
-  // 3. Handler Ganti Halaman
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
@@ -90,14 +79,12 @@ export default function FasilitasPage() {
     <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      {/* --- HEADER SECTION --- */}
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Manajemen Fasilitas
         </h1>
       </section>
 
-      {/* --- DESCRIPTION SECTION --- */}
       <section className="px-5">
         <p className="text-muted-foreground text-lg">
           Kelola data fasilitas yang tersedia di kost. Anda dapat menambah,
@@ -105,12 +92,9 @@ export default function FasilitasPage() {
         </p>
       </section>
 
-      {/* --- MAIN TABLE SECTION --- */}
       <section className="px-5 mt-4">
         <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-          {/* Toolbar Pencarian & Tombol Aksi */}
           <div className="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
-            {/* Bagian Kiri: Search Input */}
             <div className="relative w-full sm:w-72">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -124,7 +108,6 @@ export default function FasilitasPage() {
               />
             </div>
 
-            {/* Bagian Kanan: Tombol Tambah & Kembali */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Link
                 href="/fasilitas/tambah"
@@ -141,7 +124,6 @@ export default function FasilitasPage() {
             </div>
           </div>
 
-          {/* Tabel Data */}
           <div className="p-0">
             {isError ? (
               <div className="text-center text-red-500 py-10 bg-red-50/50 m-4 rounded-md">
@@ -172,7 +154,6 @@ export default function FasilitasPage() {
                     </TableRow>
                   ) : currentItems.length > 0 ? (
                     currentItems.map((item: Fasilitas, index: number) => {
-                      // Hitung nomor urut
                       const rowNumber = indexOfFirstItem + index + 1;
 
                       return (
@@ -253,7 +234,6 @@ export default function FasilitasPage() {
             )}
           </div>
 
-          {/* --- FOOTER PAGINATION --- */}
           {!isLoading && totalItems > 0 && (
             <div className="flex items-center justify-between px-4 py-4 border-t bg-gray-50/30">
               <div className="text-sm text-muted-foreground">

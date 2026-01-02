@@ -1,25 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { useEffect, useState } from "react"; // 1. Import Hooks
+import { useEffect, useState } from "react"; 
 import {
   IconBed,
-  IconInnerShadowTop,
-  // ... icon lainnya
 } from "@tabler/icons-react";
-
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 const data = {
   user: {
@@ -144,15 +137,13 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  // Buat State untuk User dengan Default "Guest"
   const [currentUser, setCurrentUser] = useState({
     name: "Guest User",
     email: "guest@example.com",
-    avatar: "", // Kosongkan atau isi path gambar default
+    avatar: "", 
   });
 
   useEffect(() => {
-    // Pastikan kode hanya jalan di client
     if (typeof window !== "undefined") {
       const storedUserString = localStorage.getItem("user");
 
@@ -160,11 +151,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         try {
           const storedUser = JSON.parse(storedUserString);
 
-          // 2. Update State (Sertakan avatar juga)
           setCurrentUser({
             name: storedUser.username || "User",
             email: storedUser.email || "No Email",
-            // Gunakan avatar kosong atau default image jika tidak ada
             avatar: "",
           });
         } catch (error) {
@@ -177,11 +166,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-          {/* Icon Logo Kecil */}
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <IconBed className="size-4" />
           </div>
-          {/* Teks Logo */}
           <span className="group-data-[collapsible=icon]:hidden">
             <span className="text-primary">Kost Wisma Dempo</span>
           </span>

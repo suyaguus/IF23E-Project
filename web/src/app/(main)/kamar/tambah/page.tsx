@@ -8,8 +8,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
-
-// Imports Components shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -30,14 +28,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Imports Logic
 import { kamarFetcher } from "@/lib/fetchers/kamarFetcher";
 import { StatusKamar } from "@/types/interfaces";
 import { formatRibuan, filterHarga } from "@/lib/scripts";
 import { AppSidebar } from "@/components/app-sidebar";
 
-// 1. Definisikan Schema Validasi
 const formSchema = z.object({
   nomorKamar: z.string().min(1, "Nomor kamar wajib diisi"),
   hargaSewa: z.coerce.number().min(1, "Harga sewa tidak boleh 0"),
@@ -49,7 +44,6 @@ export default function TambahKamarPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  // 2. Setup Form Hook
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,7 +54,6 @@ export default function TambahKamarPage() {
     },
   });
 
-  // 3. Handle Submit
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
@@ -98,7 +91,6 @@ export default function TambahKamarPage() {
     <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      {/* --- HEADER SECTION --- */}
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Tambah Kamar
@@ -113,7 +105,6 @@ export default function TambahKamarPage() {
         </nav>
       </section>
 
-      {/* --- DESCRIPTION SECTION --- */}
       <section className="px-5">
         <p className="text-muted-foreground text-lg">
           Silakan isi formulir di bawah ini untuk menambahkan kamar baru ke
@@ -122,9 +113,7 @@ export default function TambahKamarPage() {
         </p>
       </section>
 
-      {/* --- FORM SECTION --- */}
       <section className="px-5 mt-4">
-        {/* Menggunakan max-w-3xl agar form tidak terlalu lebar tapi tetap proporsional */}
         <div className="mx-auto w-full max-w-3xl">
           <Card className="bg-white border rounded-xl shadow-sm">
             <CardHeader>
@@ -136,7 +125,6 @@ export default function TambahKamarPage() {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-6"
                 >
-                  {/* Field 1: Nomor Kamar */}
                   <FormField
                     control={form.control}
                     name="nomorKamar"
@@ -151,7 +139,6 @@ export default function TambahKamarPage() {
                     )}
                   />
 
-                  {/* Field 2: Harga Sewa */}
                   <FormField
                     control={form.control}
                     name="hargaSewa"
@@ -182,7 +169,6 @@ export default function TambahKamarPage() {
                     )}
                   />
 
-                  {/* Field 3: Status Kamar */}
                   <FormField
                     control={form.control}
                     name="statusKamar"
@@ -215,7 +201,6 @@ export default function TambahKamarPage() {
                     )}
                   />
 
-                  {/* Field 4: Deskripsi */}
                   <FormField
                     control={form.control}
                     name="deskripsi"
@@ -234,7 +219,6 @@ export default function TambahKamarPage() {
                     )}
                   />
 
-                  {/* Action Buttons */}
                   <div className="flex justify-end gap-2 pt-4 border-t mt-6">
                     <Button
                       type="button"

@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Pencil, Trash, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { toast } from "sonner";
-
-// UI Components
 import {
   Table,
   TableBody,
@@ -28,21 +26,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AppSidebar } from "@/components/app-sidebar";
-
-// Logic & Types
 import { useKamar } from "@/hooks/useKamar";
 import { kamarFetcher } from "@/lib/fetchers/kamarFetcher";
 import { Kamar, StatusKamar } from "@/types/interfaces";
 
 export default function KamarPage() {
   const { data: kamarList, isLoading, isError, mutate } = useKamar();
-
-  // --- STATE PAGINATION & SEARCH ---
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Jumlah data per halaman
+  const itemsPerPage = 5;
   const [searchTerm, setSearchTerm] = useState("");
 
-  // --- LOGIC DELETE ---
   const handleDelete = async (id: number) => {
     try {
       const result = await kamarFetcher.deleteKamar(id);
@@ -58,7 +51,6 @@ export default function KamarPage() {
     }
   };
 
-  // --- HELPER WARNA ---
   const getStatusBadge = (status: string | StatusKamar) => {
     const normalizedStatus = String(status)
       .toUpperCase()
@@ -83,8 +75,6 @@ export default function KamarPage() {
     return { color: "bg-gray-50 text-gray-500 border-gray-200", label: status };
   };
 
-  // --- LOGIC PAGINATION ---
-  // 1. Filter data berdasarkan search
   const filteredData =
     kamarList?.filter(
       (item: Kamar) =>
@@ -92,14 +82,12 @@ export default function KamarPage() {
         item.deskripsi.toLowerCase().includes(searchTerm.toLowerCase())
     ) || [];
 
-  // 2. Hitung index data
   const totalItems = filteredData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
-  // 3. Handler Tombol Geser
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
@@ -112,14 +100,12 @@ export default function KamarPage() {
     <div className="flex flex-col gap-4 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      {/* --- HEADER SECTION (Sesuai Request Anda) --- */}
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Manajemen Kamar
         </h1>
       </section>
 
-      {/* --- DESCRIPTION SECTION --- */}
       <section className="px-5">
         <article className="text-muted-foreground text-lg">
           Ini adalah halaman manajemen kamar di aplikasi kost. Di halaman ini,
@@ -128,13 +114,9 @@ export default function KamarPage() {
         </article>
       </section>
 
-      {/* --- MAIN TABLE SECTION (Dengan Card & Pagination) --- */}
       <section className="px-5 mt-4">
         <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-          {/* Toolbar Pencarian */}
-          {/* Toolbar Pencarian & Tombol Aksi */}
           <div className="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
-            {/* Bagian Kiri: Search Input */}
             <div className="relative w-full sm:w-72">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -148,7 +130,6 @@ export default function KamarPage() {
               />
             </div>
 
-            {/* Bagian Kanan: Tombol Tambah & Kembali */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Link
                 href="/kamar/tambah"
@@ -165,7 +146,6 @@ export default function KamarPage() {
             </div>
           </div>
 
-          {/* Tabel Data */}
           <div className="p-0">
             {isError ? (
               <div className="text-center text-red-500 py-10 bg-red-50/50 m-4 rounded-md">
@@ -200,7 +180,6 @@ export default function KamarPage() {
                   ) : currentItems.length > 0 ? (
                     currentItems.map((item: Kamar, index: number) => {
                       const badge = getStatusBadge(item.statusKamar);
-                      // Hitung nomor urut berdasarkan halaman
                       const rowNumber = indexOfFirstItem + index + 1;
 
                       return (
@@ -287,7 +266,6 @@ export default function KamarPage() {
             )}
           </div>
 
-          {/* --- FOOTER PAGINATION --- */}
           {!isLoading && totalItems > 0 && (
             <div className="flex items-center justify-between px-4 py-4 border-t bg-gray-50/30">
               <div className="text-sm text-muted-foreground">
