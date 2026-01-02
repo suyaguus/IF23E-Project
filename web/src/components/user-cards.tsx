@@ -1,4 +1,3 @@
-// src/components/user-cards.tsx
 "use client";
 
 import { IconHome, IconReceipt2, IconCalendarStats, IconMessageReport, Icon } from "@tabler/icons-react";
@@ -72,7 +71,6 @@ export function UserStatsCards() {
                <item.icon size={16} className="text-primary" />
                {item.description}
             </div>
-            {/* Tampilkan Progress Bar jika ada data progress */}
             {item.progress !== undefined && (
               <div className="w-full space-y-1">
                 <Progress value={item.progress} className="h-1.5" />
