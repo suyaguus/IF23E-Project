@@ -24,8 +24,6 @@ import {
   SidebarGroupContent,
   SidebarRail,
 } from "@/components/ui/sidebar";
-
-// Import NavUser agar footer seragam dengan Admin
 import { NavUser } from "@/components/nav-user";
 
 const navItems = [
@@ -35,7 +33,7 @@ const navItems = [
     icon: IconLayoutDashboard,
   },
   {
-    title: "Kamar Saya",
+    title: "Kamar",
     url: "/dashboard/user/kamar",
     icon: IconBed,
   },
