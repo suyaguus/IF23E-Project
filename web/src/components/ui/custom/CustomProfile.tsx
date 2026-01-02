@@ -10,11 +10,10 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  Shield, // Icon tambahan untuk Admin
+  Shield,
   KeyRound,
 } from "lucide-react";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,27 +27,21 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-
-// Hooks & Fetchers
 import { useAuth } from "@/hooks/useAuth";
 import { authFetcher } from "@/lib/fetchers/authFetcher";
 import { getErrorMessage } from "@/types/auth";
 
-// Props Component
 interface SharedProfileFormProps {
-  role: "admin" | "user"; // Prop wajib untuk membedakan
+  role: "admin" | "user";
 }
 
 export function SharedProfileForm({ role }: SharedProfileFormProps) {
   const router = useRouter();
   const { user: authUser, login: updateAuthUser } = useAuth();
-
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-
-  // State Form Profile
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -56,13 +49,11 @@ export function SharedProfileForm({ role }: SharedProfileFormProps) {
     avatar: "",
   });
 
-  // State Form Password
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
   });
 
-  // Load Data User saat Component Mount
   useEffect(() => {
     if (authUser) {
       setFormData({
@@ -74,7 +65,6 @@ export function SharedProfileForm({ role }: SharedProfileFormProps) {
     }
   }, [authUser]);
 
-  // Handle Input Change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -83,7 +73,6 @@ export function SharedProfileForm({ role }: SharedProfileFormProps) {
     setPasswordData({ ...passwordData, [e.target.id]: e.target.value });
   };
 
-  // --- SUBMIT PROFILE ---
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!authUser) return;
@@ -97,7 +86,6 @@ export function SharedProfileForm({ role }: SharedProfileFormProps) {
       });
 
       if (result.success) {
-        // Update Context & LocalStorage
         const updatedUser = {
           ...authUser,
           username: formData.username,
@@ -121,7 +109,6 @@ export function SharedProfileForm({ role }: SharedProfileFormProps) {
     }
   };
 
-  // --- SUBMIT PASSWORD ---
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!authUser) return;
@@ -159,10 +146,8 @@ export function SharedProfileForm({ role }: SharedProfileFormProps) {
     }
   };
 
-  // --- RENDER ---
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
-      {/* Header Section */}
       <div className="flex items-center gap-4">
         {role === "admin" ? (
           <div className="p-3 rounded-full bg-primary/10 text-primary">
@@ -195,7 +180,6 @@ export function SharedProfileForm({ role }: SharedProfileFormProps) {
           </TabsTrigger>
         </TabsList>
 
-        {/* TAB 1: PROFIL UMUM */}
         <TabsContent value="general" className="mt-6 space-y-6">
           <Card>
             <CardHeader>
@@ -233,7 +217,6 @@ export function SharedProfileForm({ role }: SharedProfileFormProps) {
 
               <Separator />
 
-              {/* Form Input */}
               <form onSubmit={handleSaveProfile} className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
@@ -303,7 +286,6 @@ export function SharedProfileForm({ role }: SharedProfileFormProps) {
           </Card>
         </TabsContent>
 
-        {/* TAB 2: KEAMANAN (PASSWORD) */}
         <TabsContent value="security" className="mt-6 space-y-6">
           <Card>
             <CardHeader>
