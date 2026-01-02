@@ -11,17 +11,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  User,
-  Shield,
-  Palette,
-  Info,
-  FileText,
-  LogIn,
-  Lock,
-} from "lucide-react";
+import { User, Palette, Info, FileText, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { SharedProfileForm } from "./CustomProfile"; // Import profile form yang sudah ada
+import { SharedProfileForm } from "./CustomProfile";
 
 interface SharedSettingsFormProps {
   role: "admin" | "user" | "guest";
@@ -30,8 +22,6 @@ interface SharedSettingsFormProps {
 export function SharedSettingsForm({ role }: SharedSettingsFormProps) {
   const router = useRouter();
   const isGuest = role === "guest";
-
-  // Default tab: Guest ke appearance, User/Admin ke profile
   const defaultTab = isGuest ? "appearance" : "profile";
 
   return (
@@ -41,7 +31,6 @@ export function SharedSettingsForm({ role }: SharedSettingsFormProps) {
           defaultValue={defaultTab}
           className="w-full flex flex-col lg:flex-row gap-6"
         >
-          {/* --- SIDEBAR MENU (KIRI) --- */}
           <aside className="lg:w-1/4 lg:border-r lg:pr-10 pb-6 lg:pb-0">
             <TabsList className="flex flex-col h-auto w-full items-start justify-start gap-1 bg-transparent p-0 text-muted-foreground">
               {!isGuest && (
@@ -96,7 +85,6 @@ export function SharedSettingsForm({ role }: SharedSettingsFormProps) {
             )}
           </aside>
 
-          {/* --- ISI KONTEN (KANAN) --- */}
           <div className="flex-1 lg:pl-3 pt-6 lg:pt-0">
             {!isGuest && (
               <TabsContent
@@ -132,7 +120,6 @@ export function SharedSettingsForm({ role }: SharedSettingsFormProps) {
               </Card>
             </TabsContent>
 
-            {/* TAB: TENTANG */}
             <TabsContent value="about" className="space-y-6 mt-0">
               <Card>
                 <CardHeader>
@@ -153,7 +140,6 @@ export function SharedSettingsForm({ role }: SharedSettingsFormProps) {
               </Card>
             </TabsContent>
 
-            {/* TAB: PRIVASI */}
             <TabsContent value="privacy" className="space-y-6 mt-0">
               <Card>
                 <CardHeader>
