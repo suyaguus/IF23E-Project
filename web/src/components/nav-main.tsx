@@ -3,17 +3,10 @@
 import {
   IconArmchair,
   IconBed,
-  IconChairDirector,
-  IconCirclePlusFilled,
   IconDashboard,
   IconFridge,
-  IconMail,
-  IconMenu,
-  IconUser,
   type Icon,
 } from "@tabler/icons-react";
-
-import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -36,7 +29,7 @@ export function NavMain({
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
-          {/* bagian judul */}
+          {/* bagian dashboard */}
           <Link href="/dashboard/admin">
             <SidebarMenuItem className="flex items-center gap-2">
               <SidebarMenuButton
@@ -48,19 +41,6 @@ export function NavMain({
               </SidebarMenuButton>
             </SidebarMenuItem>
           </Link>
-
-          {/* bagian user */}
-          {/* <Link href="/user">
-            <SidebarMenuItem className="flex items-center gap-2">
-              <SidebarMenuButton
-                tooltip="Menu User"
-                className="bg-transparent text-black hover:bg-transparent hover:border-2 hover:border-primary hover:text-black min-w-8 duration-200 ease-linear"
-              >
-                <IconUser />
-                <span>Menu User</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </Link> */}
 
           {/* bagian kamar */}
           <Link href="/kamar">
@@ -100,7 +80,6 @@ export function NavMain({
               </SidebarMenuButton>
             </SidebarMenuItem>
           </Link>
-
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
