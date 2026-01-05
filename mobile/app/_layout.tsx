@@ -27,15 +27,12 @@ const theme = {
   },
 };
 
-// komponen drawer
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
-
   const router = useRouter();
   const pathname = usePathname();
-
   const { userData, isLoggedIn } = useAuth();
 
-  const isActive = (path: string) => pathname.includes(path);
+  const isActive = (path: string) => pathname.startsWith(path);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface }}>
@@ -48,7 +45,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           style={{ backgroundColor: "white" }}
           color={theme.colors.primary}
         />
-
         <Text variant="titleMedium" style={styles.drawerTitle}>
           {isLoggedIn && userData ? userData.username : "Guest User"}
         </Text>
@@ -59,30 +55,30 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
       <PaperDrawer.Section showDivider={false} style={{ flex: 1 }}>
         <PaperDrawer.Item
-          icon={({ size, color }) => (
+          icon={({ size }) => (
             <MaterialIcons
               name="dashboard"
               size={size}
-              color={isActive("dashboard") ? theme.colors.primary : "#666"}
+              color={isActive("/dashboard") ? theme.colors.primary : "#666"}
             />
           )}
           label="Dashboard"
-          active={isActive("dashboard")}
-          onPress={() => router.push("../dashboard")}
+          active={isActive("/dashboard")}
+          onPress={() => router.push("/dashboard")}
           theme={{ colors: { secondaryContainer: "#E6F2FF" } }}
         />
 
         <PaperDrawer.Item
-          icon={({ size, color }) => (
+          icon={({ size }) => (
             <MaterialIcons
               name="login"
               size={size}
-              color={isActive("auth/login") ? theme.colors.primary : "#666"}
+              color={isActive("/auth") ? theme.colors.primary : "#666"}
             />
           )}
           label="Login"
-          active={isActive("auth/login")}
-          onPress={() => router.push("../auth/login")}
+          active={isActive("/auth")}
+          onPress={() => router.push("/auth/login")}
           theme={{ colors: { secondaryContainer: "#E6F2FF" } }}
         />
       </PaperDrawer.Section>
@@ -96,7 +92,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
   );
 };
 
-// komponen navigasi
 function RootLayoutNav() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -110,31 +105,30 @@ function RootLayoutNav() {
           headerShown: false,
         }}
       >
-        {/* Menu Guest */}
-        <Drawer.Screen name="dashboard/page" options={{ title: "Dashboard" }} />
-        <Drawer.Screen name="auth/login/page" options={{ title: "Login" }} />
-
-        {/* Menu Tersembunyi */}
-        <Drawer.Screen
-          name="dashboard/index" 
-          options={{ title: "Dashboard" }}
-        />
-
-        <Drawer.Screen
-          name="auth/login/index" 
-          options={{ title: "Login" }}
-        />
-        <Drawer.Screen
-          name="auth/forgot-password/index"
-          options={{ drawerItemStyle: { display: "none" } }}
-        />
-
-        {/* Admin Layout Tersembunyi */}
         <Drawer.Screen
           name="index"
-          options={{ drawerItemStyle: { display: "none" } }}
+          options={{
+            drawerItemStyle: { display: "none" },
+            title: "Home",
+          }}
         />
 
+        <Drawer.Screen
+          name="dashboard"
+          options={{
+            title: "Dashboard",
+            headerShown: false,
+          }}
+        />
+
+        <Drawer.Screen
+          name="auth"
+          options={{
+            title: "Authentication",
+            headerShown: false,
+            drawerItemStyle: { display: "none" },
+          }}
+        />
       </Drawer>
       <StatusBar
         barStyle="light-content"
@@ -144,7 +138,6 @@ function RootLayoutNav() {
   );
 }
 
-// komponen root
 export default function RootLayout() {
   return (
     <AuthProvider>
