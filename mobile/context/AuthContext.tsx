@@ -13,7 +13,7 @@ interface UserData {
   notelp?: string;
 }
 
-// 2. Definisikan Tipe Data untuk Context
+// definisi tipe context
 interface AuthContextType {
   isLoggedIn: boolean;
   userRole: "guest" | "admin" | "user";
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState<"guest" | "admin" | "user">("guest");
 
-  // PERBAIKAN: Definisi State yang hilang sebelumnya
+  // State Data User
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Fungsi Login
   const login = async (email: string, password: string) => {
-    setIsLoading(true); // Sekarang tidak error karena state sudah ada
+    setIsLoading(true); 
     try {
       const response = await api.post(Strings.api_auth_login, {
         email,
@@ -49,31 +49,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const result = response.data;
 
       if (result.success) {
-        // Ambil data user
         let user = result.data.user;
 
-        // --- NORMALISASI ROLE DI SINI ---
-        // Kita paksa role di object user menjadi huruf kecil semua
         if (user.role) {
           user.role = user.role.toLowerCase();
         }
-        // --------------------------------
 
         setUserData(user);
 
-        // Karena sudah dikecilkan, pengecekan jadi simpel
         const role = user.role === "admin" ? "admin" : "user";
         setUserRole(role);
-
         setIsLoggedIn(true);
 
-        return user; // Kembalikan user yang role-nya sudah lowercase
+        return user; 
       } else {
         throw new Error(result.message || "Login gagal");
       }
     } catch (error: any) {
-      // ... error handling
-      throw error;
+      console.error("Login Error Full:", error);
+      Alert.alert(
+        "Login Gagal",
+        error.message || "Terjadi kesalahan saat login"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -84,17 +81,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoggedIn(false);
     setUserRole("guest");
     setUserData(null);
-    // router.replace("/auth/login"); // Opsional: redirect
+    router.replace("/");
   };
 
   return (
     <AuthContext.Provider
-      // Masukkan semua state dan fungsi ke dalam value provider
       value={{
         isLoggedIn,
         userRole,
-        userData, // Export data user
-        isLoading, // Export loading state
+        userData, 
+        isLoading, 
         login,
         logout,
       }}
