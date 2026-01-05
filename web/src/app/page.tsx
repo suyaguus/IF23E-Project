@@ -110,7 +110,13 @@ export default function DashBoardPage() {
 
           {/* PERATURAN KOST */}
           <section className="px-4 py-6 lg:px-6">
-            
+            <header className="mb-4">
+              <h3 className="text-xl font-bold">Peraturan Kost</h3>
+              <p className="text-sm text-muted-foreground">
+                Demi kenyamanan dan keamanan bersama, penghuni kost diharapkan mematuhi
+                peraturan berikut:
+              </p>
+            </header>
           </section>
 
           {/* Alamat Kost */}
