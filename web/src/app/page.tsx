@@ -117,6 +117,33 @@ export default function DashBoardPage() {
                 peraturan berikut:
               </p>
             </header>
+
+            <article>
+              <ol className="list-decimal space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
+                <li>
+                  Jam bertamu dibatasi hingga pukul <strong>21.00 WIB</strong>.
+                </li>
+                <li>
+                  Dilarang membawa tamu lawan jenis ke dalam kamar.
+                </li>
+                <li>
+                  Penghuni wajib menjaga kebersihan kamar dan area bersama.
+                </li>
+                <li>
+                  Tidak diperkenankan memelihara hewan peliharaan.
+                </li>
+                <li>
+                  Dilarang merokok di dalam kamar.
+                </li>
+                <li>
+                  Penggunaan listrik dan air harus dilakukan secara bijak.
+                </li>
+                <li>
+                  Kerusakan fasilitas akibat kelalaian penghuni menjadi tanggung jawab
+                  pribadi.
+                </li>
+              </ol>
+            </article>
           </section>
 
           {/* Alamat Kost */}
