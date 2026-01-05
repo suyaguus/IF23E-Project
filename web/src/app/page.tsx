@@ -144,6 +144,13 @@ export default function DashBoardPage() {
                 </li>
               </ol>
             </article>
+            
+            <footer className="mt-4 text-sm text-muted-foreground">
+              <p>
+                ⚠️ Pelanggaran terhadap peraturan dapat dikenakan sanksi sesuai ketentuan
+                yang berlaku.
+              </p>
+            </footer>
           </section>
 
           {/* Alamat Kost */}
