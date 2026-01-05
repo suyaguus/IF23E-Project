@@ -108,6 +108,11 @@ export default function DashBoardPage() {
             </section>
           </section>
 
+          {/* PERATURAN KOST */}
+          <section className="px-4 py-6 lg:px-6">
+            
+          </section>
+
           {/* Alamat Kost */}
           <section className="px-4 py-6 lg:px-6">
             <h3 className="mb-2 text-xl font-bold">Alamat Kost</h3>
