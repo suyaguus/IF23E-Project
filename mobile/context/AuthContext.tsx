@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { useRouter } from "expo-router";
 import api from "@/services/api";
-import { Alert } from "react-native";
 import { Strings } from "@/constants/strings";
 
 // interface data user
@@ -19,8 +17,6 @@ interface AuthContextType {
   userRole: "guest" | "admin" | "user";
   userData: UserData | null;
   isLoading: boolean;
-
-  // fungsi login
   logout: () => void;
   login: (email: string, password: string) => Promise<any>;
 }
@@ -36,11 +32,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const router = useRouter();
-
   // Fungsi Login
   const login = async (email: string, password: string) => {
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
       const response = await api.post(Strings.api_auth_login, {
         email,
@@ -56,32 +50,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
 
         setUserData(user);
-
         const role = user.role === "admin" ? "admin" : "user";
         setUserRole(role);
         setIsLoggedIn(true);
 
-        return user; 
+        return user;
       } else {
         throw new Error(result.message || "Login gagal");
       }
     } catch (error: any) {
       console.error("Login Error Full:", error);
-      Alert.alert(
-        "Login Gagal",
-        error.message || "Terjadi kesalahan saat login"
-      );
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fungsi Logout
   const logout = () => {
-    setIsLoggedIn(false);
-    setUserRole("guest");
     setUserData(null);
-    router.replace("/");
+    setUserRole("guest");
+    setIsLoggedIn(false);
   };
 
   return (
@@ -89,8 +77,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         isLoggedIn,
         userRole,
-        userData, 
-        isLoading, 
+        userData,
+        isLoading,
         login,
         logout,
       }}
