@@ -1,4 +1,5 @@
 const BASE_URL = `https://if-23-e-project.vercel.app/api`;
+// const BASE_URL = `http://localhost:3001/api`;
 
 export const Strings = {
     api_kamar: `${BASE_URL}/kamar`,
