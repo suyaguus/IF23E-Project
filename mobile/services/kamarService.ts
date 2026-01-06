@@ -1,57 +1,78 @@
-// services/kamarService.ts
-import api from "./api"; // Pastikan path ini sesuai dengan lokasi api.ts Anda
-import { Strings } from "@/constants/strings"; // Mengambil URL dari constants
+import api from "./api";
+import { Strings } from "@/constants/strings";
 import { KamarInput } from "@/types/interfaces";
 
 export const kamarService = {
-  // 1. GET ALL: Ambil semua data kamar
-  getAll: async () => {
-    try {
-      const response = await api.get(Strings.api_kamar);
-      // Sesuaikan 'response.data.data' dengan struktur JSON backend Anda
-      return response.data.data; 
-    } catch (error) {
-      throw error;
-    }
-  },
+    // get all kamar
+    getAll: async () => {
+        try {
+            const response = await api.get(Strings.api_kamar);
 
-  // 2. GET BY ID: Ambil detail 1 kamar
-  getById: async (id: number) => {
-    try {
-      const response = await api.get(`${Strings.api_kamar}/${id}`);
-      return response.data.data;
-    } catch (error) {
-      throw error;
-    }
-  },
+            // ambil data kamar dengan penyesuaian format respons
+            if (response.data.kamar) {
+                return response.data.kamar;
+            }
 
-  // 3. CREATE: Tambah kamar baru
-  create: async (data: KamarInput) => {
-    try {
-      const response = await api.post(Strings.api_kamar, data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
+            // ambil dari properti data jika ada
+            if (response.data.data) {
+                return response.data.data;
+            }
 
-  // 4. UPDATE: Edit data kamar
-  update: async (id: number, data: KamarInput) => {
-    try {
-      const response = await api.put(`${Strings.api_kamar}/${id}`, data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
+            // ambil dari properti data jika ada
+            if (Array.isArray(response.data)) {
+                return response.data;
+            }
+            return [];
+        } catch (error) {
+            throw error;
+        }
+    },
 
-  // 5. DELETE: Hapus kamar
-  delete: async (id: number) => {
-    try {
-      const response = await api.delete(`${Strings.api_kamar}/${id}`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
+    // get kamar by ID
+    getById: async (id: number) => {
+        try {
+            const response = await api.get(`${Strings.api_kamar}/${id}`);
+
+            // Penyesuaian serupa untuk detail
+            if (response.data.kamar) return response.data.kamar;
+            if (response.data.data) return response.data.data;
+            return response.data;
+        } catch (error) {
+            console.error("[KamarService] Error getById:", error);
+            throw error;
+        }
+    },
+
+    // buat kamar
+    create: async (data: KamarInput) => {
+        try {
+            const response = await api.post(Strings.api_kamar, data);
+            return response.data;
+        } catch (error) {
+            console.error("[KamarService] Error create:", error);
+            throw error;
+        }
+    },
+
+    // update kamar
+    update: async (id: number, data: KamarInput) => {
+        try {
+            const response = await api.put(`${Strings.api_kamar}/${id}`, data);
+            return response.data;
+        } catch (error) {
+            console.error("[KamarService] Error update:", error);
+            throw error;
+        }
+    },
+
+    // delete kamar
+    delete: async (id: number) => {
+        try {
+            const response = await api.delete(`${Strings.api_kamar}/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error("[KamarService] Error delete:", error);
+            throw error;
+        }
+    },
 };
