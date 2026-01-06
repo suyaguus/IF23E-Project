@@ -1,190 +1,320 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, Alert } from "react-native";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { View, FlatList, StyleSheet, RefreshControl } from "react-native";
 import {
-  TextInput,
-  Button,
+  Card,
   Text,
+  FAB,
+  IconButton,
   ActivityIndicator,
-  SegmentedButtons,
-  useTheme
+  useTheme,
+  Chip,
+  TextInput,
+  Portal,
+  Dialog,
+  Button,
+  Snackbar,
 } from "react-native-paper";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter, useFocusEffect } from "expo-router";
 import { kamarService } from "@/services/kamarService";
-import { StatusKamar } from "@/types/interfaces";
+import { Kamar, StatusKamar } from "@/types/interfaces";
 
-export default function KamarForm() {
+export default function KamarList() {
   const theme = useTheme();
   const router = useRouter();
-  const params = useLocalSearchParams();
-  
-  // Konversi ID ke number jika ada
-  const id = params.id ? Number(params.id) : null; 
-  const isEditMode = !!id; // Boolean: true jika edit, false jika tambah
 
-  const [loading, setLoading] = useState(false);
-  const [initLoading, setInitLoading] = useState(isEditMode);
+  // State Data
+  const [data, setData] = useState<Kamar[]>([]);
+  const [filteredData, setFilteredData] = useState<Kamar[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [search, setSearch] = useState("");
 
-  // State Form Input
-  const [nomorKamar, setNomorKamar] = useState("");
-  const [hargaSewa, setHargaSewa] = useState("");
-  const [statusKamar, setStatusKamar] = useState<StatusKamar>("Tersedia");
-  const [deskripsi, setDeskripsi] = useState("");
+  // State Dialog & Snackbar
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedNomor, setSelectedNomor] = useState("");
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const messageResponse = useRef("");
 
-  // USE EFFECT: Jika mode edit, ambil data lama dari server
-  useEffect(() => {
-    if (isEditMode) {
-      const fetchDetail = async () => {
-        try {
-          const data = await kamarService.getById(id);
-          if (data) {
-            setNomorKamar(data.nomorKamar);
-            setHargaSewa(data.hargaSewa.toString());
-            // Casting tipe string dari backend ke tipe StatusKamar
-            setStatusKamar((data.statusKamar as StatusKamar) || "Tersedia");
-            setDeskripsi(data.deskripsi || "");
-          }
-        } catch (error) {
-          Alert.alert("Error", "Gagal memuat detail kamar");
-          router.back();
-        } finally {
-          setInitLoading(false);
-        }
-      };
-      fetchDetail();
-    }
-  }, [id]);
-
-  const handleSubmit = async () => {
-    // Validasi Sederhana
-    if (!nomorKamar || !hargaSewa) {
-      Alert.alert("Validasi", "Nomor Kamar dan Harga wajib diisi");
-      return;
-    }
-
-    setLoading(true);
-
-    const payload = {
-      nomorKamar,
-      hargaSewa: parseInt(hargaSewa),
-      statusKamar,
-      deskripsi,
-    };
-
+  const fetchData = async () => {
     try {
-      if (isEditMode) {
-        // Mode Edit: Panggil update
-        await kamarService.update(id, payload);
-        Alert.alert("Sukses", "Data kamar berhasil diperbarui", [
-            { text: "OK", onPress: () => router.back() }
-        ]);
-      } else {
-        // Mode Tambah: Panggil create
-        await kamarService.create(payload);
-        Alert.alert("Sukses", "Kamar baru berhasil ditambahkan", [
-            { text: "OK", onPress: () => router.back() }
-        ]);
-      }
-    } catch (error: any) {
+      const result = await kamarService.getAll();
+      const listKamar = Array.isArray(result) ? result : [];
+      setData(listKamar);
+      setFilteredData(listKamar); 
+    } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.message || "Terjadi kesalahan pada server";
-      Alert.alert("Gagal", msg);
+      messageResponse.current = "Gagal memuat data kamar";
+      setSnackbarVisible(true);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
-  // Tampilan Loading saat mengambil data edit
-  if (initLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={{ marginTop: 10 }}>Memuat data kamar...</Text>
-      </View>
-    );
-  }
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchData();
+  };
+
+  useEffect(() => {
+    if (search.trim() === "") {
+      setFilteredData(data);
+    } else {
+      const term = search.toLowerCase();
+      const filtered = data.filter(
+        (item) =>
+          item.nomorKamar.toLowerCase().includes(term) ||
+          item.statusKamar.toLowerCase().includes(term)
+      );
+      setFilteredData(filtered);
+    }
+  }, [search, data]);
+
+  const confirmDelete = (id: number, nomor: string) => {
+    setSelectedId(id);
+    setSelectedNomor(nomor);
+    setDialogVisible(true);
+  };
+
+  const handleDelete = async () => {
+    if (!selectedId) return;
+    try {
+      // Panggil Service Delete
+      await kamarService.delete(selectedId);
+
+      messageResponse.current = "Data berhasil dihapus";
+      setSnackbarVisible(true);
+      fetchData(); // Reload data
+    } catch (error: any) {
+      console.error(error);
+      const msg = error.response?.data?.message || "Gagal menghapus data";
+      messageResponse.current = msg;
+      setSnackbarVisible(true);
+    } finally {
+      setDialogVisible(false);
+      setSelectedId(null);
+    }
+  };
+
+  const getStatusColor = (status: StatusKamar | string) => {
+    switch (status) {
+      case "Tersedia":
+        return "#4CAF50"; // Hijau
+      case "Penuh":
+        return "#F44336"; // Merah
+      case "Perbaikan":
+        return "#FF9800"; // Oranye
+      default:
+        return "#9E9E9E"; // Abu-abu
+    }
+  };
+
+  const formatRupiah = (angka: number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(angka);
+  };
+
+  const renderItem = ({ item }: { item: Kamar }) => (
+    <Card style={styles.card} mode="elevated">
+      <Card.Content>
+        <View style={styles.rowBetween}>
+          <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
+            Kamar {item.nomorKamar}
+          </Text>
+          <Chip
+            style={{
+              backgroundColor: getStatusColor(item.statusKamar),
+              height: 32,
+            }}
+            textStyle={{ color: "white", fontSize: 12, fontWeight: "bold" }}
+            icon={() => (
+              <MaterialIcons
+                name={
+                  item.statusKamar === "Tersedia"
+                    ? "check-circle"
+                    : item.statusKamar === "Penuh"
+                    ? "cancel"
+                    : "build"
+                }
+                size={16}
+                color="white"
+              />
+            )}
+          >
+            {item.statusKamar}
+          </Chip>
+        </View>
+
+        <Text
+          variant="bodyLarge"
+          style={{
+            marginTop: 8,
+            color: theme.colors.primary,
+            fontWeight: "bold",
+          }}
+        >
+          {formatRupiah(item.hargaSewa)} / bulan
+        </Text>
+
+        {item.deskripsi ? (
+          <Text
+            variant="bodySmall"
+            numberOfLines={2}
+            style={{ color: "gray", marginTop: 4 }}
+          >
+            {item.deskripsi}
+          </Text>
+        ) : null}
+      </Card.Content>
+
+      <Card.Actions style={{ justifyContent: "flex-end", paddingTop: 0 }}>
+        {/* Tombol Edit */}
+        <IconButton
+          icon="pencil"
+          mode="contained-tonal"
+          iconColor={theme.colors.primary}
+          size={20}
+          onPress={() =>
+            router.push({
+              pathname: "/dashboard/admin/kamar/form",
+              params: { id: item.id },
+            })
+          }
+        />
+        {/* Tombol Hapus */}
+        <IconButton
+          icon="delete"
+          mode="contained-tonal"
+          containerColor="#FFEBEE"
+          iconColor={theme.colors.error}
+          size={20}
+          onPress={() => confirmDelete(item.id, item.nomorKamar)}
+        />
+      </Card.Actions>
+    </Card>
+  );
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-        <Text variant="headlineSmall" style={[styles.title, { color: theme.colors.primary }]}>
-          {isEditMode ? "Edit Kamar" : "Tambah Kamar Baru"}
-        </Text>
+      {/* Search Bar */}
+      <TextInput
+        placeholder="Cari Nomor Kamar atau Status..."
+        mode="flat"
+        left={<TextInput.Icon icon="magnify" />}
+        style={styles.searchBar}
+        value={search}
+        onChangeText={setSearch}
+        underlineColor="transparent"
+        activeUnderlineColor="transparent"
+      />
 
-        <TextInput
-          label="Nomor Kamar"
-          placeholder="Contoh: A-101"
-          value={nomorKamar}
-          onChangeText={setNomorKamar}
-          mode="outlined"
-          style={styles.input}
-        />
-
-        <TextInput
-          label="Harga Sewa (Per Bulan)"
-          placeholder="0"
-          value={hargaSewa}
-          onChangeText={setHargaSewa}
-          mode="outlined"
-          keyboardType="numeric"
-          style={styles.input}
-          left={<TextInput.Affix text="Rp " />}
-        />
-
-        <Text variant="bodyMedium" style={styles.label}>Status Kamar</Text>
-        <SegmentedButtons
-          value={statusKamar}
-          onValueChange={(val) => setStatusKamar(val as StatusKamar)}
-          buttons={[
-            { value: "Tersedia", label: "Tersedia" },
-            { value: "Penuh", label: "Penuh" },
-            { value: "Perbaikan", label: "Rusak" },
-          ]}
-          style={styles.input}
-        />
-
-        <TextInput
-          label="Deskripsi (Opsional)"
-          placeholder="Contoh: Kamar luas dengan jendela menghadap taman..."
-          value={deskripsi}
-          onChangeText={setDeskripsi}
-          mode="outlined"
-          multiline
-          numberOfLines={4}
-          style={styles.input}
-        />
-
-        <View style={{ gap: 10, marginTop: 10 }}>
-            <Button
-            mode="contained"
-            onPress={handleSubmit}
-            loading={loading}
-            disabled={loading}
-            style={styles.btnSimpan}
-            contentStyle={{ paddingVertical: 5 }}
-            >
-            {isEditMode ? "Simpan Perubahan" : "Simpan Kamar"}
-            </Button>
-
-            <Button
-            mode="outlined"
-            onPress={() => router.back()}
-            disabled={loading}
-            style={{ borderColor: theme.colors.error }}
-            textColor={theme.colors.error}
-            >
-            Batal
-            </Button>
+      {loading ? (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={{ marginTop: 10 }}>Memuat data...</Text>
         </View>
-      </ScrollView>
+      ) : (
+        <FlatList
+          data={filteredData}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={{ padding: 16, paddingBottom: 80 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListEmptyComponent={
+            <View style={styles.center}>
+              <MaterialIcons name="inbox" size={60} color="#ccc" />
+              <Text
+                style={{ textAlign: "center", marginTop: 10, color: "#888" }}
+              >
+                {search ? "Kamar tidak ditemukan" : "Belum ada data kamar"}
+              </Text>
+            </View>
+          }
+        />
+      )}
+
+      {/* FAB Tambah */}
+      <FAB
+        icon="plus"
+        label="Tambah"
+        style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+        color="white"
+        onPress={() => router.push("/dashboard/admin/kamar/form")}
+      />
+
+      {/* Dialog Konfirmasi Hapus */}
+      <Portal>
+        <Dialog
+          visible={dialogVisible}
+          onDismiss={() => setDialogVisible(false)}
+        >
+          <Dialog.Title>Konfirmasi Hapus</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">
+              Apakah Anda yakin ingin menghapus data kamar{" "}
+              <Text style={{ fontWeight: "bold" }}>{selectedNomor}</Text>?
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDialogVisible(false)} textColor="gray">
+              Batal
+            </Button>
+            <Button onPress={handleDelete} textColor={theme.colors.error}>
+              Ya, Hapus
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      {/* Snackbar Notifikasi */}
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+        action={{
+          label: "Tutup",
+          onPress: () => setSnackbarVisible(false),
+        }}
+      >
+        {messageResponse.current}
+      </Snackbar>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  title: { marginBottom: 24, fontWeight: "bold", textAlign: "center" },
-  input: { marginBottom: 16, backgroundColor: "white" },
-  label: { marginBottom: 8, fontWeight: "bold", color: '#555' },
-  btnSimpan: { borderRadius: 8 },
+  container: { flex: 1, backgroundColor: "#f5f5f5" },
+  searchBar: {
+    margin: 16,
+    marginBottom: 0,
+    backgroundColor: "white",
+    borderRadius: 8,
+    elevation: 2,
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 50,
+  },
+  card: { marginBottom: 12, backgroundColor: "white", borderRadius: 12 },
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  fab: { position: "absolute", margin: 16, right: 0, bottom: 0 },
 });
