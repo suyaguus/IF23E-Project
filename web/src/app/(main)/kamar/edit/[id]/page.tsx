@@ -8,8 +8,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
-
-// Imports Components shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -30,14 +28,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Imports Logic
 import { kamarFetcher } from "@/lib/fetchers/kamarFetcher";
 import { StatusKamar } from "@/types/interfaces";
 import { formatRibuan, filterHarga } from "@/lib/scripts";
 import { AppSidebar } from "@/components/app-sidebar";
 
-// 1. Definisikan Schema Validasi
 const formSchema = z.object({
   nomorKamar: z.string().min(1, "Nomor kamar wajib diisi"),
   hargaSewa: z.coerce.number().min(1, "Harga sewa tidak boleh 0"),
@@ -48,14 +43,10 @@ const formSchema = z.object({
 export default function EditKamarPage() {
   const router = useRouter();
   const params = useParams();
-
-  // Ambil ID dan pastikan konversi aman
   const idKamar = params?.id ? Number(params.id) : null;
-
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
 
-  // 2. Setup Form Hook
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,7 +57,6 @@ export default function EditKamarPage() {
     },
   });
 
-  // 3. Fetch Data Saat Halaman Dibuka
   useEffect(() => {
     const fetchData = async () => {
       if (!idKamar) return;
@@ -77,7 +67,6 @@ export default function EditKamarPage() {
         if (result.success && result.data) {
           const dataDB = result.data;
 
-          // Normalisasi Status
           let normalizedStatus = StatusKamar.Tersedia;
           if (dataDB.statusKamar) {
             const rawStatus = String(dataDB.statusKamar)
@@ -117,7 +106,6 @@ export default function EditKamarPage() {
     fetchData();
   }, [idKamar, router, form]);
 
-  // 4. Handle Submit (Update)
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!idKamar) return;
 
@@ -154,7 +142,6 @@ export default function EditKamarPage() {
     }
   }
 
-  // Tampilan Loading
   if (isFetching) {
     return (
       <div className="flex flex-col gap-4 p-4 h-screen bg-gray-50/30">
@@ -171,7 +158,6 @@ export default function EditKamarPage() {
     <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      {/* --- HEADER SECTION (Judul Besar) --- */}
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Edit Kamar
@@ -186,7 +172,6 @@ export default function EditKamarPage() {
         </nav>
       </section>
 
-      {/* --- DESCRIPTION SECTION (Article Penjelasan) --- */}
       <section className="px-5">
         <p className="text-muted-foreground text-lg">
           Silakan lakukan perubahan data pada formulir di bawah ini. Pastikan
@@ -194,7 +179,6 @@ export default function EditKamarPage() {
         </p>
       </section>
 
-      {/* --- FORM SECTION (Ukuran Card Disesuaikan) --- */}
       <section className="px-5 mt-4">
         <div className="mx-auto w-full max-w-3xl">
           <Card className="bg-white border rounded-xl shadow-sm">
@@ -207,7 +191,6 @@ export default function EditKamarPage() {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-6"
                 >
-                  {/* Field 1: Nomor Kamar */}
                   <FormField
                     control={form.control}
                     name="nomorKamar"
@@ -222,7 +205,6 @@ export default function EditKamarPage() {
                     )}
                   />
 
-                  {/* Field 2: Harga Sewa */}
                   <FormField
                     control={form.control}
                     name="hargaSewa"
@@ -253,7 +235,6 @@ export default function EditKamarPage() {
                     )}
                   />
 
-                  {/* Field 3: Status Kamar */}
                   <FormField
                     control={form.control}
                     name="statusKamar"
@@ -287,7 +268,6 @@ export default function EditKamarPage() {
                     )}
                   />
 
-                  {/* Field 4: Deskripsi */}
                   <FormField
                     control={form.control}
                     name="deskripsi"
@@ -306,7 +286,6 @@ export default function EditKamarPage() {
                     )}
                   />
 
-                  {/* Action Buttons */}
                   <div className="flex justify-end gap-2 pt-4 border-t mt-6">
                     <Button
                       type="button"

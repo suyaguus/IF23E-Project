@@ -1,21 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { useEffect, useState } from "react"; // 1. Import Hooks
-import {
-  IconInnerShadowTop,
-  // ... icon lainnya
-} from "@tabler/icons-react";
-
+import { useEffect, useState } from "react";
 import { NavUser } from "@/components/nav-user";
-import { NavGuest } from "@/components/nav-guest";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { IconBed } from "@tabler/icons-react";
@@ -146,17 +139,15 @@ const data = {
 export function AppSidebardashboard({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  // Buat State untuk User dengan Default "Guest"
   const [currentUser, setCurrentUser] = useState({
     name: "Guest User",
     email: "guest@example.com",
-    avatar: "", // Kosongkan atau isi path gambar default
+    avatar: "",
   });
 
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Pastikan kode hanya jalan di client
     if (typeof window !== "undefined") {
       const storedUserString = localStorage.getItem("user");
 
@@ -164,11 +155,9 @@ export function AppSidebardashboard({
         try {
           const storedUser = JSON.parse(storedUserString);
 
-          // 2. Update State (Sertakan avatar juga)
           setCurrentUser({
             name: storedUser.username || "User",
             email: storedUser.email || "No Email",
-            // Gunakan avatar kosong atau default image jika tidak ada
             avatar: "",
           });
         } catch (error) {
@@ -177,15 +166,14 @@ export function AppSidebardashboard({
       }
     }
   }, []);
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader className="h-12 border-b flex items-center px-4 justify-center lg:justify-start">
         <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-          {/* Icon Logo Kecil (Opsional) */}
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <IconBed className="size-4" />
           </div>
-          {/* Teks Logo */}
           <span className="group-data-[collapsible=icon]:hidden">
             <span className="text-primary">Kos Wisma Dempo</span>
           </span>

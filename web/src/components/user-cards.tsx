@@ -71,7 +71,7 @@ export function UserStatsCards() {
                <item.icon size={16} className="text-primary" />
                {item.description}
             </div>
-            {/* tampilan jika ada data progress */}
+
             {item.progress !== undefined && (
               <div className="w-full space-y-1">
                 <Progress value={item.progress} className="h-1.5" />

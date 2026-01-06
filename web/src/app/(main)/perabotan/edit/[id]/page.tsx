@@ -8,9 +8,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
-import { useSWRConfig } from "swr"; // Import SWR Config
-
-// Imports Components shadcn/ui
+import { useSWRConfig } from "swr";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -24,12 +22,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-// Imports Logic
 import { perabotanFetcher } from "@/lib/fetchers/perabotanFetcher";
 import { AppSidebar } from "@/components/app-sidebar";
 
-// 1. Definisikan Schema Validasi
 const formSchema = z.object({
   namaPerabotan: z.string().min(1, "Nama perabotan wajib diisi"),
   kodePerabotan: z.string().min(1, "Kode perabotan wajib diisi"),
@@ -39,15 +34,11 @@ const formSchema = z.object({
 export default function EditPerabotanPage() {
   const router = useRouter();
   const params = useParams();
-  const { mutate } = useSWRConfig(); // Setup mutate global
-
-  // Ambil ID dari URL
+  const { mutate } = useSWRConfig();
   const idPerabotan = params?.id ? Number(params.id) : null;
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(false); // Loading saat simpan
-  const [isFetching, setIsFetching] = useState(true); // Loading saat ambil data awal
-
-  // 2. Setup Form Hook
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,7 +48,6 @@ export default function EditPerabotanPage() {
     },
   });
 
-  // 3. Fetch Data Saat Halaman Dibuka
   useEffect(() => {
     const fetchData = async () => {
       if (!idPerabotan) return;
@@ -68,7 +58,6 @@ export default function EditPerabotanPage() {
         if (result.success && result.data) {
           const dataDB = result.data;
 
-          // Isi form dengan data dari database
           form.reset({
             namaPerabotan: dataDB.namaPerabotan,
             kodePerabotan: dataDB.kodePerabotan,
@@ -93,7 +82,6 @@ export default function EditPerabotanPage() {
     fetchData();
   }, [idPerabotan, router, form]);
 
-  // 4. Handle Submit (Update)
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!idPerabotan) return;
 
@@ -112,10 +100,7 @@ export default function EditPerabotanPage() {
             </span>
           ),
         });
-
-        // Paksa refresh cache SWR agar data di list terupdate
         mutate("/perabotan");
-
         router.push("/perabotan");
       } else {
         toast.error("Gagal Update", {
@@ -136,7 +121,6 @@ export default function EditPerabotanPage() {
     }
   }
 
-  // Tampilan Loading Awal
   if (isFetching) {
     return (
       <div className="flex flex-col gap-4 p-4 h-screen bg-gray-50/30">
@@ -155,7 +139,6 @@ export default function EditPerabotanPage() {
     <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      {/* --- HEADER SECTION --- */}
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Edit Perabotan
@@ -170,7 +153,6 @@ export default function EditPerabotanPage() {
         </nav>
       </section>
 
-      {/* --- DESCRIPTION SECTION --- */}
       <section className="px-5">
         <p className="text-muted-foreground text-lg">
           Lakukan perubahan pada detail perabotan di bawah ini. Pastikan kode
@@ -178,7 +160,6 @@ export default function EditPerabotanPage() {
         </p>
       </section>
 
-      {/* --- FORM SECTION --- */}
       <section className="px-5 mt-4">
         <div className="mx-auto w-full max-w-3xl">
           <Card className="bg-white border rounded-xl shadow-sm">
@@ -191,7 +172,6 @@ export default function EditPerabotanPage() {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-6"
                 >
-                  {/* Field 1: Nama Perabotan */}
                   <FormField
                     control={form.control}
                     name="namaPerabotan"
@@ -209,7 +189,6 @@ export default function EditPerabotanPage() {
                     )}
                   />
 
-                  {/* Field 2: Kode Perabotan */}
                   <FormField
                     control={form.control}
                     name="kodePerabotan"
@@ -227,7 +206,6 @@ export default function EditPerabotanPage() {
                     )}
                   />
 
-                  {/* Field 3: Deskripsi */}
                   <FormField
                     control={form.control}
                     name="deskripsi"
@@ -246,7 +224,6 @@ export default function EditPerabotanPage() {
                     )}
                   />
 
-                  {/* Action Buttons */}
                   <div className="flex justify-end gap-2 pt-4 border-t mt-6">
                     <Button
                       type="button"

@@ -26,7 +26,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
   const [formData, setFormData] = useState<RegisterRequest>({
     username: "",
     email: "",
@@ -156,10 +155,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
                 <FieldDescription className="px-6 text-center mt-4">
                   Already have an account?{" "}
-                  <a
-                    href="/login"
-                    className="text-primary hover:underline"
-                  >
+                  <a href="/login" className="text-primary hover:underline">
                     Sign in
                   </a>
                 </FieldDescription>

@@ -2,8 +2,6 @@
 
 import React from "react";
 import { IconBed, IconFridge, IconArmchair } from "@tabler/icons-react";
-
-// Imports UI Components
 import {
   Card,
   CardHeader,
@@ -12,20 +10,15 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { AppSidebar } from "@/components/app-sidebar";
-
-// Imports Hooks (Menggunakan hook yang sudah kita buat sebelumnya)
 import { useKamar } from "@/hooks/useKamar";
 import { useFasilitas } from "@/hooks/useFasilitas";
 import { usePerabotan } from "@/hooks/usePerabotan";
 
 export default function Cards() {
-  // 1. Ambil Data menggunakan Custom Hooks
-  // Hook ini otomatis menangani caching, loading, dan error
   const { data: dataKamar, isLoading: loadingKamar } = useKamar();
   const { data: dataFasilitas, isLoading: loadingFasilitas } = useFasilitas();
   const { data: dataPerabotan, isLoading: loadingPerabotan } = usePerabotan();
 
-  // 2. Helper untuk menghitung total (Safety check array)
   const totalKamar = Array.isArray(dataKamar) ? dataKamar.length : 0;
   const totalFasilitas = Array.isArray(dataFasilitas)
     ? dataFasilitas.length
@@ -34,7 +27,6 @@ export default function Cards() {
     ? dataPerabotan.length
     : 0;
 
-  // Helper untuk menampilkan angka (Loading state)
   const showValue = (loading: boolean, value: number) => {
     return loading ? "..." : value;
   };
@@ -43,14 +35,12 @@ export default function Cards() {
     <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      {/* --- HEADER SECTION (Judul Besar) --- */}
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Dashboard Admin
         </h1>
       </section>
 
-      {/* --- DESCRIPTION SECTION (Article) --- */}
       <section className="px-5">
         <article className="text-muted-foreground text-lg">
           Selamat datang kembali di panel administrasi. Di sini Anda dapat
@@ -59,10 +49,8 @@ export default function Cards() {
         </article>
       </section>
 
-      {/* --- CARDS SECTION --- */}
       <section className="px-5 mt-6">
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {/* 1. Card Kamar */}
           <Card className="bg-gradient-to-t from-blue-50/50 to-white shadow-sm border-blue-100 hover:shadow-md transition-shadow">
             <CardHeader className="pb-2">
               <CardDescription className="text-blue-600 font-medium">
@@ -82,7 +70,6 @@ export default function Cards() {
             </CardFooter>
           </Card>
 
-          {/* 2. Card Fasilitas */}
           <Card className="bg-gradient-to-t from-emerald-50/50 to-white shadow-sm border-emerald-100 hover:shadow-md transition-shadow">
             <CardHeader className="pb-2">
               <CardDescription className="text-emerald-600 font-medium">
@@ -102,7 +89,6 @@ export default function Cards() {
             </CardFooter>
           </Card>
 
-          {/* 3. Card Perabotan */}
           <Card className="bg-gradient-to-t from-orange-50/50 to-white shadow-sm border-orange-100 hover:shadow-md transition-shadow">
             <CardHeader className="pb-2">
               <CardDescription className="text-orange-600 font-medium">
