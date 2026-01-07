@@ -11,13 +11,13 @@ export default function DashboardUserPage() {
           <section className="@container/main flex flex-1 flex-col gap-8">
             <section className="space-y-4">
               <header>
-            <h2 className="text-2xl font-bold tracking-tight">
-              Dashboard Penghuni
-            </h2>
-            <p className="text-muted-foreground">
-              Selamat datang kembali! Berikut ringkasan akun Anda.
-            </p>
-          </header>
+                <h2 className="text-2xl font-bold tracking-tight">
+                  Dashboard Penghuni
+                </h2>
+                <p className="text-muted-foreground">
+                  Selamat datang kembali! Berikut ringkasan akun Anda.
+                </p>
+              </header>
               <UserStatsCards />
             </section>
 
