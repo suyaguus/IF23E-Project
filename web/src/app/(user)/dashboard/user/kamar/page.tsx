@@ -51,29 +51,34 @@ export default function KamarListPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 pb-10">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Daftar Kamar</h2>
-        <p className="text-muted-foreground">
-          Pilih kamar yang sesuai dengan kebutuhan dan kenyamanan Anda.
-        </p>
-      </div>
+  <main className="flex flex-col gap-6 pb-10">
+    {/* Header halaman */}
+    <header>
+      <h2 className="text-3xl font-bold tracking-tight">Daftar Kamar</h2>
+      <p className="text-muted-foreground">
+        Pilih kamar yang sesuai dengan kebutuhan dan kenyamanan Anda.
+      </p>
+    </header>
 
-      {kamars.length === 0 ? (
-        <div className="text-center py-16 border rounded-lg bg-muted/20 border-dashed">
-          <p className="text-muted-foreground text-lg">
-            Belum ada kamar yang tersedia saat ini.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {kamars.map((room) => (
-            <RoomCard key={room.id} room={room} formatRupiah={formatRupiah} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
+    {/* Kondisi jika kamar kosong */}
+    {kamars.length === 0 ? (
+      <section className="text-center py-16 border rounded-lg bg-muted/20 border-dashed">
+        <p className="text-muted-foreground text-lg">
+          Belum ada kamar yang tersedia saat ini.
+        </p>
+      </section>
+    ) : (
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {kamars.map((room) => (
+          <article key={room.id}>
+            <RoomCard room={room} formatRupiah={formatRupiah} />
+          </article>
+        ))}
+      </section>
+    )}
+  </main>
+);
+
 }
 
 interface RoomCardProps {
