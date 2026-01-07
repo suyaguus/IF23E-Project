@@ -180,7 +180,7 @@ export default function EditKamarPage() {
       </section>
 
       <section className="px-5 mt-4">
-        <div className="mx-auto w-full max-w-3xl">
+        <article className="mx-auto w-full max-w-3xl">
           <Card className="bg-white border rounded-xl shadow-sm">
             <CardHeader>
               <CardTitle>Formulir Edit Kamar</CardTitle>
@@ -286,7 +286,7 @@ export default function EditKamarPage() {
                     )}
                   />
 
-                  <div className="flex justify-end gap-2 pt-4 border-t mt-6">
+                  <footer className="flex justify-end gap-2 pt-4 border-t mt-6">
                     <Button
                       type="button"
                       variant="ghost"
@@ -312,12 +312,12 @@ export default function EditKamarPage() {
                         </>
                       )}
                     </Button>
-                  </div>
+                  </footer>
                 </form>
               </Form>
             </CardContent>
           </Card>
-        </div>
+        </article>
       </section>
     </main>
   );
