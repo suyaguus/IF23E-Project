@@ -111,10 +111,10 @@ export default function KamarDetailPage() {
   // --- 4. LOADING & ERROR STATES ---
   if (isLoading) {
     return (
-      <div className="flex h-[50vh] w-full items-center justify-center flex-col gap-3">
+      <section className="flex h-[50vh] w-full items-center justify-center flex-col gap-3">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
         <p className="text-muted-foreground">Memuat detail kamar...</p>
-      </div>
+      </section>
     );
   }
 
