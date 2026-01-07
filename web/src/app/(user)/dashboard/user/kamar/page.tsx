@@ -43,10 +43,10 @@ export default function KamarListPage() {
 
   if (isError) {
     return (
-      <div className="flex h-[50vh] w-full items-center justify-center flex-col gap-3 text-destructive">
+      <section className="flex h-[50vh] w-full items-center justify-center flex-col gap-3 text-destructive">
         <AlertCircle className="h-10 w-10" />
         <p>Gagal memuat data kamar.</p>
-      </div>
+      </section>
     );
   }
 
