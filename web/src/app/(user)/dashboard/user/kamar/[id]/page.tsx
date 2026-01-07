@@ -170,32 +170,32 @@ export default function KamarDetailPage() {
           <Separator />
 
           {/* Bagian Fasilitas (Render dari data backend jika ada) */}
-          <div className="space-y-4">
+          <section className="space-y-4">
             <h3 className="text-xl font-semibold">Fasilitas Kamar</h3>
             {room.fasilitas && room.fasilitas.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <section className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {room.fasilitas.map((item, idx) => (
-                  <div
+                  <section
                     key={idx}
                     className="flex items-center gap-3 p-3 border rounded-lg bg-background"
                   >
                     {/* Menggunakan any sementara untuk menghindari error properti nested */}
-                    <div className="text-primary">
+                    <section className="text-primary">
                       {getFacilityIcon((item as any).fasilitas?.namaFasilitas || (item as any).namaFasilitas || "Fasilitas")}
-                    </div>
+                    </section>
                     <span className="text-sm font-medium">
                       {/* Ambil nama dari relasi nested atau langsung */}
                       {(item as any).fasilitas?.namaFasilitas || (item as any).namaFasilitas}
                     </span>
-                  </div>
+                  </section>
                 ))}
-              </div>
+              </section>
             ) : (
               <p className="text-muted-foreground text-sm italic">
                 Belum ada data fasilitas.
               </p>
             )}
-          </div>
+          </section>
 
           {/* Bagian Perabotan */}
           <div className="space-y-4">
