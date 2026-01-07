@@ -1,8 +1,8 @@
-import React from "react";
-import { View, StyleSheet, StatusBar } from "react-native";
+import React, { useEffect } from "react";
+import { View, StyleSheet, StatusBar, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
-import { useRouter, usePathname } from "expo-router";
+import { useRouter, usePathname, useSegments } from "expo-router"; 
 import {
   PaperProvider,
   DefaultTheme,
@@ -93,6 +93,36 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 };
 
 function RootLayoutNav() {
+  const { isLoggedIn, userRole, isLoading } = useAuth(); 
+  const segments = useSegments() as string[]; 
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const inAuthGroup = segments[0] === "auth";
+    const inDashboardGroup = segments[0] === "dashboard";
+
+    if (!isLoggedIn && inDashboardGroup) {
+      router.replace("/");
+    }
+
+    else if (isLoggedIn && (inAuthGroup || segments.length === 0)) {
+      if (userRole === "admin") {
+        router.replace("/dashboard/admin");
+      } else {
+        router.replace("/dashboard/user");
+      }
+    }
+  }, [isLoggedIn, segments, isLoading]);
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
@@ -112,7 +142,6 @@ function RootLayoutNav() {
             title: "Home",
           }}
         />
-
         <Drawer.Screen
           name="dashboard"
           options={{
@@ -120,7 +149,6 @@ function RootLayoutNav() {
             headerShown: false,
           }}
         />
-
         <Drawer.Screen
           name="auth"
           options={{
