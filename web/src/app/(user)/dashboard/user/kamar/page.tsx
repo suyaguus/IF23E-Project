@@ -136,6 +136,7 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
         </figcaption>
       </figure>
 
+      {/* Header Card */}
       <CardHeader className="pb-2">
         <section className="flex justify-between items-start">
           <section>
@@ -147,7 +148,7 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
         </section>
       </CardHeader>
 
-      {/* Header Card */}
+      {/* konten Utama Card */}
       <CardContent className="space-y-4 flex-1">
         <section className="flex items-center gap-4 text-sm text-muted-foreground">
           <section className="flex items-center gap-1">
@@ -161,14 +162,14 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
         </section>
       </CardContent>
 
-      {/* Konten utama Card */}
+      {/* Footer Card */}
       <CardFooter className="flex items-center justify-between border-t p-4 bg-muted/20">
-        <div className="flex flex-col">
+        <section className="flex flex-col">
           <span className="text-xs text-muted-foreground">Harga per bulan</span>
           <span className="font-bold text-lg text-primary">
             {formatRupiah(room.hargaSewa)}
           </span>
-        </div>
+        </section>
 
         <Link href={`/dashboard/user/kamar/${room.id}`}>
           <Button
