@@ -130,7 +130,7 @@ export default function KamarPage() {
               />
             </section>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <nav className="flex items-center gap-2 w-full sm:w-auto">
               <Link
                 href="/kamar/tambah"
                 className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 text-sm flex items-center justify-center transition-colors shadow-sm w-full sm:w-auto text-center"
@@ -143,7 +143,7 @@ export default function KamarPage() {
               >
                 Kembali
               </Link>
-            </div>
+            </nav>
           </header>
 
           <div className="p-0">
