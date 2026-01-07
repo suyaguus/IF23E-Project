@@ -144,21 +144,21 @@ export default function EditKamarPage() {
 
   if (isFetching) {
     return (
-      <div className="flex flex-col gap-4 p-4 h-screen bg-gray-50/30">
+       <main className="flex flex-col gap-4 p-4 h-screen bg-gray-50/30">
         <AppSidebar />
-        <div className="flex flex-1 items-center justify-center flex-col gap-2">
+        <section className="flex flex-1 items-center justify-center flex-col gap-2">
           <Loader2 className="h-10 w-10 animate-spin text-sky-700" />
           <p className="text-muted-foreground text-sm">Memuat data kamar...</p>
-        </div>
-      </div>
+        </section>
+      </main>
     );
   }
 
   return (
-    <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
+    <main className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      <section className="flex items-center justify-between px-5 pt-2 pb-1">
+      <header className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Edit Kamar
         </h1>
@@ -170,7 +170,7 @@ export default function EditKamarPage() {
             Kembali
           </Link>
         </nav>
-      </section>
+      </header>
 
       <section className="px-5">
         <p className="text-muted-foreground text-lg">
@@ -319,6 +319,6 @@ export default function EditKamarPage() {
           </Card>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
