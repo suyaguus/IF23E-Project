@@ -115,9 +115,9 @@ export default function KamarPage() {
       </section>
 
       <section className="px-5 mt-4">
-        <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-          <div className="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
-            <div className="relative w-full sm:w-72">
+        <section className="bg-white border rounded-xl shadow-sm overflow-hidden">
+          <header className="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
+            <section className="relative w-full sm:w-72">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Cari nomor kamar atau deskripsi..."
@@ -128,7 +128,7 @@ export default function KamarPage() {
                   setCurrentPage(1);
                 }}
               />
-            </div>
+            </section>
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Link
@@ -144,7 +144,7 @@ export default function KamarPage() {
                 Kembali
               </Link>
             </div>
-          </div>
+          </header>
 
           <div className="p-0">
             {isError ? (
@@ -299,8 +299,8 @@ export default function KamarPage() {
               </div>
             </div>
           )}
-        </div>
+        </section>
       </section>
-    </div>
+    </main>
   );
 }
