@@ -279,24 +279,24 @@ export default function KamarDetailPage() {
                     </DialogDescription>
                   </DialogHeader>
 
-                  <div className="py-4 space-y-4">
-                    <div className="rounded-lg bg-muted p-4 space-y-2 text-sm">
-                      <div className="flex justify-between">
+                  <section className="py-4 space-y-4">
+                    <section className="rounded-lg bg-muted p-4 space-y-2 text-sm">
+                      <section className="flex justify-between">
                         <span>Tagihan Awal</span>
                         <span className="font-semibold">
                           {formatRupiah(room.hargaSewa)}
                         </span>
-                      </div>
-                      <div className="flex justify-between text-muted-foreground">
+                      </section>
+                      <section className="flex justify-between text-muted-foreground">
                         <span>Durasi</span>
                         <span>1 Bulan</span>
-                      </div>
-                    </div>
+                      </section>
+                    </section>
                     <p className="text-xs text-muted-foreground">
                       *Dengan menekan tombol Booking, permintaan Anda akan
                       dikirim ke Admin untuk proses verifikasi dan pembayaran.
                     </p>
-                  </div>
+                  </section>
 
                   <DialogFooter>
                     <Button
