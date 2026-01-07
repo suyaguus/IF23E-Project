@@ -131,7 +131,7 @@ export default function KamarDetailPage() {
   return (
     <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-10">
       {/* Tombol Kembali */}
-      <div>
+      <section>
         <Button
           variant="ghost"
           onClick={() => router.back()}
@@ -139,7 +139,7 @@ export default function KamarDetailPage() {
         >
           <ArrowLeft className="h-4 w-4" /> Kembali ke Daftar
         </Button>
-      </div>
+      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* KOLOM KIRI: GAMBAR UTAMA */}
