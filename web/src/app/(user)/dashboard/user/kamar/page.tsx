@@ -34,46 +34,51 @@ export default function KamarListPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[50vh] w-full items-center justify-center flex-col gap-3">
+      <section className="flex h-[50vh] w-full items-center justify-center flex-col gap-3">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
         <p className="text-muted-foreground">Memuat daftar kamar...</p>
-      </div>
+      </section>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex h-[50vh] w-full items-center justify-center flex-col gap-3 text-destructive">
+      <section className="flex h-[50vh] w-full items-center justify-center flex-col gap-3 text-destructive">
         <AlertCircle className="h-10 w-10" />
         <p>Gagal memuat data kamar.</p>
-      </div>
+      </section>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6 pb-10">
-      <div>
+    <main className="flex flex-col gap-6 pb-10">
+      {/* Header halaman */}
+      <header>
         <h2 className="text-3xl font-bold tracking-tight">Daftar Kamar</h2>
         <p className="text-muted-foreground">
           Pilih kamar yang sesuai dengan kebutuhan dan kenyamanan Anda.
         </p>
-      </div>
+      </header>
 
+      {/* Kondisi jika kamar kosong */}
       {kamars.length === 0 ? (
-        <div className="text-center py-16 border rounded-lg bg-muted/20 border-dashed">
+        <section className="text-center py-16 border rounded-lg bg-muted/20 border-dashed">
           <p className="text-muted-foreground text-lg">
             Belum ada kamar yang tersedia saat ini.
           </p>
-        </div>
+        </section>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {kamars.map((room) => (
-            <RoomCard key={room.id} room={room} formatRupiah={formatRupiah} />
+            <article key={room.id}>
+              <RoomCard room={room} formatRupiah={formatRupiah} />
+            </article>
           ))}
-        </div>
+        </section>
       )}
-    </div>
+    </main>
   );
+
 }
 
 interface RoomCardProps {
@@ -115,7 +120,8 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
 
   return (
     <Card className="overflow-hidden flex flex-col hover:shadow-md transition-shadow group border-primary/10">
-      <div className="aspect-video w-full bg-muted relative overflow-hidden">
+      {/* Gambar kamar dengan badge */}
+      <figure className="aspect-video w-full bg-muted relative overflow-hidden">
         <img
           src={imgSrc}
           alt={`Kamar ${room.nomorKamar}`}
@@ -123,44 +129,47 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
 
-        <div className="absolute top-2 right-2">
+        <figcaption className="absolute top-2 right-2">
           <Badge className={getStatusColor(String(room.statusKamar))}>
             {String(room.statusKamar)}
           </Badge>
-        </div>
-      </div>
+        </figcaption>
+      </figure>
 
+      {/* Header Card */}
       <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <div>
+        <section className="flex justify-between items-start">
+          <section>
             <CardTitle className="text-xl">Kamar {room.nomorKamar}</CardTitle>
             <CardDescription className="line-clamp-1 mt-1">
               {room.deskripsi || "Fasilitas lengkap & nyaman"}
             </CardDescription>
-          </div>
-        </div>
+          </section>
+        </section>
       </CardHeader>
 
+      {/* konten Utama Card */}
       <CardContent className="space-y-4 flex-1">
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
+        <section className="flex items-center gap-4 text-sm text-muted-foreground">
+          <section className="flex items-center gap-1">
             <Users className="h-4 w-4" />
             <span>1 Orang</span>
-          </div>
-          <div className="flex items-center gap-1">
+          </section>
+          <section className="flex items-center gap-1">
             <MapPin className="h-4 w-4" />
             <span>3x4 m</span>
-          </div>
-        </div>
+          </section>
+        </section>
       </CardContent>
 
+      {/* Footer Card */}
       <CardFooter className="flex items-center justify-between border-t p-4 bg-muted/20">
-        <div className="flex flex-col">
+        <section className="flex flex-col">
           <span className="text-xs text-muted-foreground">Harga per bulan</span>
           <span className="font-bold text-lg text-primary">
             {formatRupiah(room.hargaSewa)}
           </span>
-        </div>
+        </section>
 
         <Link href={`/dashboard/user/kamar/${room.id}`}>
           <Button

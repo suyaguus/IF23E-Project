@@ -23,15 +23,21 @@ export default function UserLayout({
       <SidebarInset>
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur flex h-14 items-center px-4 gap-2">
           <SidebarTrigger className="-ml-1" />
-          <div className="h-4 w-px bg-slate-200 mx-2" />{" "}
-          <div className="flex flex-1 items-center justify-between">
-            <h1 className="font-bold text-lg truncate">Home Page</h1>
-          </div>
+          <span
+            className="h-4 w-px bg-slate-200 mx-2"
+            aria-hidden="true"
+          />
+          <section className="flex flex-1 items-center justify-between">
+            <h1 className="font-bold text-lg truncate">
+              Home Page
+            </h1>
+          </section>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 md:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex flex-1 flex-col gap-4 p-4 md:p-6 lg:p-8 overflow-y-auto">
           {children}
-        </div>
+        </main>
       </SidebarInset>
+
     </SidebarProvider>
   );
 }
