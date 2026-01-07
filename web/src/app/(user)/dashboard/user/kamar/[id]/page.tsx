@@ -226,18 +226,18 @@ export default function KamarDetailPage() {
         </section>
 
         {/* KOLOM KANAN: CARD BOOKING (STICKY) */}
-        <div className="lg:col-span-1">
+        <section className="lg:col-span-1">
           <Card className="sticky top-6 shadow-md border-primary/10">
             <CardContent className="p-6 space-y-6">
-              <div className="space-y-1">
+              <section className="space-y-1">
                 <p className="text-sm text-muted-foreground">Harga Sewa</p>
-                <div className="flex items-baseline gap-1">
+                <section className="flex items-baseline gap-1">
                   <span className="text-3xl font-bold text-primary">
                     {formatRupiah(room.hargaSewa)}
                   </span>
                   <span className="text-muted-foreground">/ bulan</span>
-                </div>
-              </div>
+                </section>
+              </section>
 
               <Separator />
 
@@ -313,7 +313,7 @@ export default function KamarDetailPage() {
               </Dialog>
             </CardContent>
           </Card>
-        </div>
+        </section>
       </section>
     </section>
   );
