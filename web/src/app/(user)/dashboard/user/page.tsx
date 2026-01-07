@@ -29,23 +29,23 @@ export default function DashboardUserPage() {
             </section>
 
             <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-4">
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-h-[200px]">
-                  <div className="flex items-center justify-between mb-4">
+              <section className="lg:col-span-2 space-y-4">
+                <section className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-h-[200px]">
+                  <article className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-lg">
                       Pengumuman & Info Kos
                     </h3>
                     <span className="text-xs text-primary font-medium cursor-pointer hover:underline">
                       Lihat Semua
                     </span>
-                  </div>
-                  <div className="flex flex-col items-center justify-center text-center py-8 border-2 border-dashed rounded-lg border-muted/20">
+                  </article>
+                  <header className="flex flex-col items-center justify-center text-center py-8 border-2 border-dashed rounded-lg border-muted/20">
                     <p className="text-sm text-muted-foreground italic">
                       Tidak ada pengumuman baru dari pengelola kos hari ini.
                     </p>
-                  </div>
-                </div>
-              </div>
+                  </header>
+                </section>
+              </section>
 
               <section className="lg:col-span-1">
                 <RecentActivity />
