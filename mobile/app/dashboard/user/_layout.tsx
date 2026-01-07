@@ -31,27 +31,25 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
     router.navigate(path as any);
   };
 
+  // ... di dalam komponen CustomDrawerContent
+
   const handleLogout = () => {
     Alert.alert("Konfirmasi", "Keluar dari aplikasi?", [
       { text: "Batal", style: "cancel" },
       {
         text: "Ya",
-        onPress: async () => {
-          try {
-            if (userData) {
-              await api.post(Strings.api_auth_logout, {
-                userId: userData.id,
-                email: userData.email,
-              });
-            }
-          } catch (error) {
-            console.error("Logout API Error:", error);
-          }
+        onPress: () => {
+          // 1. Panggil fungsi logout (untuk hapus state)
+          logout();
 
-          await logout();
+          // 2. Lakukan Navigasi Manual di sini (UI Layer)
+          // Beri sedikit jeda agar state sempat terhapus
           setTimeout(() => {
-            while (router.canGoBack()) router.back();
-            router.replace("/auth/login");
+            // Pastikan router di-import dari 'expo-router' di file ini
+            if (router.canGoBack()) {
+              router.dismissAll(); // Bersihkan tumpukan layar
+            }
+            router.replace("/auth/login"); // Arahkan langsung ke login
           }, 100);
         },
       },

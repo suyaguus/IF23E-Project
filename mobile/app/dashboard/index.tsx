@@ -9,16 +9,16 @@ import {
 import { Card, Button, useTheme } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useNavigation } from "expo-router";
-import { DrawerActions } from "@react-navigation/native"; // Import DrawerActi
+import { DrawerActions } from "@react-navigation/native"; 
 
 export default function DashboardPage() {
   const router = useRouter();
-  const navigation = useNavigation(); // Hook navigasi untuk buka drawer
-  const theme = useTheme(); // Mengambil warna dari tema yang kita buat di
+  const navigation = useNavigation();
+  const theme = useTheme(); 
 
   const kosInfo = {
-    nama: "Kos Wisma Dempo",
-    alamat: "Jl. Mawar Raya No. 123, Jakarta Selatan",
+    nama: "Wisma Dempo",
+    alamat: "Jl. Dempo, Labuhan Ratu, Kec. Kedaton, Kota Bandar Lampung, Lampung 35132",
     fasilitas: ["WiFi", "Parkir", "AC", "Dapur"],
   };
 
@@ -26,9 +26,7 @@ export default function DashboardPage() {
     <ScrollView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      {/* Header Custom dengan Warna Tema */}
       <View style={[styles.header, { backgroundColor: theme.colors.primary }]}>
-        {/* Tombol Menu Drawer (Hamburger) */}
         <TouchableOpacity
           style={styles.menuButton}
           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
@@ -94,7 +92,6 @@ export default function DashboardPage() {
         </Text>
         <Button
           mode="contained"
-          // Perbaiki path navigasi: gunakan absolute path yang benar
           onPress={() => router.push("/auth/login")}
           style={{ backgroundColor: theme.colors.primary }}
         >

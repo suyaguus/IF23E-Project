@@ -20,21 +20,24 @@ export default function LoginPage() {
       Alert.alert("Peringatan", "Mohon isi email dan password");
       return;
     }
-
     try {
       const user = await login(email, password);
 
-      console.log("DATA USER DARI BACKEND:", JSON.stringify(user, null, 2));
-
-      const role = user.role ? user.role.toLowerCase() : "";
-
-      if (role === "admin") {
-        router.replace("../dashboard/admin");
-      } else {
-        router.replace("../dashboard/user");
+      if (!user || !user.role) {
+        throw new Error("Login berhasil tapi data role tidak ditemukan.");
       }
-    } catch (error) {
-      console.log("Login gagal di UI Layer");
+
+      const role = user.role.toLowerCase().trim();
+
+      setTimeout(() => {
+        if (role === "admin") {
+          router.replace("/dashboard/admin");
+        } else {
+          router.replace("/dashboard/user");
+        }
+      }, 100);
+    } catch (error: any) {
+      Alert.alert("Login Gagal", error.message || "Terjadi kesalahan sistem");
     }
   };
 
@@ -112,7 +115,7 @@ export default function LoginPage() {
 
         <View style={styles.registerContainer}>
           <Text>Belum punya akun? </Text>
-          <TouchableOpacity onPress={() => router.push("../auth/signup")}>
+          <TouchableOpacity onPress={() => router.push("/auth/signup")}>
             <Text style={{ color: theme.colors.primary, fontWeight: "bold" }}>
               Daftar Sekarang
             </Text>
