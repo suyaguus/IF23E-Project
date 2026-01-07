@@ -158,15 +158,14 @@ export default function KamarDetailPage() {
             </figcaption>
           </figure>
 
-          <div className="space-y-4">
-            <div className="flex justify-between items-start">
+          <section className="space-y-4">
+            <header className="flex justify-between items-start">
               <h1 className="text-3xl font-bold">Kamar {room.nomorKamar}</h1>
-            </div>
-
+            </header>
             <p className="text-muted-foreground leading-relaxed text-justify">
               {room.deskripsi || "Tidak ada deskripsi tersedia untuk kamar ini."}
             </p>
-          </div>
+          </section>
 
           <Separator />
 
