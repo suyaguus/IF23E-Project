@@ -143,7 +143,7 @@ export default function KamarDetailPage() {
 
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* KOLOM KIRI: GAMBAR UTAMA */}
-        <div className="lg:col-span-2 space-y-6">
+        <section className="lg:col-span-2 space-y-6">
           <figure className="aspect-video w-full rounded-xl overflow-hidden bg-muted shadow-sm relative">
             <img
               src={imgSrc}
@@ -198,32 +198,32 @@ export default function KamarDetailPage() {
           </section>
 
           {/* Bagian Perabotan */}
-          <div className="space-y-4">
+          <section className="space-y-4">
             <h3 className="text-xl font-semibold">Perabotan</h3>
             {room.perabotan && room.perabotan.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <section className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {room.perabotan.map((item, idx) => (
-                  <div
+                  <section
                     key={idx}
                     className="flex items-center gap-3 p-3 border rounded-lg bg-background"
                   >
-                    <div className="text-primary">
+                    <section className="text-primary">
                       <Bed className="h-5 w-5" />
-                    </div>
+                    </section>
                     <span className="text-sm font-medium">
                       {/* PERBAIKAN: Menghapus kondisi dan memperbaiki akses nama */}
                       {(item as any).perabotan?.namaPerabotan || (item as any).namaPerabotan}
                     </span>
-                  </div>
+                  </section>
                 ))}
-              </div>
+              </section>
             ) : (
               <p className="text-muted-foreground text-sm italic">
                 Belum ada data perabotan.
               </p>
             )}
-          </div>
-        </div>
+          </section>
+        </section>
 
         {/* KOLOM KANAN: CARD BOOKING (STICKY) */}
         <div className="lg:col-span-1">
