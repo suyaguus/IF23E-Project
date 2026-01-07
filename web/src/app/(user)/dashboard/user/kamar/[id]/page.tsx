@@ -58,8 +58,8 @@ export default function KamarDetailPage() {
 
   const handleImageError = () => {
     if (imgSrc.endsWith(".jpg") && room?.nomorKamar) {
-        const cleanNumber = room.nomorKamar.replace(/Kamar\s*/i, "").trim();
-        setImgSrc(`/images/kamar/${cleanNumber}.png`);
+      const cleanNumber = room.nomorKamar.replace(/Kamar\s*/i, "").trim();
+      setImgSrc(`/images/kamar/${cleanNumber}.png`);
     } else {
       if (!hasError) {
         setImgSrc("/images/placeholder-room.jpg");
@@ -111,27 +111,27 @@ export default function KamarDetailPage() {
   // --- 4. LOADING & ERROR STATES ---
   if (isLoading) {
     return (
-      <div className="flex h-[50vh] w-full items-center justify-center flex-col gap-3">
+      <section className="flex h-[50vh] w-full items-center justify-center flex-col gap-3">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
         <p className="text-muted-foreground">Memuat detail kamar...</p>
-      </div>
+      </section>
     );
   }
 
   if (isError || !room) {
     return (
-      <div className="flex h-[50vh] w-full items-center justify-center flex-col gap-3 text-destructive">
+      <section className="flex h-[50vh] w-full items-center justify-center flex-col gap-3 text-destructive">
         <AlertCircle className="h-10 w-10" />
         <p>Kamar tidak ditemukan atau terjadi kesalahan.</p>
         <Button variant="outline" onClick={() => router.back()}>Kembali</Button>
-      </div>
+      </section>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-10">
+    <section className="flex flex-col gap-6 max-w-5xl mx-auto pb-10">
       {/* Tombol Kembali */}
-      <div>
+      <section>
         <Button
           variant="ghost"
           onClick={() => router.back()}
@@ -139,123 +139,122 @@ export default function KamarDetailPage() {
         >
           <ArrowLeft className="h-4 w-4" /> Kembali ke Daftar
         </Button>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* KOLOM KIRI: GAMBAR UTAMA */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="aspect-video w-full rounded-xl overflow-hidden bg-muted shadow-sm relative">
+        <section className="lg:col-span-2 space-y-6">
+          <figure className="aspect-video w-full rounded-xl overflow-hidden bg-muted shadow-sm relative">
             <img
               src={imgSrc}
               alt={`Kamar ${room.nomorKamar}`}
               onError={handleImageError}
               className="w-full h-full object-cover"
             />
-             <div className="absolute top-4 right-4">
-                <Badge className={`${getStatusColor(String(room.statusKamar))} text-sm px-3 py-1`}>
-                    {String(room.statusKamar)}
-                </Badge>
-             </div>
-          </div>
+            <figcaption className="absolute top-4 right-4">
+              <Badge className={`${getStatusColor(String(room.statusKamar))} text-sm px-3 py-1`}>
+                {String(room.statusKamar)}
+              </Badge>
+            </figcaption>
+          </figure>
 
-          <div className="space-y-4">
-            <div className="flex justify-between items-start">
-                <h1 className="text-3xl font-bold">Kamar {room.nomorKamar}</h1>
-            </div>
-            
+          <section className="space-y-4">
+            <header className="flex justify-between items-start">
+              <h1 className="text-3xl font-bold">Kamar {room.nomorKamar}</h1>
+            </header>
             <p className="text-muted-foreground leading-relaxed text-justify">
               {room.deskripsi || "Tidak ada deskripsi tersedia untuk kamar ini."}
             </p>
-          </div>
+          </section>
 
           <Separator />
 
           {/* Bagian Fasilitas (Render dari data backend jika ada) */}
-          <div className="space-y-4">
+          <section className="space-y-4">
             <h3 className="text-xl font-semibold">Fasilitas Kamar</h3>
             {room.fasilitas && room.fasilitas.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <section className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {room.fasilitas.map((item, idx) => (
-                  <div
+                  <section
                     key={idx}
                     className="flex items-center gap-3 p-3 border rounded-lg bg-background"
                   >
                     {/* Menggunakan any sementara untuk menghindari error properti nested */}
-                    <div className="text-primary">
+                    <section className="text-primary">
                       {getFacilityIcon((item as any).fasilitas?.namaFasilitas || (item as any).namaFasilitas || "Fasilitas")}
-                    </div>
+                    </section>
                     <span className="text-sm font-medium">
                       {/* Ambil nama dari relasi nested atau langsung */}
                       {(item as any).fasilitas?.namaFasilitas || (item as any).namaFasilitas}
                     </span>
-                  </div>
+                  </section>
                 ))}
-              </div>
+              </section>
             ) : (
               <p className="text-muted-foreground text-sm italic">
                 Belum ada data fasilitas.
               </p>
             )}
-          </div>
+          </section>
 
           {/* Bagian Perabotan */}
-          <div className="space-y-4">
+          <section className="space-y-4">
             <h3 className="text-xl font-semibold">Perabotan</h3>
             {room.perabotan && room.perabotan.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <section className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {room.perabotan.map((item, idx) => (
-                  <div
+                  <section
                     key={idx}
                     className="flex items-center gap-3 p-3 border rounded-lg bg-background"
                   >
-                    <div className="text-primary">
+                    <section className="text-primary">
                       <Bed className="h-5 w-5" />
-                    </div>
+                    </section>
                     <span className="text-sm font-medium">
                       {/* PERBAIKAN: Menghapus kondisi dan memperbaiki akses nama */}
                       {(item as any).perabotan?.namaPerabotan || (item as any).namaPerabotan}
                     </span>
-                  </div>
+                  </section>
                 ))}
-              </div>
+              </section>
             ) : (
               <p className="text-muted-foreground text-sm italic">
                 Belum ada data perabotan.
               </p>
             )}
-          </div>
-        </div>
+          </section>
+        </section>
 
         {/* KOLOM KANAN: CARD BOOKING (STICKY) */}
-        <div className="lg:col-span-1">
+        <section className="lg:col-span-1">
           <Card className="sticky top-6 shadow-md border-primary/10">
             <CardContent className="p-6 space-y-6">
-              <div className="space-y-1">
+              <section className="space-y-1">
                 <p className="text-sm text-muted-foreground">Harga Sewa</p>
-                <div className="flex items-baseline gap-1">
+                <section className="flex items-baseline gap-1">
                   <span className="text-3xl font-bold text-primary">
                     {formatRupiah(room.hargaSewa)}
                   </span>
                   <span className="text-muted-foreground">/ bulan</span>
-                </div>
-              </div>
+                </section>
+              </section>
 
               <Separator />
 
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
+              <section className="space-y-3 text-sm">
+                <section className="flex justify-between">
                   <span className="text-muted-foreground">Kapasitas</span>
-                  <span className="font-medium">1 Orang</span> 
-                </div>
-                <div className="flex justify-between">
+                  <span className="font-medium">1 Orang</span>
+                </section>
+                <section className="flex justify-between">
                   <span className="text-muted-foreground">Ukuran</span>
                   <span className="font-medium">3x4 m</span>
-                </div>
-                <div className="flex justify-between">
+                </section>
+                <section className="flex justify-between">
                   <span className="text-muted-foreground">Minimal Sewa</span>
                   <span className="font-medium">1 Bulan</span>
-                </div>
-              </div>
+                </section>
+              </section>
 
               {/* DIALOG KONFIRMASI BOOKING */}
               <Dialog open={openDialog} onOpenChange={setOpenDialog}>
@@ -280,24 +279,24 @@ export default function KamarDetailPage() {
                     </DialogDescription>
                   </DialogHeader>
 
-                  <div className="py-4 space-y-4">
-                    <div className="rounded-lg bg-muted p-4 space-y-2 text-sm">
-                      <div className="flex justify-between">
+                  <section className="py-4 space-y-4">
+                    <section className="rounded-lg bg-muted p-4 space-y-2 text-sm">
+                      <section className="flex justify-between">
                         <span>Tagihan Awal</span>
                         <span className="font-semibold">
                           {formatRupiah(room.hargaSewa)}
                         </span>
-                      </div>
-                      <div className="flex justify-between text-muted-foreground">
+                      </section>
+                      <section className="flex justify-between text-muted-foreground">
                         <span>Durasi</span>
                         <span>1 Bulan</span>
-                      </div>
-                    </div>
+                      </section>
+                    </section>
                     <p className="text-xs text-muted-foreground">
                       *Dengan menekan tombol Booking, permintaan Anda akan
                       dikirim ke Admin untuk proses verifikasi dan pembayaran.
                     </p>
-                  </div>
+                  </section>
 
                   <DialogFooter>
                     <Button
@@ -314,8 +313,8 @@ export default function KamarDetailPage() {
               </Dialog>
             </CardContent>
           </Card>
-        </div>
-      </div>
-    </div>
+        </section>
+      </section>
+    </section>
   );
 }
