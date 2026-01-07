@@ -241,20 +241,20 @@ export default function KamarDetailPage() {
 
               <Separator />
 
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
+              <section className="space-y-3 text-sm">
+                <section className="flex justify-between">
                   <span className="text-muted-foreground">Kapasitas</span>
                   <span className="font-medium">1 Orang</span>
-                </div>
-                <div className="flex justify-between">
+                </section>
+                <section className="flex justify-between">
                   <span className="text-muted-foreground">Ukuran</span>
                   <span className="font-medium">3x4 m</span>
-                </div>
-                <div className="flex justify-between">
+                </section>
+                <section className="flex justify-between">
                   <span className="text-muted-foreground">Minimal Sewa</span>
                   <span className="font-medium">1 Bulan</span>
-                </div>
-              </div>
+                </section>
+              </section>
 
               {/* DIALOG KONFIRMASI BOOKING */}
               <Dialog open={openDialog} onOpenChange={setOpenDialog}>
