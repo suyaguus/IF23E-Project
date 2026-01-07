@@ -123,20 +123,20 @@ export default function EditFasilitasPage() {
 
   if (isFetching) {
     return (
-      <div className="flex flex-col gap-4 p-4 h-screen bg-gray-50/30">
+      <section className="flex flex-col gap-4 p-4 h-screen bg-gray-50/30">
         <AppSidebar />
-        <div className="flex flex-1 items-center justify-center flex-col gap-2">
+        <section className="flex flex-1 items-center justify-center flex-col gap-2">
           <Loader2 className="h-10 w-10 animate-spin text-sky-700" />
           <p className="text-muted-foreground text-sm">
             Memuat data fasilitas...
           </p>
-        </div>
-      </div>
+        </section>
+      </section>
     );
   }
 
   return (
-    <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
+    <section className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
@@ -161,7 +161,7 @@ export default function EditFasilitasPage() {
       </section>
 
       <section className="px-5 mt-4">
-        <div className="mx-auto w-full max-w-3xl">
+        <section className="mx-auto w-full max-w-3xl">
           <Card className="bg-white border rounded-xl shadow-sm">
             <CardHeader>
               <CardTitle>Formulir Edit Fasilitas</CardTitle>
@@ -255,8 +255,8 @@ export default function EditFasilitasPage() {
               </Form>
             </CardContent>
           </Card>
-        </div>
+        </section>
       </section>
-    </div>
+    </section>
   );
 }
