@@ -120,32 +120,34 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
 
   return (
     <Card className="overflow-hidden flex flex-col hover:shadow-md transition-shadow group border-primary/10">
-      <div className="aspect-video w-full bg-muted relative overflow-hidden">
-        <img
-          src={imgSrc}
-          alt={`Kamar ${room.nomorKamar}`}
-          onError={handleImageError}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
+       {/* Gambar kamar dengan badge */}
+  <figure className="aspect-video w-full bg-muted relative overflow-hidden">
+    <img
+      src={imgSrc}
+      alt={`Kamar ${room.nomorKamar}`}
+      onError={handleImageError}
+      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+    />
 
-        <div className="absolute top-2 right-2">
-          <Badge className={getStatusColor(String(room.statusKamar))}>
-            {String(room.statusKamar)}
-          </Badge>
-        </div>
-      </div>
+    <figcaption className="absolute top-2 right-2">
+      <Badge className={getStatusColor(String(room.statusKamar))}>
+        {String(room.statusKamar)}
+      </Badge>
+    </figcaption>
+  </figure>
 
       <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-xl">Kamar {room.nomorKamar}</CardTitle>
-            <CardDescription className="line-clamp-1 mt-1">
-              {room.deskripsi || "Fasilitas lengkap & nyaman"}
-            </CardDescription>
-          </div>
-        </div>
+        <section className="flex justify-between items-start">
+      <section>
+        <CardTitle className="text-xl">Kamar {room.nomorKamar}</CardTitle>
+        <CardDescription className="line-clamp-1 mt-1">
+          {room.deskripsi || "Fasilitas lengkap & nyaman"}
+        </CardDescription>
+      </section>
+    </section>
       </CardHeader>
 
+      {/* Header Card */}
       <CardContent className="space-y-4 flex-1">
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
@@ -159,6 +161,7 @@ function RoomCard({ room, formatRupiah }: RoomCardProps) {
         </div>
       </CardContent>
 
+      {/* Konten utama Card */}
       <CardFooter className="flex items-center justify-between border-t p-4 bg-muted/20">
         <div className="flex flex-col">
           <span className="text-xs text-muted-foreground">Harga per bulan</span>
