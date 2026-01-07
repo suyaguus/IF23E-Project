@@ -120,11 +120,11 @@ export default function KamarDetailPage() {
 
   if (isError || !room) {
     return (
-      <div className="flex h-[50vh] w-full items-center justify-center flex-col gap-3 text-destructive">
+      <section className="flex h-[50vh] w-full items-center justify-center flex-col gap-3 text-destructive">
         <AlertCircle className="h-10 w-10" />
         <p>Kamar tidak ditemukan atau terjadi kesalahan.</p>
         <Button variant="outline" onClick={() => router.back()}>Kembali</Button>
-      </div>
+      </section>
     );
   }
 
