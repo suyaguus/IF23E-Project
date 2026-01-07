@@ -97,14 +97,14 @@ export default function KamarPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4 pb-10 min-h-screen bg-gray-50/30">
+    <main className="flex flex-col gap-4 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      <section className="flex items-center justify-between px-5 pt-2 pb-1">
+      <header className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Manajemen Kamar
         </h1>
-      </section>
+      </header>
 
       <section className="px-5">
         <article className="text-muted-foreground text-lg">
@@ -115,9 +115,9 @@ export default function KamarPage() {
       </section>
 
       <section className="px-5 mt-4">
-        <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
-          <div className="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
-            <div className="relative w-full sm:w-72">
+        <section className="bg-white border rounded-xl shadow-sm overflow-hidden">
+          <header className="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
+            <section className="relative w-full sm:w-72">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Cari nomor kamar atau deskripsi..."
@@ -128,9 +128,9 @@ export default function KamarPage() {
                   setCurrentPage(1);
                 }}
               />
-            </div>
+            </section>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <nav className="flex items-center gap-2 w-full sm:w-auto">
               <Link
                 href="/kamar/tambah"
                 className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 text-sm flex items-center justify-center transition-colors shadow-sm w-full sm:w-auto text-center"
@@ -143,8 +143,8 @@ export default function KamarPage() {
               >
                 Kembali
               </Link>
-            </div>
-          </div>
+            </nav>
+          </header>
 
           <div className="p-0">
             {isError ? (
@@ -299,8 +299,8 @@ export default function KamarPage() {
               </div>
             </div>
           )}
-        </div>
+        </section>
       </section>
-    </div>
+    </main>
   );
 }

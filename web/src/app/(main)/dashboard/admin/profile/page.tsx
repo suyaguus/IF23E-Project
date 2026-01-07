@@ -5,10 +5,10 @@ import { SharedProfileForm } from "@/components/ui/custom/CustomProfile";
 
 export default function AdminProfilePage() {
   return (
-    <div>
+    <main>
       <AppSidebar />
 
       <SharedProfileForm role="admin" />
-    </div>
+    </main>
   );
 }

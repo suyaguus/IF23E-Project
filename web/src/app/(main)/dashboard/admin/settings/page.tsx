@@ -5,15 +5,16 @@ import { SharedSettingsForm } from "@/components/ui/custom/CustomSetting";
 
 export default function AdminSettingsPage() {
   return (
-    <div>
+    <main>
       <AppSidebar />
-      <div className="space-y-0.5">
+      <header className="space-y-0.5">
         <h2 className="text-2xl font-bold tracking-tight">Pengaturan Saya</h2>
         <p className="text-muted-foreground">
           Kelola preferensi akun penghuni Anda.
         </p>
-      </div>
+      </header>
       <SharedSettingsForm role="admin" />
-    </div>
+    </main>
+
   );
 }
