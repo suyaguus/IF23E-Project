@@ -224,7 +224,7 @@ export default function EditFasilitasPage() {
                     )}
                   />
 
-                  <div className="flex justify-end gap-2 pt-4 border-t mt-6">
+                  <section className="flex justify-end gap-2 pt-4 border-t mt-6">
                     <Button
                       type="button"
                       variant="ghost"
@@ -250,7 +250,7 @@ export default function EditFasilitasPage() {
                         </>
                       )}
                     </Button>
-                  </div>
+                  </section>
                 </form>
               </Form>
             </CardContent>
