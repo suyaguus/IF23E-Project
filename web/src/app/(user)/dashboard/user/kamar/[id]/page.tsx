@@ -58,8 +58,8 @@ export default function KamarDetailPage() {
 
   const handleImageError = () => {
     if (imgSrc.endsWith(".jpg") && room?.nomorKamar) {
-        const cleanNumber = room.nomorKamar.replace(/Kamar\s*/i, "").trim();
-        setImgSrc(`/images/kamar/${cleanNumber}.png`);
+      const cleanNumber = room.nomorKamar.replace(/Kamar\s*/i, "").trim();
+      setImgSrc(`/images/kamar/${cleanNumber}.png`);
     } else {
       if (!hasError) {
         setImgSrc("/images/placeholder-room.jpg");
@@ -129,7 +129,7 @@ export default function KamarDetailPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-5xl mx-auto pb-10">
+    <section className="flex flex-col gap-6 max-w-5xl mx-auto pb-10">
       {/* Tombol Kembali */}
       <section>
         <Button
@@ -141,28 +141,28 @@ export default function KamarDetailPage() {
         </Button>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* KOLOM KIRI: GAMBAR UTAMA */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="aspect-video w-full rounded-xl overflow-hidden bg-muted shadow-sm relative">
+          <figure className="aspect-video w-full rounded-xl overflow-hidden bg-muted shadow-sm relative">
             <img
               src={imgSrc}
               alt={`Kamar ${room.nomorKamar}`}
               onError={handleImageError}
               className="w-full h-full object-cover"
             />
-             <div className="absolute top-4 right-4">
-                <Badge className={`${getStatusColor(String(room.statusKamar))} text-sm px-3 py-1`}>
-                    {String(room.statusKamar)}
-                </Badge>
-             </div>
-          </div>
+            <figcaption className="absolute top-4 right-4">
+              <Badge className={`${getStatusColor(String(room.statusKamar))} text-sm px-3 py-1`}>
+                {String(room.statusKamar)}
+              </Badge>
+            </figcaption>
+          </figure>
 
           <div className="space-y-4">
             <div className="flex justify-between items-start">
-                <h1 className="text-3xl font-bold">Kamar {room.nomorKamar}</h1>
+              <h1 className="text-3xl font-bold">Kamar {room.nomorKamar}</h1>
             </div>
-            
+
             <p className="text-muted-foreground leading-relaxed text-justify">
               {room.deskripsi || "Tidak ada deskripsi tersedia untuk kamar ini."}
             </p>
@@ -245,7 +245,7 @@ export default function KamarDetailPage() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Kapasitas</span>
-                  <span className="font-medium">1 Orang</span> 
+                  <span className="font-medium">1 Orang</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Ukuran</span>
@@ -315,7 +315,7 @@ export default function KamarDetailPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
-    </div>
+      </section>
+    </section>
   );
 }
