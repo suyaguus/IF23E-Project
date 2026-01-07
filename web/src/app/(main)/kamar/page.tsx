@@ -97,14 +97,14 @@ export default function KamarPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4 pb-10 min-h-screen bg-gray-50/30">
+    <main className="flex flex-col gap-4 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      <section className="flex items-center justify-between px-5 pt-2 pb-1">
+      <header className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Manajemen Kamar
         </h1>
-      </section>
+      </header>
 
       <section className="px-5">
         <article className="text-muted-foreground text-lg">
