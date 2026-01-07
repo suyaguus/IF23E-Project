@@ -76,14 +76,14 @@ export default function FasilitasPage() {
   };
 
   return (
-    <section className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
+     <main className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
-      <section className="flex items-center justify-between px-5 pt-2 pb-1">
+      <header className="flex items-center justify-between px-5 pt-2 pb-1">
         <h1 className="text-[50px] font-bold tracking-tight leading-tight text-gray-900">
           Manajemen Fasilitas
         </h1>
-      </section>
+      </header>
 
       <section className="px-5">
         <p className="text-muted-foreground text-lg">
@@ -94,8 +94,8 @@ export default function FasilitasPage() {
 
       <section className="px-5 mt-4">
         <section className="bg-white border rounded-xl shadow-sm overflow-hidden">
-          <div className="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
-            <div className="relative w-full sm:w-72">
+          <header className="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
+            <section className="relative w-full sm:w-72">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Cari nama, kode, atau deskripsi..."
@@ -106,9 +106,9 @@ export default function FasilitasPage() {
                   setCurrentPage(1);
                 }}
               />
-            </div>
+            </section>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <nav className="flex items-center gap-2 w-full sm:w-auto">
               <Link
                 href="/fasilitas/tambah"
                 className="bg-sky-700 text-white py-2.5 px-5 rounded-full hover:bg-sky-800 text-sm flex items-center justify-center transition-colors shadow-sm w-full sm:w-auto text-center font-medium"
@@ -121,14 +121,14 @@ export default function FasilitasPage() {
               >
                 Kembali
               </Link>
-            </div>
-          </div>
+            </nav>
+          </header>
 
-          <div className="p-0">
+          <section className="p-0">
             {isError ? (
-              <div className="text-center text-red-500 py-10 bg-red-50/50 m-4 rounded-md">
+              <section className="text-center text-red-500 py-10 bg-red-50/50 m-4 rounded-md">
                 Gagal Mengambil Data. Pastikan server berjalan.
-              </div>
+              </section>
             ) : (
               <Table>
                 <TableHeader>
@@ -146,10 +146,10 @@ export default function FasilitasPage() {
                   {isLoading ? (
                     <TableRow>
                       <TableCell colSpan={5} className="text-center h-32">
-                        <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                        <section className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
                           <span className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" />
                           Memuat data...
-                        </div>
+                        </section>
                       </TableCell>
                     </TableRow>
                   ) : currentItems.length > 0 ? (
@@ -165,7 +165,7 @@ export default function FasilitasPage() {
                             {rowNumber}
                           </TableCell>
                           <TableCell className="text-center">
-                            <div className="flex items-center justify-center gap-2">
+                            <section className="flex items-center justify-center gap-2">
                               <Link href={`/fasilitas/edit/${item.id}`}>
                                 <button
                                   className="bg-white border border-gray-200 hover:bg-gray-100 text-yellow-600 p-2 rounded-md transition-colors shadow-sm"
@@ -203,7 +203,7 @@ export default function FasilitasPage() {
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
                               </AlertDialog>
-                            </div>
+                            </section>
                           </TableCell>
                           <TableCell className="font-semibold text-gray-900">
                             {item.namaFasilitas}
@@ -232,17 +232,17 @@ export default function FasilitasPage() {
                 </TableBody>
               </Table>
             )}
-          </div>
+          </section>
 
           {!isLoading && totalItems > 0 && (
-            <div className="flex items-center justify-between px-4 py-4 border-t bg-gray-50/30">
-              <div className="text-sm text-muted-foreground">
+            <footer className="flex items-center justify-between px-4 py-4 border-t bg-gray-50/30">
+              <section className="text-sm text-muted-foreground">
                 Menampilkan <b>{indexOfFirstItem + 1}</b> -{" "}
                 <b>{Math.min(indexOfLastItem, totalItems)}</b> dari{" "}
                 <b>{totalItems}</b> data
-              </div>
+              </section>
 
-              <div className="flex items-center gap-2">
+              <nav className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -252,9 +252,9 @@ export default function FasilitasPage() {
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <div className="text-sm font-medium px-2">
+                <section className="text-sm font-medium px-2">
                   Halaman {currentPage} / {totalPages}
-                </div>
+                </section>
                 <Button
                   variant="outline"
                   size="sm"
@@ -264,11 +264,11 @@ export default function FasilitasPage() {
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
-              </div>
-            </div>
+              </nav>
+            </footer>
           )}
         </section>
       </section>
-    </section>
+    </main>
   );
 }
