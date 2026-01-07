@@ -76,7 +76,7 @@ export default function FasilitasPage() {
   };
 
   return (
-    <div className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
+    <section className="flex flex-col gap-2 pb-10 min-h-screen bg-gray-50/30">
       <AppSidebar />
 
       <section className="flex items-center justify-between px-5 pt-2 pb-1">
@@ -93,7 +93,7 @@ export default function FasilitasPage() {
       </section>
 
       <section className="px-5 mt-4">
-        <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
+        <section className="bg-white border rounded-xl shadow-sm overflow-hidden">
           <div className="p-4 border-b flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
             <div className="relative w-full sm:w-72">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -267,8 +267,8 @@ export default function FasilitasPage() {
               </div>
             </div>
           )}
-        </div>
+        </section>
       </section>
-    </div>
+    </section>
   );
 }
