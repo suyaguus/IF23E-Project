@@ -38,8 +38,10 @@ const QuickActionButton = ({
     </Text>
   </TouchableOpacity>
 );
+
 export default function UserDashboard() {
   const { userData } = useAuth();
+  const router = useRouter();
   const theme = useTheme();
   const router = useRouter();
   const [rooms, setRooms] = useState<Kamar[]>([]);
