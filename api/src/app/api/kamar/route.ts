@@ -4,20 +4,27 @@ import { StatusKamar } from "@prisma/client";
 
 // buat service ambil data
 export const GET = async () => {
-    const data = await prisma.tb_kamar.findMany({
-        orderBy: {
-            id: "asc",
-        },
-    });
+    try {
+        const data = await prisma.tb_kamar.findMany({
+            orderBy: {
+                id: "asc",
+            },
+        });
 
-    return NextResponse.json(
-        {
-            kamar: data,
-        },
-        {
-            status: 200,
-        }
-    );
+        return NextResponse.json(
+            {
+                kamar: data,
+            },
+            {
+                status: 200,
+            }
+        );
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Gagal mengambil data kamar", success: false },
+            { status: 500 }
+        );
+    }
 }
 
 // buat service simpan data

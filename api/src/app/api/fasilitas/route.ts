@@ -9,8 +9,12 @@ export const GET = async () => {
         });
 
         return NextResponse.json(
-            { data: data, success: true },
-            { status: 200 }
+            {
+                fasilitas: data,
+            },
+            {
+                status: 200,
+            }
         );
     } catch (error) {
         return NextResponse.json(
