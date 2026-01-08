@@ -1,10 +1,11 @@
-import React, { useState, useCallback } from "react"; 
+import React, { useState, useCallback } from "react";
 import {
   View,
   FlatList,
   StyleSheet,
   Alert,
   RefreshControl,
+  Platform,
 } from "react-native";
 import {
   Card,
@@ -52,22 +53,49 @@ export default function KamarList() {
   };
 
   const handleDelete = (id: number, nomor: string) => {
+    // LOGIC KHUSUS WEB
+    if (Platform.OS === "web") {
+      const confirm = window.confirm(`Yakin ingin menghapus kamar ${nomor}?`);
+      if (confirm) {
+        executeDelete(id);
+      }
+      return; // Berhenti di sini jika web
+    }
+
+    // LOGIC UNTUK HP (ANDROID/IOS)
     Alert.alert("Konfirmasi Hapus", `Yakin ingin menghapus kamar ${nomor}?`, [
       { text: "Batal", style: "cancel" },
       {
         text: "Hapus",
         style: "destructive",
-        onPress: async () => {
-          try {
-            await kamarService.delete(id);
-            Alert.alert("Sukses", "Data berhasil dihapus");
-            fetchData();
-          } catch (error: any) {
-            Alert.alert("Gagal", error.message || "Tidak bisa menghapus data");
-          }
-        },
+        onPress: () => executeDelete(id),
       },
     ]);
+  };
+
+  // Pindahkan logika penghapusan ke fungsi terpisah agar bisa dipanggil Web & Mobile
+  const executeDelete = async (id: number) => {
+    try {
+      console.log("Menghapus ID:", id);
+      await kamarService.delete(id);
+
+      if (Platform.OS === "web") {
+        alert("Data berhasil dihapus");
+      } else {
+        Alert.alert("Sukses", "Data berhasil dihapus");
+      }
+
+      fetchData(); // Refresh list
+    } catch (error: any) {
+      console.error("Gagal hapus:", error);
+      const errMsg = error.message || "Gagal menghapus";
+
+      if (Platform.OS === "web") {
+        alert(errMsg);
+      } else {
+        Alert.alert("Gagal", errMsg);
+      }
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -157,7 +185,7 @@ export default function KamarList() {
         </View>
       ) : (
         <FlatList
-          data={data}  
+          data={data}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 80 }}
