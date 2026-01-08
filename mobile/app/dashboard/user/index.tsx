@@ -4,6 +4,7 @@ import { Text, Card, Button, useTheme, Avatar } from "react-native-paper";
 import { TouchableOpacity } from "react-native"; // Tambah ini
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // Tambah ini untuk ikon
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "expo-router";
 
 const QuickActionButton = ({ icon, label, color }: { icon: string, label: string, color: string }) => (
   <TouchableOpacity style={styles.actionItem}>
@@ -15,6 +16,7 @@ const QuickActionButton = ({ icon, label, color }: { icon: string, label: string
 );
 export default function UserDashboard() {
   const { userData } = useAuth();
+  const router = useRouter();
   const theme = useTheme();
 
   return (
