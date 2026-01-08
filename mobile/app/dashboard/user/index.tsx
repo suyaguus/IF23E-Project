@@ -75,5 +75,29 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f5f5f5" },
   content: { padding: 20 },
   welcome: { fontWeight: "bold", marginBottom: 5, color: "#333" },
-  card: { marginBottom: 15, backgroundColor: "white" },
+  card: { marginBottom: 20, backgroundColor: "white", borderRadius: 12 },
+  sectionTitle: { fontWeight: "bold", marginBottom: 15, color: "#444" },
+  quickActionGrid: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginBottom: 25 
+  },
+  actionItem: { alignItems: 'center', width: '22%' },
+  iconCircle: { 
+    padding: 12, 
+    borderRadius: 15, 
+    marginBottom: 8,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  actionLabel: { fontWeight: '600', color: '#555' },
+  emptyActivityCard: { 
+    marginBottom: 20, 
+    borderStyle: 'dashed', 
+    borderWidth: 1, 
+    borderColor: '#ccc', 
+    elevation: 0, 
+    backgroundColor: 'transparent',
+    borderRadius: 12 
+  },
 });
