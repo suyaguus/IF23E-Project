@@ -7,7 +7,7 @@ export const fasilitasService = {
   getAll: async () => {
     try {
       const response = await api.get(Strings.api_fasilitas);
-      return response.data.data; 
+      return response.data.fasilitas; 
     } catch (error) {
       throw error;
     }
