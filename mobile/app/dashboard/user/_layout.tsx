@@ -31,29 +31,17 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
     router.navigate(path as any);
   };
 
-  // ... di dalam komponen CustomDrawerContent
-
   const handleLogout = () => {
-    Alert.alert("Konfirmasi", "Keluar dari aplikasi?", [
-      { text: "Batal", style: "cancel" },
-      {
-        text: "Ya",
-        onPress: () => {
-          // 1. Panggil fungsi logout (untuk hapus state)
-          logout();
-
-          // 2. Lakukan Navigasi Manual di sini (UI Layer)
-          // Beri sedikit jeda agar state sempat terhapus
-          setTimeout(() => {
-            // Pastikan router di-import dari 'expo-router' di file ini
-            if (router.canGoBack()) {
-              router.dismissAll(); // Bersihkan tumpukan layar
-            }
-            router.replace("/auth/login"); // Arahkan langsung ke login
-          }, 100);
-        },
-      },
-    ]);
+    // Alert.alert("Konfirmasi", "Keluar dari aplikasi?", [
+    //   { text: "Batal", style: "cancel" },
+    //   {
+    //     text: "Ya",
+    //     onPress: () => {
+    //       logout();
+    //     },
+    //   },
+    // ]);
+    logout();
   };
 
   return (
@@ -63,7 +51,7 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
       >
         <Avatar.Icon
           size={64}
-          icon="account"
+          icon={({ size }) => <MaterialIcons name="person" size={size} />}
           style={{ backgroundColor: "white" }}
           color={theme.colors.primary}
         />
@@ -88,6 +76,32 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
           active={isActive("")}
           onPress={() => navigateTo("/dashboard/user")}
           theme={{ colors: { secondaryContainer: "#E6F2FF" } }}
+        />
+
+        <PaperDrawer.Item
+          icon={({ size }) => (
+            <MaterialIcons
+              name="list"
+              size={size}
+              color={isActive("rooms") ? theme.colors.primary : "#666"}
+            />
+          )}
+          label="List Kamar"
+          active={isActive("rooms")}
+          onPress={() => navigateTo("/dashboard/user/rooms")}
+        />
+
+        <PaperDrawer.Item
+          icon={({ size }) => (
+            <MaterialIcons
+              name="history"
+              size={size}
+              color={isActive("history") ? theme.colors.primary : "#666"}
+            />
+          )}
+          label="Riwayat Sewa"
+          active={isActive("history")}
+          onPress={() => navigateTo("/dashboard/user/history")}
         />
 
         <PaperDrawer.Item
