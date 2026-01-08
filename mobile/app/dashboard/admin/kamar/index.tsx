@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react"; 
 import {
   View,
   FlatList,
@@ -22,19 +22,9 @@ import { Kamar } from "@/types/interfaces";
 export default function KamarList() {
   const theme = useTheme();
   const router = useRouter();
-  
-
   const [data, setData] = useState<Kamar[]>([]);
-  const [filteredData, setFilteredData] = useState<Kamar[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [search, setSearch] = useState("");
-
-  const [dialogVisible, setDialogVisible] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [selectedNomor, setSelectedNomor] = useState("");
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const messageResponse = useRef("");
 
   // Fungsi untuk mengambil data dari backend
   const fetchData = async () => {
@@ -42,7 +32,6 @@ export default function KamarList() {
       const result = await kamarService.getAll();
       const listKamar = Array.isArray(result) ? result : [];
       setData(listKamar);
-      setFilteredData(listKamar);
     } catch (error) {
       console.error(error);
     } finally {
@@ -72,7 +61,7 @@ export default function KamarList() {
           try {
             await kamarService.delete(id);
             Alert.alert("Sukses", "Data berhasil dihapus");
-            fetchData(); // Reload data setelah hapus
+            fetchData();
           } catch (error: any) {
             Alert.alert("Gagal", error.message || "Tidak bisa menghapus data");
           }
@@ -81,23 +70,20 @@ export default function KamarList() {
     ]);
   };
 
-  // Helper warna status
   const getStatusColor = (status: string) => {
-    // Normalisasi string (hilangkan spasi & lowercase) untuk pencocokan yang lebih aman
     const safeStatus = status ? status.replace(/\s/g, "").toLowerCase() : "";
-
     switch (safeStatus) {
       case "tersedia":
-        return "#4CAF50"; // Hijau
+        return "#4CAF50";
       case "tersewa":
       case "penuh":
-        return "#F44336"; // Merah
+        return "#F44336";
       case "tidaktersedia":
       case "perbaikan":
       case "rusak":
-        return "#9E9E9E"; // Abu-abu
+        return "#9E9E9E";
       default:
-        return "#9E9E9E"; // Default Abu-abu
+        return "#9E9E9E";
     }
   };
 
@@ -150,8 +136,9 @@ export default function KamarList() {
           mode="contained-tonal"
           iconColor={theme.colors.primary}
           size={20}
-          // Menggunakan path absolute agar lebih aman
-          onPress={() => router.push(`/dashboard/admin/kamar/edit/${item.id}`)}
+          onPress={() =>
+            router.push(`/dashboard/admin/kamar/edit/${item.id}` as any)
+          }
         />
         <IconButton
           icon="delete"
@@ -170,7 +157,7 @@ export default function KamarList() {
         </View>
       ) : (
         <FlatList
-          data={data}
+          data={data}  
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 80 }}
@@ -194,7 +181,6 @@ export default function KamarList() {
         label="Tambah"
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         color="white"
-        // Menggunakan path absolute
         onPress={() => router.push("/dashboard/admin/kamar/add")}
       />
     </View>
