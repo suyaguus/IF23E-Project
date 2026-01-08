@@ -1,8 +1,18 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { Text, Card, Button, useTheme } from "react-native-paper";
+import { Text, Card, Button, useTheme, Avatar } from "react-native-paper";
+import { TouchableOpacity } from "react-native"; // Tambah ini
+import { MaterialCommunityIcons } from "@expo/vector-icons"; // Tambah ini untuk ikon
 import { useAuth } from "@/context/AuthContext";
 
+const QuickActionButton = ({ icon, label, color }: { icon: string, label: string, color: string }) => (
+  <TouchableOpacity style={styles.actionItem}>
+    <View style={[styles.iconCircle, { backgroundColor: color + '15' }]}>
+      <MaterialCommunityIcons name={icon as any} size={28} color={color} />
+    </View>
+    <Text variant="labelMedium" style={styles.actionLabel}>{label}</Text>
+  </TouchableOpacity>
+);
 export default function UserDashboard() {
   const { userData } = useAuth();
   const theme = useTheme();
