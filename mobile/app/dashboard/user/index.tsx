@@ -54,6 +54,18 @@ export default function UserDashboard() {
           <QuickActionButton icon="book-open-variant" label="Aturan" color="#2196F3" />
           <QuickActionButton icon="phone-outline" label="Bantuan" color="#E91E63" />
         </View>
+        {/* SECTION: AKTIVITAS TERAKHIR (Empty State) */}
+        <Text variant="titleMedium" style={[styles.sectionTitle, { marginTop: 10 }]}>
+          Aktivitas Terakhir
+        </Text>
+        <Card style={styles.emptyActivityCard}>
+          <Card.Content style={{ alignItems: 'center', paddingVertical: 30 }}>
+            <MaterialCommunityIcons name="clipboard-text-outline" size={40} color="#bbb" />
+            <Text variant="bodyMedium" style={{ color: "#999", marginTop: 10 }}>
+              Belum ada aktivitas saat ini.
+            </Text>
+          </Card.Content>
+        </Card>
       </View>
     </ScrollView>
   );
