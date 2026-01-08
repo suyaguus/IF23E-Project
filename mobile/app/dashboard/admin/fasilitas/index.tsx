@@ -90,7 +90,7 @@ export default function FasilitasList() {
         </View>
         {item.deskripsi ? (
           <Text variant="bodyMedium" numberOfLines={2} style={{ color: "gray", marginTop: 4 }}>
-            {item.deskripsi}
+            Kode: {item.kodeFasilitas}
           </Text>
         ) : (
           <Text variant="bodySmall" style={{ color: "#ccc", marginTop: 4 }}>
