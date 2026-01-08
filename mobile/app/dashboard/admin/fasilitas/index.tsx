@@ -2,8 +2,8 @@ import React, { useState, useCallback } from "react";
 import { View, FlatList, StyleSheet, Alert, RefreshControl, Platform } from "react-native";
 import { Card, Text, FAB, IconButton, ActivityIndicator, useTheme, Searchbar } from "react-native-paper";
 import { useRouter, useFocusEffect, Route } from "expo-router";
-import { fasilitasService } from "@/services/fasilitasService"; // Pastikan service ini ada
-import { Fasilitas } from "@/types/interfaces"; // Pastikan interface Fasilitas ada
+import { fasilitasService } from "@/services/fasilitasService"; 
+import { Fasilitas } from "@/types/interfaces"; 
 
 export default function FasilitasList() {
   const theme = useTheme();
