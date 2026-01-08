@@ -22,8 +22,8 @@ export interface KamarInput {
 export interface Fasilitas {
     id: number;
     namaFasilitas: string;
-    kodeFasilitas: string; 
-    deskripsi?: string;    
+    kodeFasilitas: string;
+    deskripsi?: string;
     createdAt?: string;
     updatedAt?: string;
 }
@@ -40,16 +40,16 @@ export type KondisiPerabotan = "Baik" | "Rusak" | "Sedang";
 export interface Perabotan {
     id: number;
     namaPerabotan: string;
-    jumlah: number;
-    kondisi: KondisiPerabotan;
+    kodePerabotan: string;
+    deskripsi?: string;
     createdAt?: string;
     updatedAt?: string;
 }
 
 export interface PerabotanInput {
     namaPerabotan: string;
-    jumlah: number;
-    kondisi: KondisiPerabotan;
+    kodePerabotan: string;
+    deskripsi?: string;
 }
 
 // bagian user
