@@ -53,16 +53,14 @@ export default function KamarList() {
   };
 
   const handleDelete = (id: number, nomor: string) => {
-    // LOGIC KHUSUS WEB
     if (Platform.OS === "web") {
       const confirm = window.confirm(`Yakin ingin menghapus kamar ${nomor}?`);
       if (confirm) {
         executeDelete(id);
       }
-      return; // Berhenti di sini jika web
+      return; 
     }
 
-    // LOGIC UNTUK HP (ANDROID/IOS)
     Alert.alert("Konfirmasi Hapus", `Yakin ingin menghapus kamar ${nomor}?`, [
       { text: "Batal", style: "cancel" },
       {
@@ -73,7 +71,6 @@ export default function KamarList() {
     ]);
   };
 
-  // Pindahkan logika penghapusan ke fungsi terpisah agar bisa dipanggil Web & Mobile
   const executeDelete = async (id: number) => {
     try {
       console.log("Menghapus ID:", id);
@@ -85,7 +82,7 @@ export default function KamarList() {
         Alert.alert("Sukses", "Data berhasil dihapus");
       }
 
-      fetchData(); // Refresh list
+      fetchData();
     } catch (error: any) {
       console.error("Gagal hapus:", error);
       const errMsg = error.message || "Gagal menghapus";
