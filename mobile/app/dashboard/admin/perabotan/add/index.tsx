@@ -49,7 +49,7 @@ export default function PerabotanAdd() {
         <TextInput label="Deskripsi" value={deskripsi} onChangeText={setDeskripsi} mode="outlined" multiline numberOfLines={4} style={styles.input} />
         
         <View style={styles.row}>
-          <Button mode="outlined" onPress={() => router.back()} style={{ flex: 1 }}>Batal</Button>
+          <Button mode="outlined" onPress={() => router.push("/dashboard/admin/perabotan")} style={{ flex: 1 }}>Batal</Button>
           <Button mode="contained" onPress={handleSubmit} loading={loading} style={{ flex: 1 }}>Simpan</Button>
         </View>
       </ScrollView>
