@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// Helper untuk parameter Next.js 15
 type Params = { params: Promise<{ id: string }> };
 
 // GET By ID (Untuk Detail/Edit)
 export const GET = async (req: NextRequest, { params }: Params) => {
     try {
-        const { id } = await params; // Await params (Wajib di Next.js 15)
+        const { id } = await params; 
 
         const data = await prisma.tb_fasilitas.findUnique({
             where: { id: Number(id) },
@@ -20,8 +19,6 @@ export const GET = async (req: NextRequest, { params }: Params) => {
             );
         }
 
-        // PERBAIKAN DI SINI:
-        // Ganti "fasilitas: data" menjadi "data: data"
         return NextResponse.json(
             { data: data, success: true },
             { status: 200 }
@@ -54,7 +51,6 @@ export const PUT = async (req: NextRequest, { params }: Params) => {
             },
         });
 
-        // Pastikan response PUT juga menggunakan format yang standar
         return NextResponse.json(
             { message: "Data Berhasil Diupdate", data: updated, success: true },
             { status: 200 }
