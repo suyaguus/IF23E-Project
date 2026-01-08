@@ -1,4 +1,4 @@
-const BASE_URL = `https://if-23-e-project.vercel.app/api`;
+const BASE_URL = `https://wisma-dempo.vercel.app/api`;
 // const BASE_URL = `http://localhost:3001/api`;
 
 export const Strings = {
@@ -10,12 +10,12 @@ export const Strings = {
     api_riwayat: `${BASE_URL}/riwayat`,
     api_kamarFasilitas: `${BASE_URL}/kamarFasilitas`,
     api_kamarPerabotan: `${BASE_URL}/kamarPerabotan`,
-    
+
     // Auth
-    api_auth_login: `${BASE_URL}/auth/login`,                   
-    api_auth_register: `${BASE_URL}/auth/register`, 
-    api_auth_verify_otp: `${BASE_URL}/auth/verify-otp`, 
-    api_auth_forgot_password: `${BASE_URL}/auth/forgot-password`, 
+    api_auth_login: `${BASE_URL}/auth/login`,
+    api_auth_register: `${BASE_URL}/auth/register`,
+    api_auth_verify_otp: `${BASE_URL}/auth/verify-otp`,
+    api_auth_forgot_password: `${BASE_URL}/auth/forgot-password`,
     api_auth_reset_password: `${BASE_URL}/auth/reset-password`,
     api_auth_logout: `${BASE_URL}/auth/logout`,
     api_auth_change_password: `${BASE_URL}/auth/change-password`,

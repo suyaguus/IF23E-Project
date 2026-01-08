@@ -1,5 +1,11 @@
-import React, { useState, useCallback } from "react";
-import { View, FlatList, StyleSheet, Alert, RefreshControl } from "react-native";
+import React, { useState, useCallback } from "react"; 
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  Alert,
+  RefreshControl,
+} from "react-native";
 import {
   Card,
   Text,
@@ -16,7 +22,6 @@ import { Kamar } from "@/types/interfaces";
 export default function KamarList() {
   const theme = useTheme();
   const router = useRouter();
-  
   const [data, setData] = useState<Kamar[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -25,19 +30,16 @@ export default function KamarList() {
   const fetchData = async () => {
     try {
       const result = await kamarService.getAll();
-      // Pastikan result adalah array. Jika backend membungkusnya, sesuaikan di sini.
-      setData(Array.isArray(result) ? result : []);
+      const listKamar = Array.isArray(result) ? result : [];
+      setData(listKamar);
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "Gagal memuat data kamar. Cek koneksi internet.");
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
 
-  // useFocusEffect akan memanggil fetchData setiap kali kita kembali ke halaman ini
-  // (misal setelah selesai edit/tambah kamar)
   useFocusEffect(
     useCallback(() => {
       fetchData();
@@ -59,7 +61,7 @@ export default function KamarList() {
           try {
             await kamarService.delete(id);
             Alert.alert("Sukses", "Data berhasil dihapus");
-            fetchData(); // Reload data setelah hapus
+            fetchData();
           } catch (error: any) {
             Alert.alert("Gagal", error.message || "Tidak bisa menghapus data");
           }
@@ -68,14 +70,27 @@ export default function KamarList() {
     ]);
   };
 
-  // Helper warna status
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Tersedia": return theme.colors.primary; // Biru/Primary
-      case "Penuh": return theme.colors.error; // Merah
-      case "Perbaikan": return "orange";
-      default: return "gray";
+    const safeStatus = status ? status.replace(/\s/g, "").toLowerCase() : "";
+    switch (safeStatus) {
+      case "tersedia":
+        return "#4CAF50";
+      case "tersewa":
+      case "penuh":
+        return "#F44336";
+      case "tidaktersedia":
+      case "perbaikan":
+      case "rusak":
+        return "#9E9E9E";
+      default:
+        return "#9E9E9E";
     }
+  };
+
+  const formatStatusLabel = (status: string) => {
+    if (status === "TidakTersedia" || status === "tidaktersedia")
+      return "Tidak Tersedia";
+    return status;
   };
 
   const renderItem = ({ item }: { item: Kamar }) => (
@@ -86,31 +101,43 @@ export default function KamarList() {
             {item.nomorKamar}
           </Text>
           <Chip
-            textStyle={{ color: "white", fontSize: 12 }}
-            style={{ backgroundColor: getStatusColor(item.statusKamar), height: 32 }}
+            textStyle={{ color: "white", fontSize: 12, fontWeight: "bold" }}
+            style={{
+              backgroundColor: getStatusColor(item.statusKamar),
+              height: 32,
+            }}
           >
-            {item.statusKamar}
+            {formatStatusLabel(item.statusKamar)}
           </Chip>
         </View>
-        <Text variant="bodyMedium" style={{ marginTop: 8, color: theme.colors.primary, fontWeight: 'bold' }}>
+        <Text
+          variant="bodyMedium"
+          style={{
+            marginTop: 8,
+            color: theme.colors.primary,
+            fontWeight: "bold",
+          }}
+        >
           Rp {item.hargaSewa.toLocaleString("id-ID")} / bulan
         </Text>
         {item.deskripsi ? (
-          <Text variant="bodySmall" numberOfLines={2} style={{ color: "gray", marginTop: 4 }}>
+          <Text
+            variant="bodySmall"
+            numberOfLines={2}
+            style={{ color: "gray", marginTop: 4 }}
+          >
             {item.deskripsi}
           </Text>
         ) : null}
       </Card.Content>
-      <Card.Actions style={{ justifyContent: 'flex-end' }}>
+      <Card.Actions style={{ justifyContent: "flex-end" }}>
         <IconButton
           icon="pencil"
-          iconColor={theme.colors.secondary}
+          mode="contained-tonal"
+          iconColor={theme.colors.primary}
+          size={20}
           onPress={() =>
-            // Navigasi ke form dengan membawa ID parameter
-            router.push({
-              pathname: "/dashboard/admin/kamar/form",
-              params: { id: item.id }, 
-            })
+            router.push(`/dashboard/admin/kamar/edit/${item.id}` as any)
           }
         />
         <IconButton
@@ -130,7 +157,7 @@ export default function KamarList() {
         </View>
       ) : (
         <FlatList
-          data={data}
+          data={data}  
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 80 }}
@@ -139,21 +166,22 @@ export default function KamarList() {
           }
           ListEmptyComponent={
             <View style={styles.center}>
-                <Text style={{ textAlign: "center", marginTop: 50, color: '#666' }}>
+              <Text
+                style={{ textAlign: "center", marginTop: 50, color: "#666" }}
+              >
                 Belum ada data kamar.{"\n"}Tekan tombol + untuk menambah.
-                </Text>
+              </Text>
             </View>
           }
         />
       )}
 
-      {/* Floating Action Button (FAB) untuk Tambah Data */}
       <FAB
         icon="plus"
+        label="Tambah"
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         color="white"
-        label="Tambah"
-        onPress={() => router.push("/dashboard/admin/kamar/form")} // Ke form tanpa ID = Mode Tambah
+        onPress={() => router.push("/dashboard/admin/kamar/add")}
       />
     </View>
   );
@@ -163,6 +191,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#f5f5f5" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   card: { marginBottom: 12, backgroundColor: "white", borderRadius: 12 },
-  rowBetween: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   fab: { position: "absolute", margin: 16, right: 0, bottom: 0 },
 });

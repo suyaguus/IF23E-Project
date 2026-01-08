@@ -22,30 +22,25 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
   // Helper cek menu aktif
   const isActive = (path: string) => {
-    // Logic ini memastikan highlight menu tetap benar
     if (path === "") return pathname === "/dashboard/admin";
     return pathname.startsWith(`/dashboard/admin/${path}`);
   };
 
   const navigateTo = (path: string) => {
-    // Gunakan router.navigate agar tidak menumpuk history stack berlebihan
     router.navigate(path as any);
   };
 
   const handleLogout = () => {
-    Alert.alert("Konfirmasi", "Keluar dari aplikasi?", [
-      { text: "Batal", style: "cancel" },
-      {
-        text: "Ya",
-        onPress: () => {
-          logout();
-          setTimeout(() => {
-            while (router.canGoBack()) router.back();
-            router.replace("/");
-          }, 100);
-        },
-      },
-    ]);
+    // Alert.alert("Konfirmasi", "Keluar dari aplikasi?", [
+    //   { text: "Batal", style: "cancel" },
+    //   {
+    //     text: "Ya",
+    //     onPress: () => {
+    //       logout();
+    //     },
+    //   },
+    // ]);
+    logout();
   };
 
   return (
@@ -69,8 +64,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       </View>
 
       <PaperDrawer.Section showDivider={false} style={{ flex: 1 }}>
-        {/* 1. DASHBOARD */}
-        {/* Pastikan diawali '/' dan mengarah ke admin */}
         <PaperDrawer.Item
           icon={({ size, color }) => (
             <MaterialIcons
@@ -85,8 +78,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           theme={{ colors: { secondaryContainer: "#E6F2FF" } }}
         />
 
-        {/* 2. PROFIL SAYA */}
-        {/* Pastikan diawali '/' */}
         <PaperDrawer.Item
           icon={({ size, color }) => (
             <MaterialIcons
@@ -103,8 +94,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
         <Divider style={{ marginVertical: 8 }} />
 
-        {/* 3. KELOLA KAMAR */}
-        {/* Pastikan diawali '/' */}
         <PaperDrawer.Item
           icon={({ size, color }) => (
             <MaterialIcons
@@ -119,7 +108,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           theme={{ colors: { secondaryContainer: "#E6F2FF" } }}
         />
 
-        {/* 4. KELOLA FASILITAS */}
         <PaperDrawer.Item
           icon={({ size, color }) => (
             <MaterialIcons
@@ -134,7 +122,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           theme={{ colors: { secondaryContainer: "#E6F2FF" } }}
         />
 
-        {/* 5. KELOLA PERABOTAN */}
         <PaperDrawer.Item
           icon={({ size, color }) => (
             <MaterialIcons
