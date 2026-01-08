@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   useTheme,
   Chip,
+  Searchbar,
 } from "react-native-paper";
 import { useRouter, useFocusEffect } from "expo-router";
 import { kamarService } from "@/services/kamarService";
@@ -23,16 +24,19 @@ import { Kamar } from "@/types/interfaces";
 export default function KamarList() {
   const theme = useTheme();
   const router = useRouter();
+
   const [data, setData] = useState<Kamar[]>([]);
+  const [filteredData, setFilteredData] = useState<Kamar[]>([]);
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Fungsi untuk mengambil data dari backend
   const fetchData = async () => {
     try {
       const result = await kamarService.getAll();
       const listKamar = Array.isArray(result) ? result : [];
       setData(listKamar);
+      setFilteredData(listKamar);
     } catch (error) {
       console.error(error);
     } finally {
@@ -47,22 +51,33 @@ export default function KamarList() {
     }, [])
   );
 
+  const handleSearch = (text: string) => {
+    setSearch(text);
+    if (text.trim() === "") {
+      setFilteredData(data);
+    } else {
+      const filtered = data.filter((item) =>
+        item.nomorKamar.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  };
+
   const onRefresh = () => {
     setRefreshing(true);
+    setSearch("");
     fetchData();
   };
 
   const handleDelete = (id: number, nomor: string) => {
-    // LOGIC KHUSUS WEB
     if (Platform.OS === "web") {
       const confirm = window.confirm(`Yakin ingin menghapus kamar ${nomor}?`);
       if (confirm) {
         executeDelete(id);
       }
-      return; // Berhenti di sini jika web
+      return;
     }
 
-    // LOGIC UNTUK HP (ANDROID/IOS)
     Alert.alert("Konfirmasi Hapus", `Yakin ingin menghapus kamar ${nomor}?`, [
       { text: "Batal", style: "cancel" },
       {
@@ -73,28 +88,19 @@ export default function KamarList() {
     ]);
   };
 
-  // Pindahkan logika penghapusan ke fungsi terpisah agar bisa dipanggil Web & Mobile
   const executeDelete = async (id: number) => {
     try {
-      console.log("Menghapus ID:", id);
       await kamarService.delete(id);
-
       if (Platform.OS === "web") {
         alert("Data berhasil dihapus");
       } else {
         Alert.alert("Sukses", "Data berhasil dihapus");
       }
-
-      fetchData(); // Refresh list
+      fetchData();
     } catch (error: any) {
-      console.error("Gagal hapus:", error);
       const errMsg = error.message || "Gagal menghapus";
-
-      if (Platform.OS === "web") {
-        alert(errMsg);
-      } else {
-        Alert.alert("Gagal", errMsg);
-      }
+      if (Platform.OS === "web") alert(errMsg);
+      else Alert.alert("Gagal", errMsg);
     }
   };
 
@@ -106,10 +112,6 @@ export default function KamarList() {
       case "tersewa":
       case "penuh":
         return "#F44336";
-      case "tidaktersedia":
-      case "perbaikan":
-      case "rusak":
-        return "#9E9E9E";
       default:
         return "#9E9E9E";
     }
@@ -148,15 +150,6 @@ export default function KamarList() {
         >
           Rp {item.hargaSewa.toLocaleString("id-ID")} / bulan
         </Text>
-        {item.deskripsi ? (
-          <Text
-            variant="bodySmall"
-            numberOfLines={2}
-            style={{ color: "gray", marginTop: 4 }}
-          >
-            {item.deskripsi}
-          </Text>
-        ) : null}
       </Card.Content>
       <Card.Actions style={{ justifyContent: "flex-end" }}>
         <IconButton
@@ -179,13 +172,21 @@ export default function KamarList() {
 
   return (
     <View style={styles.container}>
+      <Searchbar
+        placeholder="Cari Nomor Kamar..."
+        onChangeText={handleSearch}
+        value={search}
+        style={styles.searchBar}
+        mode="bar"
+      />
+
       {loading ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
       ) : (
         <FlatList
-          data={data}
+          data={filteredData}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 80 }}
@@ -197,7 +198,9 @@ export default function KamarList() {
               <Text
                 style={{ textAlign: "center", marginTop: 50, color: "#666" }}
               >
-                Belum ada data kamar.{"\n"}Tekan tombol + untuk menambah.
+                {search.length > 0
+                  ? `Kamar "${search}" tidak ditemukan.`
+                  : "Belum ada data kamar.\nTekan tombol + untuk menambah."}
               </Text>
             </View>
           }
@@ -217,6 +220,11 @@ export default function KamarList() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#f5f5f5" },
+  searchBar: {
+    marginBottom: 16,
+    elevation: 2,
+    backgroundColor: "white",
+  },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   card: { marginBottom: 12, backgroundColor: "white", borderRadius: 12 },
   rowBetween: {

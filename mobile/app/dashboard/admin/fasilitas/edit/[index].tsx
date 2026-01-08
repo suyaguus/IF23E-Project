@@ -32,10 +32,11 @@ export default function FasilitasEdit() {
   useEffect(() => {
     const fetchDetail = async () => {
       try {
-        const data = await fasilitasService.getById(fasilitasId);
-        if (data) {
-          setNamaFasilitas(data.namaFasilitas);
-          setDeskripsi(data.deskripsi || "");
+        const result = await fasilitasService.getById(fasilitasId);
+        if (result) {
+          setNamaFasilitas(result.namaFasilitas);
+          setKodeFasilitas(result.kodeFasilitas); 
+          setDeskripsi(result.deskripsi || "");
         }
       } catch (error) {
         console.error("Error fetch:", error);
@@ -55,8 +56,8 @@ export default function FasilitasEdit() {
   }, [fasilitasId]);
 
   const handleSubmit = async () => {
-    if (!namaFasilitas) {
-      const msg = "Nama Fasilitas wajib diisi";
+    if (!namaFasilitas || !kodeFasilitas) {
+      const msg = "Nama dan Kode Fasilitas wajib diisi";
       if (Platform.OS === "web") alert(msg);
       else Alert.alert("Validasi", msg);
       return;
@@ -65,11 +66,12 @@ export default function FasilitasEdit() {
     setLoading(true);
     const payload = {
       namaFasilitas,
-      kodeFasilitas, // Masukkan kode ini
+      kodeFasilitas, 
       deskripsi,
     };
 
     try {
+      console.log("Mengirim Update Payload:", payload); 
       await fasilitasService.update(fasilitasId, payload);
 
       const msg = "Data fasilitas berhasil diperbarui";
@@ -85,7 +87,10 @@ export default function FasilitasEdit() {
         ]);
       }
     } catch (error: any) {
-      const errMsg = error.response?.data?.message || "Terjadi kesalahan";
+      const errMsg =
+        error.response?.data?.message || "Terjadi kesalahan server";
+      console.error("Update Error:", error.response?.data);
+
       if (Platform.OS === "web") alert("Gagal: " + errMsg);
       else Alert.alert("Gagal", errMsg);
     } finally {
@@ -137,7 +142,7 @@ export default function FasilitasEdit() {
         <View style={styles.actionContainer}>
           <Button
             mode="outlined"
-            onPress={() => router.back()}
+            onPress={() => router.push("/dashboard/admin/fasilitas")}
             style={styles.btnKembali}
             disabled={loading}
           >
