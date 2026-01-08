@@ -5,7 +5,6 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
-  Platform,
 } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { useRouter, useLocalSearchParams, Stack } from "expo-router";
@@ -87,9 +86,27 @@ export default function PerabotanEdit() {
           numberOfLines={4}
           style={styles.input}
         />
-        <Button mode="contained" onPress={handleSubmit} loading={loading}>
-          Simpan Perubahan
-        </Button>
+
+        <View style={styles.actionContainer}>
+          <Button
+            mode="outlined"
+            onPress={() => router.push("/dashboard/admin/perabotan")}
+            style={styles.btnKembali}
+            disabled={loading}
+          >
+            Batal
+          </Button>
+
+          <Button
+            mode="contained"
+            onPress={handleSubmit}
+            loading={loading}
+            disabled={loading}
+            style={styles.btnSimpan}
+          >
+            Simpan Perubahan
+          </Button>
+        </View>
       </ScrollView>
     </View>
   );
@@ -98,4 +115,12 @@ export default function PerabotanEdit() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
   input: { marginBottom: 16 },
+  btnKembali: { flex: 1, borderColor: "#6200ee" },
+  actionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+    marginTop: 10,
+  },
+  btnSimpan: { flex: 1 },
 });
