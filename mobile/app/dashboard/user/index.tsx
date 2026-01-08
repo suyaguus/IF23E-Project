@@ -49,15 +49,21 @@ export default function UserDashboard() {
             <Button mode="text">Cari Kos</Button>
           </Card.Actions>
         </Card>
-        {/* SECTION: LAYANAN KAMI (Quick Actions) */}
-        <Text variant="titleMedium" style={styles.sectionTitle}>Layanan Kami</Text>
-        <View style={styles.quickActionGrid}>
-          <QuickActionButton icon="wallet" label="Bayar" color="#4CAF50" />
-          <QuickActionButton icon="tools" label="Lapor" color="#FF9800" />
-          <QuickActionButton icon="book-open-variant" label="Aturan" color="#2196F3" />
-          <QuickActionButton icon="phone-outline" label="Bantuan" color="#E91E63" />
-        </View>
-        {/* SECTION: AKTIVITAS TERAKHIR (Empty State) */}
+        {/* LAYANAN KAMI */}
+            <Text variant="titleMedium" style={styles.sectionTitle}>Layanan Kami</Text>
+            <View style={styles.quickActionGrid}>
+              <QuickActionButton icon="wallet" label="Bayar" color="#4CAF50" />
+              {/* Tambahkan onPress di sini */}
+              <QuickActionButton 
+                icon="tools" 
+                label="Lapor" 
+                color="#FF9800" 
+                onPress={() => router.push("/dashboard/user/lapor")} 
+              />
+              <QuickActionButton icon="book-open-variant" label="Aturan" color="#2196F3" />
+              <QuickActionButton icon="phone-outline" label="Bantuan" color="#E91E63" />
+            </View>
+        {/* AKTIVITAS TERAKHIR  */}
         <Text variant="titleMedium" style={[styles.sectionTitle, { marginTop: 10 }]}>
           Aktivitas Terakhir
         </Text>
