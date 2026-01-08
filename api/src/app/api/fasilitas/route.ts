@@ -9,7 +9,7 @@ export const GET = async () => {
         });
 
         return NextResponse.json(
-            { fasilitas: data, success: true },
+            { data: data, success: true },
             { status: 200 }
         );
     } catch (error) {
