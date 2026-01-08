@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Alert, Platform } from "react-native";
-import { TextInput, Button, Stack } from "react-native-paper";
+import { TextInput, Button } from "react-native-paper";
 import { useRouter, Stack as ExpoStack } from "expo-router";
 import { perabotanService } from "@/services/perabotanService";
 
