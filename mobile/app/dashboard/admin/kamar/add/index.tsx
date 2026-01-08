@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, Alert } from "react-native";
+import { View, StyleSheet, ScrollView, Alert, Platform } from "react-native";
 import {
   TextInput,
   Button,
@@ -7,46 +7,63 @@ import {
   SegmentedButtons,
   useTheme,
 } from "react-native-paper";
-import { useRouter } from "expo-router";
+import { useRouter, Stack } from "expo-router";
 import { kamarService } from "@/services/kamarService";
 import { StatusKamar } from "@/types/interfaces";
+import { formatRibuan, filterHargaRaw } from "@/utils/script";
 
 export default function KamarAdd() {
   const theme = useTheme();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  // State Form
   const [nomorKamar, setNomorKamar] = useState("");
   const [hargaSewa, setHargaSewa] = useState("");
   const [statusKamar, setStatusKamar] = useState<StatusKamar>("Tersedia");
   const [deskripsi, setDeskripsi] = useState("");
 
+  const handleChangeHarga = (text: string) => {
+    const formatted = formatRibuan(text);
+    setHargaSewa(formatted);
+  };
+
   const handleSubmit = async () => {
     if (!nomorKamar || !hargaSewa) {
-      Alert.alert("Validasi", "Nomor Kamar dan Harga wajib diisi");
+      if (Platform.OS === "web") alert("Nomor Kamar dan Harga wajib diisi");
+      else Alert.alert("Validasi", "Nomor Kamar dan Harga wajib diisi");
       return;
     }
 
     setLoading(true);
+
+    const cleanHarga = parseInt(filterHargaRaw(hargaSewa));
+
     const payload = {
       nomorKamar,
-      hargaSewa: parseInt(hargaSewa),
+      hargaSewa: cleanHarga,
       statusKamar,
       deskripsi,
     };
 
     try {
       await kamarService.create(payload);
-      Alert.alert("Sukses", "Kamar baru berhasil ditambahkan", [
-        { text: "OK", onPress: () => router.back() },
-      ]);
+
+      const message = "Kamar baru berhasil ditambahkan";
+      if (Platform.OS === "web") {
+        alert(message);
+        router.replace("/dashboard/admin/kamar");
+      } else {
+        Alert.alert("Sukses", message, [
+          {
+            text: "OK",
+            onPress: () => router.replace("/dashboard/admin/kamar"),
+          },
+        ]);
+      }
     } catch (error: any) {
-      console.error(error);
-      Alert.alert(
-        "Gagal",
-        error.response?.data?.message || "Terjadi kesalahan"
-      );
+      const errorMsg = error.response?.data?.message || "Terjadi kesalahan";
+      if (Platform.OS === "web") alert("Gagal: " + errorMsg);
+      else Alert.alert("Gagal", errorMsg);
     } finally {
       setLoading(false);
     }
@@ -54,6 +71,12 @@ export default function KamarAdd() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: "Tambah Kamar",
+          headerShown: true,
+        }}
+      />
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         <Text
           variant="headlineSmall"
@@ -74,11 +97,12 @@ export default function KamarAdd() {
         <TextInput
           label="Harga Sewa (Per Bulan)"
           value={hargaSewa}
-          onChangeText={setHargaSewa}
+          onChangeText={handleChangeHarga}
           mode="outlined"
-          keyboardType="numeric"
+          keyboardType="number-pad"
           style={styles.input}
           left={<TextInput.Affix text="Rp " />}
+          maxLength={10}
         />
 
         <Text variant="bodyMedium" style={styles.label}>
@@ -89,8 +113,8 @@ export default function KamarAdd() {
           onValueChange={(val) => setStatusKamar(val as StatusKamar)}
           buttons={[
             { value: "Tersedia", label: "Tersedia" },
-            { value: "Penuh", label: "Penuh" },
-            { value: "Perbaikan", label: "Rusak" },
+            { value: "Tersewa", label: "Tersewa" },
+            { value: "TidakTersedia", label: "Tidak Tersedia" },
           ]}
           style={styles.input}
         />
@@ -104,12 +128,13 @@ export default function KamarAdd() {
           numberOfLines={4}
           style={styles.input}
         />
+
         <View style={styles.actionContainer}>
           <Button
-            mode="outlined" 
-            onPress={() => router.push("/dashboard/admin/kamar")} 
+            mode="outlined"
+            onPress={() => router.push("/dashboard/admin/kamar")}
             style={styles.btnKembali}
-            disabled={loading} 
+            disabled={loading}
           >
             Kembali
           </Button>
@@ -134,16 +159,11 @@ const styles = StyleSheet.create({
   input: { marginBottom: 16, backgroundColor: "white" },
   label: { marginBottom: 8, fontWeight: "bold", color: "#555" },
   actionContainer: {
-    flexDirection: "row", 
-    justifyContent: "space-between", 
-    gap: 10, 
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
     marginTop: 20,
   },
-  btnKembali: {
-    flex: 1, 
-    borderColor: "#6200ee",
-  },
-  btnSimpan: {
-    flex: 1,
-  },
+  btnKembali: { flex: 1, borderColor: "#6200ee" },
+  btnSimpan: { flex: 1 },
 });
