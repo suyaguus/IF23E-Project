@@ -65,7 +65,7 @@ export default function FasilitasEdit() {
     setLoading(true);
     const payload = {
       namaFasilitas,
-      kodeFasilitas, // Masukkan kode ini
+      kodeFasilitas, 
       deskripsi,
     };
 
@@ -137,7 +137,7 @@ export default function FasilitasEdit() {
         <View style={styles.actionContainer}>
           <Button
             mode="outlined"
-            onPress={() => router.back()}
+            onPress={() => router.push("/dashboard/admin/fasilitas")}
             style={styles.btnKembali}
             disabled={loading}
           >
