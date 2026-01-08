@@ -72,7 +72,7 @@ export default function UserRoomList() {
   const renderItem = ({ item }: { item: Kamar }) => (
     <Card
       style={styles.horizontalCard}
-      onPress={() => router.push(`/dashboard/user/rooms/${item.id}` as Route)}
+      onPress={() => router.push(`/dashboard/user/rooms/detail/${item.id}` as Route)}
     >
       <ScrollView
         horizontal
