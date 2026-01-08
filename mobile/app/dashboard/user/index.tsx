@@ -6,14 +6,15 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"; // Tambah ini untuk
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
 
-const QuickActionButton = ({ icon, label, color }: { icon: string, label: string, color: string }) => (
-  <TouchableOpacity style={styles.actionItem}>
+const QuickActionButton = ({ icon, label, color, onPress }: { icon: string, label: string, color: string, onPress?: () => void }) => (
+  <TouchableOpacity style={styles.actionItem} onPress={onPress}>
     <View style={[styles.iconCircle, { backgroundColor: color + '15' }]}>
       <MaterialCommunityIcons name={icon as any} size={28} color={color} />
     </View>
     <Text variant="labelMedium" style={styles.actionLabel}>{label}</Text>
   </TouchableOpacity>
 );
+
 export default function UserDashboard() {
   const { userData } = useAuth();
   const router = useRouter();
