@@ -4,17 +4,20 @@ import { Text, Card, Button, useTheme, Avatar } from "react-native-paper";
 import { TouchableOpacity } from "react-native"; // Tambah ini
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // Tambah ini untuk ikon
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "expo-router";
 
-const QuickActionButton = ({ icon, label, color }: { icon: string, label: string, color: string }) => (
-  <TouchableOpacity style={styles.actionItem}>
+const QuickActionButton = ({ icon, label, color, onPress }: { icon: string, label: string, color: string, onPress?: () => void }) => (
+  <TouchableOpacity style={styles.actionItem} onPress={onPress}>
     <View style={[styles.iconCircle, { backgroundColor: color + '15' }]}>
       <MaterialCommunityIcons name={icon as any} size={28} color={color} />
     </View>
     <Text variant="labelMedium" style={styles.actionLabel}>{label}</Text>
   </TouchableOpacity>
 );
+
 export default function UserDashboard() {
   const { userData } = useAuth();
+  const router = useRouter();
   const theme = useTheme();
 
   return (
@@ -46,15 +49,21 @@ export default function UserDashboard() {
             <Button mode="text">Cari Kos</Button>
           </Card.Actions>
         </Card>
-        {/* SECTION: LAYANAN KAMI (Quick Actions) */}
-        <Text variant="titleMedium" style={styles.sectionTitle}>Layanan Kami</Text>
-        <View style={styles.quickActionGrid}>
-          <QuickActionButton icon="wallet" label="Bayar" color="#4CAF50" />
-          <QuickActionButton icon="tools" label="Lapor" color="#FF9800" />
-          <QuickActionButton icon="book-open-variant" label="Aturan" color="#2196F3" />
-          <QuickActionButton icon="phone-outline" label="Bantuan" color="#E91E63" />
-        </View>
-        {/* SECTION: AKTIVITAS TERAKHIR (Empty State) */}
+        {/* LAYANAN KAMI */}
+            <Text variant="titleMedium" style={styles.sectionTitle}>Layanan Kami</Text>
+            <View style={styles.quickActionGrid}>
+              <QuickActionButton icon="wallet" label="Bayar" color="#4CAF50" />
+              {/* Tambahkan onPress di sini */}
+              <QuickActionButton 
+                icon="tools" 
+                label="Lapor" 
+                color="#FF9800" 
+                onPress={() => router.push("/dashboard/user/lapor")} 
+              />
+              <QuickActionButton icon="book-open-variant" label="Aturan" color="#2196F3" />
+              <QuickActionButton icon="phone-outline" label="Bantuan" color="#E91E63" />
+            </View>
+        {/* AKTIVITAS TERAKHIR  */}
         <Text variant="titleMedium" style={[styles.sectionTitle, { marginTop: 10 }]}>
           Aktivitas Terakhir
         </Text>
