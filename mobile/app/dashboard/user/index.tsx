@@ -1,15 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import {
   Text,
   Card,
-  Button,
   useTheme,
   Avatar,
   ActivityIndicator,
@@ -43,7 +36,6 @@ export default function UserDashboard() {
   const { userData } = useAuth();
   const router = useRouter();
   const theme = useTheme();
-  const router = useRouter();
   const [rooms, setRooms] = useState<Kamar[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -127,7 +119,9 @@ export default function UserDashboard() {
               <Card
                 key={item.id}
                 style={styles.roomCard}
-                onPress={() => router.push(`/dashboard/user/rooms/${item.id}` as Route)}
+                onPress={() =>
+                  router.push(`/dashboard/user/rooms/${item.id}` as Route)
+                }
               >
                 <Card.Cover
                   source={{ uri: "https://picsum.photos/700" }}
