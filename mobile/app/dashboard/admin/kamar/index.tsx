@@ -53,12 +53,21 @@ export default function KamarList() {
 
   const handleSearch = (text: string) => {
     setSearch(text);
-    if (text.trim() === "") {
+    const query = text.toLowerCase().trim();
+
+    if (query === "") {
       setFilteredData(data);
     } else {
-      const filtered = data.filter((item) =>
-        item.nomorKamar.toLowerCase().includes(text.toLowerCase())
-      );
+      const filtered = data.filter((item) => {
+        const matchNomor = item.nomorKamar.toLowerCase().includes(query);
+        const matchHarga =
+          item.hargaSewa.toString().includes(query) ||
+          item.hargaSewa.toLocaleString("id-ID").includes(query);
+        const matchStatus = formatStatusLabel(item.statusKamar)
+          .toLowerCase()
+          .includes(query);
+        return matchNomor || matchHarga || matchStatus;
+      });
       setFilteredData(filtered);
     }
   };
@@ -173,7 +182,7 @@ export default function KamarList() {
   return (
     <View style={styles.container}>
       <Searchbar
-        placeholder="Cari Nomor Kamar..."
+        placeholder="Cari Nomor, Status, atau Harga..."
         onChangeText={handleSearch}
         value={search}
         style={styles.searchBar}
