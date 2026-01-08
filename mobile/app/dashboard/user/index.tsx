@@ -29,12 +29,18 @@ export default function UserDashboard() {
 
         <Card style={styles.card}>
           <Card.Content>
-            <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
-              Status Kos Saya
-            </Text>
-            <Text variant="bodyMedium" style={{ marginTop: 5 }}>
-              Belum ada kos yang disewa.
-            </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View>
+                <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
+                  Status Kos Saya
+                </Text>
+                <Text variant="bodyMedium" style={{ marginTop: 5, color: "#777" }}>
+                  Belum ada kos yang disewa.
+                </Text>
+              </View>
+              {/* Ikon rumah ditambahkan di sini agar kartu tidak kosong */}
+              <Avatar.Icon size={48} icon="home-outline" style={{ backgroundColor: '#e0e7ff' }} color="#4f46e5" />
+              </View>
           </Card.Content>
           <Card.Actions>
             <Button mode="text">Cari Kos</Button>
