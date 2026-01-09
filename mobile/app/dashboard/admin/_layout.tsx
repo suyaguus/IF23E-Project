@@ -49,12 +49,20 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       <View
         style={[styles.drawerHeader, { backgroundColor: theme.colors.primary }]}
       >
-        <Avatar.Icon
-          size={64}
-          icon="account-circle"
-          style={{ backgroundColor: "white" }}
-          color={theme.colors.primary}
-        />
+        {userData?.imageUrl ? (
+          <Avatar.Image
+            size={64}
+            source={{ uri: userData.imageUrl }}
+            style={{ backgroundColor: "white" }}
+          />
+        ) : (
+          <Avatar.Text
+            size={64}
+            label={userData?.username?.[0]?.toUpperCase() || "A"}
+            style={{ backgroundColor: "white" }}
+            color={theme.colors.primary}
+          />
+        )}
         <Text variant="titleMedium" style={styles.drawerTitle}>
           {userData?.username || "Admin"}
         </Text>
