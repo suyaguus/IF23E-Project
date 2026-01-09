@@ -29,7 +29,7 @@ export default function DashboardPage() {
   const kosInfo = {
     nama: "Wisma Dempo",
     alamat: "Jl. Dempo, Labuhan Ratu, Kec. Kedaton, Kota Bandar Lampung, Lampung 35132",
-    fasilitas: ["WiFi", "Parkir", "AC", "Dapur",],
+    fasilitas: ["WiFi", "Parkir", "AC", "Dapur", "Kasur", "Lemari"],
   };
 
   return (
