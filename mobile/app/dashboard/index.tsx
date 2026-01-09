@@ -172,4 +172,20 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
   },
   footer: { padding: 30, marginTop: 10, marginBottom: 20 },
+  
+  horizontalScroll: { 
+    marginTop: 10, 
+    paddingBottom: 10 
+  },
+  recommendationCard: { 
+    width: 220, 
+    marginRight: 15, 
+    backgroundColor: "#fff", 
+    borderRadius: 12,
+    elevation: 4, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
 });
