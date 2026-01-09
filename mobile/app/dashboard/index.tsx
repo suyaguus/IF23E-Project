@@ -1,12 +1,11 @@
 import React from "react";
 import {
   View,
-  Text,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { Card, Button, useTheme } from "react-native-paper";
+import { Card, Button, useTheme, Text } from "react-native-paper"; 
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native"; 
@@ -92,7 +91,7 @@ export default function DashboardPage() {
         </Text>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-        <Card style={styles.recommendationCard}>
+          <Card style={styles.recommendationCard}>
             <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1522771739844-649f439f6f18' }} />
             <Card.Content style={{ padding: 10 }}>
               <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Tipe A</Text>
@@ -139,11 +138,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    position: "relative", // Untuk absolute positioning tombol menu
+    position: "relative",
   },
   menuButton: {
     position: "absolute",
-    top: 40, // Sesuaikan dengan StatusBar
+    top: 40,
     left: 20,
     zIndex: 10,
     padding: 5,
