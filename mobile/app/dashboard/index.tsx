@@ -15,10 +15,21 @@ export default function DashboardPage() {
   const navigation = useNavigation();
   const theme = useTheme(); 
 
+  const kosRules = [
+  "Dilarang membawa hewan peliharaan.",
+  "Tamu wajib lapor ke pengelola.",
+  "Jam malam maksimal pukul 22.00.",
+  "Dilarang merokok di dalam kamar.",
+  "Menjaga kebersihan lingkungan kos.",
+  "Dilarang membawa tamu lawan jenis ke dalam kamar.",
+  "Penghuni wajib menjaga kebersihan kamar dan area bersama."
+];
+
+
   const kosInfo = {
     nama: "Wisma Dempo",
     alamat: "Jl. Dempo, Labuhan Ratu, Kec. Kedaton, Kota Bandar Lampung, Lampung 35132",
-    fasilitas: ["WiFi", "Parkir", "AC", "Dapur"],
+    fasilitas: ["WiFi", "Parkir", "AC", "Dapur",],
   };
 
   return (
@@ -83,6 +94,31 @@ export default function DashboardPage() {
           ))}
         </View>
       </View>
+
+      {/* Peraturan Kost */}
+<View style={styles.section}>
+  <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>
+    Peraturan Kost
+  </Text>
+
+  <Card style={styles.card}>
+    <Card.Content>
+      {kosRules.map((rule, index) => (
+        <View key={index} style={styles.ruleRow}>
+          <MaterialIcons
+            name="rule"
+            size={20}
+            color={theme.colors.secondary}
+          />
+          <Text style={styles.ruleText}>
+            {rule}
+          </Text>
+        </View>
+      ))}
+    </Card.Content>
+  </Card>
+</View>
+
 
       {/* Rekomendasi Kos */}
       <View style={styles.section}>
@@ -197,4 +233,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
+  ruleRow: {
+  flexDirection: "row",
+  alignItems: "flex-start",
+  marginBottom: 8,
+},
+
+ruleText: {
+  marginLeft: 10,
+  fontSize: 14,
+  color: "#444",
+  flex: 1,
+  lineHeight: 20,
+},
+
 });
