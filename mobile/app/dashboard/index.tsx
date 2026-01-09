@@ -281,6 +281,22 @@ badgeText: {
   marginLeft: 4,
   fontWeight: "600",
 },
+sanctionBox: {
+  flexDirection: "row",
+  alignItems: "flex-start",
+  marginTop: 10,
+  padding: 12,
+  backgroundColor: "#FEF2F2", // merah soft
+  borderRadius: 10,
+  borderWidth: 1,
+  borderColor: "#FCA5A5",
+},
 
-
+sanctionText: {
+  marginLeft: 10,
+  fontSize: 13,
+  color: "#7F1D1D",
+  lineHeight: 18,
+  flex: 1,
+},
 });
