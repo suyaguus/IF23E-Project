@@ -38,8 +38,11 @@ model tb_user {
   role              Role                    @default(User)
   password          String
   notelp            String
+  imageUrl          String?
+  imageId           String?
   createdAt         DateTime                @default(now())
   updatedAt         DateTime                @updatedAt
+  
   orders            tb_order[]
   riwayatPembayaran tb_riwayat_pembayaran[]
 }
@@ -51,10 +54,24 @@ model tb_kamar {
   hargaSewa         Int
   statusKamar       StatusKamar             @default(Tersedia)
   deskripsi         String
+
+  images            tb_kamar_image[]
   orders            tb_order[]
   fasilitas         tb_kamar_fasilitas[]
   perabotan         tb_kamar_perabotan[]
   riwayatPembayaran tb_riwayat_pembayaran[]
+}
+// Kamar Image
+model tb_kamar_image {
+  id        Int      @id @default(autoincrement())
+  kamarId   Int
+  imageUrl  String
+  imageId   String
+  createdAt DateTime @default(now())
+
+  kamar tb_kamar @relation(fields: [kamarId], references: [id], onDelete: Cascade)
+
+  @@index([kamarId])
 }
 
 // Fasilitas
@@ -63,6 +80,9 @@ model tb_fasilitas {
   namaFasilitas String               @db.VarChar(30)
   kodeFasilitas String               @unique
   deskripsi     String
+  imageUrl      String?
+  imageId       String?
+
   kamar         tb_kamar_fasilitas[]
 }
 
@@ -72,6 +92,9 @@ model tb_perabotan {
   namaPerabotan String               @db.VarChar(30)
   kodePerabotan String               @unique
   deskripsi     String
+  imageUrl      String?
+  imageId       String?
+
   kamar         tb_kamar_perabotan[]
 }
 
@@ -154,10 +177,10 @@ model tb_riwayat_pembayaran {
 // buat table otp
 model tb_otp {
   id        Int      @id @default(autoincrement())
-  email     String   
-  otp      String   
-  expiresAt DateTime 
+  email     String
+  otp       String
+  expiresAt DateTime
   createdAt DateTime @default(now())
-  
+
   @@index([email])
 }
