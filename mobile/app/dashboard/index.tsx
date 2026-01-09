@@ -1,12 +1,11 @@
 import React from "react";
 import {
   View,
-  Text,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { Card, Button, useTheme } from "react-native-paper";
+import { Card, Button, useTheme, Text } from "react-native-paper"; 
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native"; 
@@ -85,7 +84,37 @@ export default function DashboardPage() {
         </View>
       </View>
 
-      {/* Call to Action */}
+      {/* Rekomendasi Kos */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>
+          Rekomendasi Kos
+        </Text>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+          <Card style={styles.recommendationCard}>
+            <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1522771739844-649f439f6f18' }} />
+            <Card.Content style={{ padding: 10 }}>
+              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Tipe A</Text>
+              <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.500.000 / bln</Text>
+            </Card.Content>
+            <Card.Actions>
+              <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
+            </Card.Actions>
+          </Card>
+          <Card style={styles.recommendationCard}>
+            <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1505691938895-1758d7eaa511' }} />
+            <Card.Content style={{ padding: 10 }}>
+              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Tipe B</Text>
+              <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.200.000 / bln</Text>
+            </Card.Content>
+            <Card.Actions>
+              <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
+            </Card.Actions>
+          </Card>
+        </ScrollView>
+      </View>
+
+      {/* Footer */}
       <View style={styles.footer}>
         <Text style={{ textAlign: "center", marginBottom: 10, color: "#666" }}>
           Ingin booking kamar?
@@ -109,11 +138,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    position: "relative", // Untuk absolute positioning tombol menu
+    position: "relative",
   },
   menuButton: {
     position: "absolute",
-    top: 40, // Sesuaikan dengan StatusBar
+    top: 40,
     left: 20,
     zIndex: 10,
     padding: 5,
@@ -142,4 +171,20 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
   },
   footer: { padding: 30, marginTop: 10, marginBottom: 20 },
+  
+  horizontalScroll: { 
+    marginTop: 10, 
+    paddingBottom: 10 
+  },
+  recommendationCard: { 
+    width: 220, 
+    marginRight: 15, 
+    backgroundColor: "#fff", 
+    borderRadius: 12,
+    elevation: 4, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
 });
