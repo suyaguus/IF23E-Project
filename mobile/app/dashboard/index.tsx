@@ -101,6 +101,11 @@ export default function DashboardPage() {
     Peraturan Kost
   </Text>
 
+  <View style={styles.badge}>
+    <MaterialIcons name="priority-high" size={14} color="#fff" />
+    <Text style={styles.badgeText}>Wajib Dipatuhi</Text>
+  </View>
+
   <Card style={styles.card}>
     <Card.Content>
       {kosRules.map((rule, index) => (
