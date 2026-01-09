@@ -59,7 +59,7 @@ model tb_kamar {
   perabotan         tb_kamar_perabotan[]
   riwayatPembayaran tb_riwayat_pembayaran[]
 }
-
+// Kamar Image
 model tb_kamar_image {
   id        Int      @id @default(autoincrement())
   kamarId   Int
@@ -78,6 +78,8 @@ model tb_fasilitas {
   namaFasilitas String               @db.VarChar(30)
   kodeFasilitas String               @unique
   deskripsi     String
+  imageUrl      String?
+  imageId       String?
   kamar         tb_kamar_fasilitas[]
 }
 
