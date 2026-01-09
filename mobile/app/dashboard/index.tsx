@@ -90,6 +90,10 @@ export default function DashboardPage() {
         <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>
           Rekomendasi Kos
         </Text>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+          {/* Kartu akan diletakkan di sini */}
+        </ScrollView>
       </View>
 
       {/* Footer */}
