@@ -118,6 +118,15 @@ export default function DashboardPage() {
                 <Text style={styles.ruleText}>{rule}</Text>
               </View>
             ))}
+
+            {/* Peringatan Sanksi */}
+            <View style={styles.sanctionBox}>
+              <MaterialIcons name="report" size={20} color="#B91C1C" />
+              <Text style={styles.sanctionText}>
+                Setiap pelanggaran terhadap peraturan kost akan dikenakan sanksi sesuai
+                dengan kebijakan pengelola.
+              </Text>
+            </View>
           </Card.Content>
         </Card>
       </View>
