@@ -102,6 +102,16 @@ export default function DashboardPage() {
               <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
             </Card.Actions>
           </Card>
+          <Card style={styles.recommendationCard}>
+            <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1505691938895-1758d7eaa511' }} />
+            <Card.Content style={{ padding: 10 }}>
+              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Tipe B</Text>
+              <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.200.000 / bln</Text>
+            </Card.Content>
+            <Card.Actions>
+              <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
+            </Card.Actions>
+          </Card>
         </ScrollView>
       </View>
 
