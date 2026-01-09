@@ -10,6 +10,7 @@ interface UserData {
   role: string;
   notelp?: string;
   imageUrl?: string;
+  createdAt?: string;
 }
 
 // definisi tipe context
