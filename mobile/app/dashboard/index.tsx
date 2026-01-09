@@ -92,7 +92,16 @@ export default function DashboardPage() {
         </Text>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-          {/* Kartu akan diletakkan di sini */}
+        <Card style={styles.recommendationCard}>
+            <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1522771739844-649f439f6f18' }} />
+            <Card.Content style={{ padding: 10 }}>
+              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Tipe A</Text>
+              <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.500.000 / bln</Text>
+            </Card.Content>
+            <Card.Actions>
+              <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
+            </Card.Actions>
+          </Card>
         </ScrollView>
       </View>
 
