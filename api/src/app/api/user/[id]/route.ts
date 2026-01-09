@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import cloudinary from "@/lib/cloudinary";
+import type { UploadApiResponse } from "cloudinary";
 import { Prisma } from "@prisma/client";
 
+
 const corsHeaders = {
-    "Access-Control-Allow-Origin": "http://localhost:3000",
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, PUT, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
@@ -143,23 +146,11 @@ export const GET = async (
 
 export async function PUT(
     req: NextRequest,
-    context: { params: Promise<{ id: string }> }
 ) {
     try {
-        // 1. Tangkap parameter dari URL (Wajib agar Next.js tidak error)
-        // KITA HANYA TANGKAP, TIDAK KITA CEK APAKAH INI ANGKA ATAU BUKAN
-        const { id } = await context.params;
-
-        // --- BAGIAN INI YANG DULU BIKIN ERROR, SUDAH KITA HAPUS: ---
-        // const userId = Number(id);
-        // if (isNaN(userId)) { return ... "ID Tidak Valid" } 
-        // -----------------------------------------------------------
-
-        // 2. Ambil Data dari Body (Kita fokus ke sini sekarang)
         const body = await req.json();
         const { email, username, notelp } = body;
 
-        // 3. Validasi: Email Wajib Ada (Sebagai kunci pencarian)
         if (!email) {
             return NextResponse.json(
                 { success: false, message: "Email user wajib disertakan." },
@@ -167,7 +158,6 @@ export async function PUT(
             );
         }
 
-        // 4. Cari User berdasarkan EMAIL
         const existingUser = await prisma.tb_user.findUnique({
             where: { email: email },
         });
@@ -179,11 +169,8 @@ export async function PUT(
             );
         }
 
-        // 5. Siapkan Data Update
-        // Gunakan 'tb_userUpdateInput' (huruf kecil) sesuai pesan error TypeScript Anda sebelumnya
         const dataToUpdate: Prisma.tb_userUpdateInput = {};
 
-        // Masukkan data hanya jika valid
         if (username !== undefined && username !== null && username.trim() !== "") {
             dataToUpdate.username = username;
         }
@@ -191,7 +178,6 @@ export async function PUT(
             dataToUpdate.notelp = notelp;
         }
 
-        // Cek jika tidak ada perubahan
         if (Object.keys(dataToUpdate).length === 0) {
             return NextResponse.json(
                 { success: true, message: "Tidak ada data yang diubah.", data: existingUser },
@@ -199,7 +185,6 @@ export async function PUT(
             );
         }
 
-        // 6. Eksekusi Update ke Database
         const updatedUser = await prisma.tb_user.update({
             where: { email: email },
             data: dataToUpdate,
@@ -218,6 +203,99 @@ export async function PUT(
         console.error("[API Error] PUT /api/user/[id]:", error);
         return NextResponse.json(
             { success: false, message: "Internal Server Error" },
+            { status: 500, headers: corsHeaders }
+        );
+    }
+}
+
+export async function PATCH(
+    req: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) {
+    try {
+        const { id } = await context.params;
+        const userId = Number(id);
+
+        if (isNaN(userId)) {
+            return NextResponse.json(
+                { success: false, message: "ID tidak valid" },
+                { status: 400, headers: corsHeaders }
+            );
+        }
+
+        const formData = await req.formData();
+        const file = formData.get("image") as File;
+
+        if (!file) {
+            return NextResponse.json(
+                { success: false, message: "Image wajib diupload" },
+                { status: 400, headers: corsHeaders }
+            );
+        }
+
+        if (!file.type.startsWith("image/")) {
+            return NextResponse.json(
+                { success: false, message: "File harus berupa image" },
+                { status: 400, headers: corsHeaders }
+            );
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            return NextResponse.json(
+                { success: false, message: "Ukuran maksimal 2MB" },
+                { status: 400, headers: corsHeaders }
+            );
+        }
+
+        const user = await prisma.tb_user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            return NextResponse.json(
+                { success: false, message: "User tidak ditemukan" },
+                { status: 404, headers: corsHeaders }
+            );
+        }
+
+        if (user.imageId) {
+            await cloudinary.uploader.destroy(user.imageId);
+        }
+
+        const buffer = Buffer.from(await file.arrayBuffer());
+
+        const uploadResult = await new Promise<UploadApiResponse>(
+            (resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                    { folder: "user/profile" },
+                    (error, result) => {
+                        if (error || !result) reject(error);
+                        else resolve(result);
+                    }
+                ).end(buffer);
+            }
+        );
+
+        const updatedUser = await prisma.tb_user.update({
+            where: { id: userId },
+            data: {
+                imageUrl: uploadResult.secure_url,
+                imageId: uploadResult.public_id,
+            },
+        });
+
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Foto profil berhasil diperbarui",
+                data: updatedUser,
+            },
+            { status: 200, headers: corsHeaders }
+        );
+    } catch (error) {
+        console.error("[PATCH USER IMAGE ERROR]", error);
+        return NextResponse.json(
+            { success: false, message: "Server Error" },
             { status: 500, headers: corsHeaders }
         );
     }
