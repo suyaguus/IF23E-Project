@@ -42,6 +42,7 @@ model tb_user {
   imageId           String?
   createdAt         DateTime                @default(now())
   updatedAt         DateTime                @updatedAt
+  
   orders            tb_order[]
   riwayatPembayaran tb_riwayat_pembayaran[]
 }
@@ -53,6 +54,7 @@ model tb_kamar {
   hargaSewa         Int
   statusKamar       StatusKamar             @default(Tersedia)
   deskripsi         String
+
   images            tb_kamar_image[]
   orders            tb_order[]
   fasilitas         tb_kamar_fasilitas[]
@@ -80,6 +82,7 @@ model tb_fasilitas {
   deskripsi     String
   imageUrl      String?
   imageId       String?
+
   kamar         tb_kamar_fasilitas[]
 }
 
@@ -89,6 +92,9 @@ model tb_perabotan {
   namaPerabotan String               @db.VarChar(30)
   kodePerabotan String               @unique
   deskripsi     String
+  imageUrl      String?
+  imageId       String?
+
   kamar         tb_kamar_perabotan[]
 }
 
