@@ -1,5 +1,12 @@
-import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import {
   Avatar,
   Card,
@@ -8,13 +15,18 @@ import {
   Divider,
   useTheme,
   Button,
+  ActivityIndicator,
 } from "react-native-paper";
 import { useAuth } from "@/context/AuthContext";
+import * as ImagePicker from "expo-image-picker";
+import api from "@/services/api";
 
 export default function AdminProfilePage() {
-  const { userData } = useAuth();
+  const { userData, setUserData, logout } = useAuth();
   const theme = useTheme();
+  const [uploading, setUploading] = useState(false);
 
+  // Fungsi Inisial (Fallback jika tidak ada gambar)
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -24,29 +36,108 @@ export default function AdminProfilePage() {
       .substring(0, 2);
   };
 
+  const handlePickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Maaf, kami butuh izin galeri untuk mengganti foto.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      uploadFile(result.assets[0].uri);
+    }
+  };
+
+  const uploadFile = async (uri: string) => {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      const filename = uri.split("/").pop() || "profile.jpg";
+      const match = /\.(\w+)$/.exec(filename);
+      const type = match ? `image/${match[1]}` : `image/jpeg`;
+
+      // @ts-ignore
+      formData.append("image", {
+        uri: Platform.OS === "android" ? uri : uri.replace("file://", ""),
+        name: filename,
+        type,
+      });
+
+      const response = await api.patch(`/user/${userData?.id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (response.data.success) {
+        setUserData({ ...userData!, imageUrl: response.data.data.imageUrl });
+        if (Platform.OS === "web") alert("Foto profil berhasil diperbarui");
+        else Alert.alert("Sukses", "Foto profil berhasil diperbarui");
+      }
+    } catch (error: any) {
+      console.error(error);
+      const errMsg = error.response?.data?.message || "Gagal mengunggah gambar";
+      if (Platform.OS === "web") alert(errMsg);
+      else Alert.alert("Gagal", errMsg);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      {/* Header Profile */}
+      {/* Header Profile dengan Unggah Foto */}
       <View style={[styles.header, { backgroundColor: theme.colors.primary }]}>
-        <View style={styles.avatarContainer}>
-          {userData?.imageUrl ? (
-            <Avatar.Image
-              size={100}
-              source={{ uri: userData.imageUrl }}
-              style={{ backgroundColor: "white" }}
-            />
-          ) : (
-            <Avatar.Text
-              size={100}
-              label={getInitials(userData?.username || "Admin")}
-              style={{ backgroundColor: "white" }}
-              color={theme.colors.primary}
-              labelStyle={{ fontWeight: "bold", fontSize: 32 }}
-            />
-          )}
-        </View>
+        <TouchableOpacity
+          onPress={handlePickImage}
+          disabled={uploading}
+          style={styles.avatarWrapper}
+        >
+          <View style={styles.avatarContainer}>
+            {userData?.imageUrl ? (
+              <Avatar.Image
+                size={110}
+                source={{ uri: userData.imageUrl }}
+                style={{ backgroundColor: "white" }}
+              />
+            ) : (
+              <Avatar.Text
+                size={110}
+                label={getInitials(userData?.username || "Admin")}
+                style={{ backgroundColor: "white" }}
+                color={theme.colors.primary}
+                labelStyle={{ fontWeight: "bold", fontSize: 36 }}
+              />
+            )}
+
+            {/* Badge Icon Kamera */}
+            <View
+              style={[
+                styles.cameraBadge,
+                { backgroundColor: theme.colors.secondaryContainer },
+              ]}
+            >
+              {uploading ? (
+                <ActivityIndicator size={16} color={theme.colors.primary} />
+              ) : (
+                <Avatar.Icon
+                  size={28}
+                  icon="camera"
+                  color="white"
+                  style={{ backgroundColor: theme.colors.primary }}
+                />
+              )}
+            </View>
+          </View>
+        </TouchableOpacity>
+
         <Text variant="headlineSmall" style={styles.name}>
           {userData?.username || "Nama Pengguna"}
         </Text>
@@ -59,14 +150,10 @@ export default function AdminProfilePage() {
       <View style={styles.content}>
         <Card style={styles.card}>
           <Card.Content>
-            <Text
-              variant="titleMedium"
-              style={{ marginBottom: 15, fontWeight: "bold" }}
-            >
+            <Text variant="titleMedium" style={styles.cardTitle}>
               Informasi Pribadi
             </Text>
 
-            {/* Email */}
             <List.Item
               title="Email"
               description={userData?.email}
@@ -80,7 +167,6 @@ export default function AdminProfilePage() {
             />
             <Divider />
 
-            {/* No Telepon */}
             <List.Item
               title="Nomor Telepon"
               description={userData?.notelp || "Belum diatur"}
@@ -94,11 +180,13 @@ export default function AdminProfilePage() {
             />
             <Divider />
 
-            {/* Tanggal Bergabung (Opsional, jika ada createdAt) */}
             <List.Item
               title="Bergabung Sejak"
-              // Format tanggal sederhana
-              description={userData ? new Date().toLocaleDateString() : "-"}
+              description={
+                userData?.createdAt
+                  ? new Date(userData.createdAt).toLocaleDateString("id-ID")
+                  : new Date().toLocaleDateString("id-ID")
+              }
               left={(props) => (
                 <List.Icon
                   {...props}
@@ -110,14 +198,23 @@ export default function AdminProfilePage() {
           </Card.Content>
         </Card>
 
-        {/* Tombol Aksi Tambahan */}
         <Button
           mode="outlined"
           icon="account-edit"
           style={{ marginTop: 20, borderColor: theme.colors.primary }}
-          onPress={() => alert("Fitur Edit Profil akan datang segera!")}
+          onPress={() => alert("Fitur Edit Data akan datang segera!")}
         >
-          Edit Profil
+          Edit Biodata
+        </Button>
+
+        <Button
+          mode="contained"
+          buttonColor={theme.colors.error}
+          icon="logout"
+          style={{ marginTop: 12 }}
+          onPress={logout}
+        >
+          Keluar Aplikasi
         </Button>
       </View>
     </ScrollView>
@@ -125,38 +222,38 @@ export default function AdminProfilePage() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
   header: {
     alignItems: "center",
-    paddingVertical: 40,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    paddingVertical: 50,
+    borderBottomLeftRadius: 35,
+    borderBottomRightRadius: 35,
     marginBottom: 20,
   },
-  avatarContainer: {
+  avatarWrapper: {
     marginBottom: 15,
-    elevation: 5,
-    borderRadius: 50,
   },
-  name: {
-    color: "white",
-    fontWeight: "bold",
-    marginTop: 5,
+  avatarContainer: {
+    position: "relative",
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    borderRadius: 60,
   },
-  role: {
-    color: "#E6F2FF",
-    marginTop: 5,
-    textTransform: "capitalize",
+  cameraBadge: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: "white",
+    overflow: "hidden",
   },
-  content: {
-    paddingHorizontal: 20,
-    paddingBottom: 30,
-  },
-  card: {
-    backgroundColor: "white",
-    elevation: 2,
-    borderRadius: 12,
-  },
+  name: { color: "white", fontWeight: "bold", marginTop: 5 },
+  role: { color: "#E6F2FF", marginTop: 5, textTransform: "capitalize" },
+  content: { paddingHorizontal: 20, paddingBottom: 40 },
+  card: { backgroundColor: "white", elevation: 3, borderRadius: 16 },
+  cardTitle: { marginBottom: 10, fontWeight: "bold" },
 });
