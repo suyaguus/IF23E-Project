@@ -11,21 +11,22 @@ const corsHeaders = {
 export async function OPTIONS() {
     return NextResponse.json({}, { status: 200, headers: corsHeaders });
 }
+
 export async function POST(req: Request) {
     try {
-        const { email, currentPassword, newPassword } = await req.json();
+        const { userId, currentPassword, newPassword } = await req.json();
 
-        // validasi
-        if (!email || !currentPassword || !newPassword) {
+        // 1. Validasi Input
+        if (!userId || !currentPassword || !newPassword) {
             return NextResponse.json(
-                { success: false, message: "Data tidak lengkap" },
+                { success: false, message: "Data tidak lengkap (ID User diperlukan)" },
                 { status: 400, headers: corsHeaders }
             );
         }
 
-        // cari user
+        // 2. Cari user berdasarkan ID (Lebih akurat daripada email)
         const user = await prisma.tb_user.findUnique({
-            where: { email },
+            where: { id: Number(userId) }, 
         });
 
         if (!user) {
@@ -35,19 +36,19 @@ export async function POST(req: Request) {
             );
         }
 
-        // cek password lama
+        // 3. Cek password lama
         const isMatch = await bcrypt.compare(currentPassword, user.password);
         if (!isMatch) {
             return NextResponse.json(
-                { success: false, message: "Password saat ini salah" },
+                { success: false, message: "Password lama salah" },
                 { status: 400, headers: corsHeaders }
             );
         }
 
-        // hash password baru
+        // 4. Hash password baru
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-        // update password
+        // 5. Update password di database
         await prisma.tb_user.update({
             where: { id: user.id },
             data: { password: hashedPassword },
