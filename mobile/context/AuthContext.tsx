@@ -9,6 +9,7 @@ interface UserData {
   email: string;
   role: string;
   notelp?: string;
+  imageUrl?: string;
 }
 
 // definisi tipe context
