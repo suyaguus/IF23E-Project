@@ -1,6 +1,4 @@
-// types/interfaces.ts
-
-// --- KAMAR ---
+// bagian kamar
 export type StatusKamar = "Tersedia" | "Penuh" | "Perbaikan" | "Kotor";
 
 export interface Kamar {
@@ -20,38 +18,41 @@ export interface KamarInput {
     deskripsi: string;
 }
 
-// --- FASILITAS ---
+// bagian fasilitas
 export interface Fasilitas {
     id: number;
     namaFasilitas: string;
-    // Tambahkan field lain jika ada di database (misal: icon, deskripsi)
+    kodeFasilitas: string;
+    deskripsi?: string;
     createdAt?: string;
     updatedAt?: string;
 }
 
 export interface FasilitasInput {
     namaFasilitas: string;
+    kodeFasilitas: string;
+    deskripsi?: string;
 }
 
-// --- PERABOTAN ---
+// bagian perabotan
 export type KondisiPerabotan = "Baik" | "Rusak" | "Sedang";
 
 export interface Perabotan {
     id: number;
     namaPerabotan: string;
-    jumlah: number;
-    kondisi: KondisiPerabotan;
+    kodePerabotan: string;
+    deskripsi?: string;
     createdAt?: string;
     updatedAt?: string;
 }
 
 export interface PerabotanInput {
     namaPerabotan: string;
-    jumlah: number;
-    kondisi: KondisiPerabotan;
+    kodePerabotan: string;
+    deskripsi?: string;
 }
 
-// --- USER (Opsional, agar sekalian terpusat) ---
+// bagian user
 export interface UserData {
     id: number;
     username: string;

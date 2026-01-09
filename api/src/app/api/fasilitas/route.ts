@@ -9,8 +9,12 @@ export const GET = async () => {
         });
 
         return NextResponse.json(
-            { fasilitas: data, success: true },
-            { status: 200 }
+            {
+                fasilitas: data,
+            },
+            {
+                status: 200,
+            }
         );
     } catch (error) {
         return NextResponse.json(
@@ -25,7 +29,6 @@ export const POST = async (request: NextRequest) => {
     try {
         const data = await request.json();
 
-        // 1. Validasi Input
         if (!data.namaFasilitas || !data.kodeFasilitas) {
             return NextResponse.json(
                 { message: "Nama dan Kode Fasilitas wajib diisi", success: false },
@@ -33,7 +36,6 @@ export const POST = async (request: NextRequest) => {
             );
         }
 
-        // 2. Cek Duplikat (Opsional: berdasarkan Kode atau Nama)
         const check = await prisma.tb_fasilitas.findFirst({
             where: {
                 OR: [
