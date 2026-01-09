@@ -10,10 +10,9 @@ import {
   Button,
 } from "react-native-paper";
 import { useAuth } from "@/context/AuthContext";
-import { MaterialIcons } from "@expo/vector-icons";
 
 export default function AdminProfilePage() {
-  const { userData, logout } = useAuth();
+  const { userData } = useAuth();
   const theme = useTheme();
 
   const getInitials = (name: string) => {
@@ -32,13 +31,21 @@ export default function AdminProfilePage() {
       {/* Header Profile */}
       <View style={[styles.header, { backgroundColor: theme.colors.primary }]}>
         <View style={styles.avatarContainer}>
-          <Avatar.Text
-            size={100}
-            label={getInitials(userData?.username || "Admin")}
-            style={{ backgroundColor: "white" }}
-            color={theme.colors.primary}
-            labelStyle={{ fontWeight: "bold", fontSize: 32 }}
-          />
+          {userData?.imageUrl ? (
+            <Avatar.Image
+              size={100}
+              source={{ uri: userData.imageUrl }}
+              style={{ backgroundColor: "white" }}
+            />
+          ) : (
+            <Avatar.Text
+              size={100}
+              label={getInitials(userData?.username || "Admin")}
+              style={{ backgroundColor: "white" }}
+              color={theme.colors.primary}
+              labelStyle={{ fontWeight: "bold", fontSize: 32 }}
+            />
+          )}
         </View>
         <Text variant="headlineSmall" style={styles.name}>
           {userData?.username || "Nama Pengguna"}
