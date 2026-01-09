@@ -259,4 +259,28 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 
+  sectionHeader: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: 10,
+},
+
+badge: {
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "#DC2626", // merah
+  paddingHorizontal: 10,
+  paddingVertical: 4,
+  borderRadius: 20,
+},
+
+badgeText: {
+  color: "#fff",
+  fontSize: 12,
+  marginLeft: 4,
+  fontWeight: "600",
+},
+
+
 });
