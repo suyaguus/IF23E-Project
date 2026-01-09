@@ -94,7 +94,7 @@ export default function DashboardPage() {
           <Card style={styles.recommendationCard}>
             <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1522771739844-649f439f6f18' }} />
             <Card.Content style={{ padding: 10 }}>
-              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Tipe A</Text>
+              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Khusus Laki-laki</Text>
               <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.500.000 / bln</Text>
             </Card.Content>
             <Card.Actions>
@@ -104,8 +104,18 @@ export default function DashboardPage() {
           <Card style={styles.recommendationCard}>
             <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1505691938895-1758d7eaa511' }} />
             <Card.Content style={{ padding: 10 }}>
-              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Tipe B</Text>
+              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Khusus Perempuan</Text>
               <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.200.000 / bln</Text>
+            </Card.Content>
+            <Card.Actions>
+              <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
+            </Card.Actions>
+          </Card>
+           <Card style={styles.recommendationCard}>
+            <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1505691938895-1758d7eaa511' }} />
+            <Card.Content style={{ padding: 10 }}>
+              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Campur</Text>
+              <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.300.000/ bln</Text>
             </Card.Content>
             <Card.Actions>
               <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
