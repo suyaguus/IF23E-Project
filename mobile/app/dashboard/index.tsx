@@ -85,7 +85,14 @@ export default function DashboardPage() {
         </View>
       </View>
 
-      {/* Call to Action */}
+      {/* Rekomendasi Kos */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>
+          Rekomendasi Kos
+        </Text>
+      </View>
+
+      {/* Footer */}
       <View style={styles.footer}>
         <Text style={{ textAlign: "center", marginBottom: 10, color: "#666" }}>
           Ingin booking kamar?
