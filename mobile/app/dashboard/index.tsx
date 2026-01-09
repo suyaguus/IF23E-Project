@@ -5,25 +5,25 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { Card, Button, useTheme, Text } from "react-native-paper"; 
+import { Card, Button, useTheme, Text } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useNavigation } from "expo-router";
-import { DrawerActions } from "@react-navigation/native"; 
+import { DrawerActions } from "@react-navigation/native";
 
 export default function DashboardPage() {
   const router = useRouter();
   const navigation = useNavigation();
-  const theme = useTheme(); 
+  const theme = useTheme();
 
   const kosRules = [
-  "Dilarang membawa hewan peliharaan.",
-  "Tamu wajib lapor ke pengelola.",
-  "Jam malam maksimal pukul 22.00.",
-  "Dilarang merokok di dalam kamar.",
-  "Menjaga kebersihan lingkungan kos.",
-  "Dilarang membawa tamu lawan jenis ke dalam kamar.",
-  "Penghuni wajib menjaga kebersihan kamar dan area bersama."
-];
+    "Dilarang membawa hewan peliharaan.",
+    "Tamu wajib lapor ke pengelola.",
+    "Jam malam maksimal pukul 22.00.",
+    "Dilarang merokok di dalam kamar.",
+    "Menjaga kebersihan lingkungan kos.",
+    "Dilarang membawa tamu lawan jenis ke dalam kamar.",
+    "Penghuni wajib menjaga kebersihan kamar dan area bersama."
+  ];
 
 
   const kosInfo = {
@@ -96,33 +96,31 @@ export default function DashboardPage() {
       </View>
 
       {/* Peraturan Kost */}
-<View style={styles.section}>
-  <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>
-    Peraturan Kost
-  </Text>
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>
+          Peraturan Kost
+        </Text>
 
-  <View style={styles.badge}>
-    <MaterialIcons name="priority-high" size={14} color="#fff" />
-    <Text style={styles.badgeText}>Wajib Dipatuhi</Text>
-  </View>
-
-  <Card style={styles.card}>
-    <Card.Content>
-      {kosRules.map((rule, index) => (
-        <View key={index} style={styles.ruleRow}>
-          <MaterialIcons
-            name="rule"
-            size={20}
-            color={theme.colors.secondary}
-          />
-          <Text style={styles.ruleText}>
-            {rule}
-          </Text>
+        <View style={styles.badge}>
+          <MaterialIcons name="priority-high" size={14} color="#fff" />
+          <Text style={styles.badgeText}>Wajib Dipatuhi</Text>
         </View>
-      ))}
-    </Card.Content>
-  </Card>
-</View>
+
+        <Card style={styles.card}>
+          <Card.Content>
+            {kosRules.map((rule, index) => (
+              <View key={index} style={styles.ruleRow}>
+                <MaterialIcons
+                  name="warning"
+                  size={20}
+                  color="#F59E0B"
+                />
+                <Text style={styles.ruleText}>{rule}</Text>
+              </View>
+            ))}
+          </Card.Content>
+        </Card>
+      </View>
 
 
       {/* Rekomendasi Kos */}
@@ -152,7 +150,7 @@ export default function DashboardPage() {
               <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
             </Card.Actions>
           </Card>
-           <Card style={styles.recommendationCard}>
+          <Card style={styles.recommendationCard}>
             <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1505691938895-1758d7eaa511' }} />
             <Card.Content style={{ padding: 10 }}>
               <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Campur</Text>
@@ -222,34 +220,34 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
   },
   footer: { padding: 30, marginTop: 10, marginBottom: 20 },
-  
-  horizontalScroll: { 
-    marginTop: 10, 
-    paddingBottom: 10 
+
+  horizontalScroll: {
+    marginTop: 10,
+    paddingBottom: 10
   },
-  recommendationCard: { 
-    width: 220, 
-    marginRight: 15, 
-    backgroundColor: "#fff", 
+  recommendationCard: {
+    width: 220,
+    marginRight: 15,
+    backgroundColor: "#fff",
     borderRadius: 12,
-    elevation: 4, 
-    shadowColor: '#000', 
+    elevation: 4,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   ruleRow: {
-  flexDirection: "row",
-  alignItems: "flex-start",
-  marginBottom: 8,
-},
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 8,
+  },
 
-ruleText: {
-  marginLeft: 10,
-  fontSize: 14,
-  color: "#444",
-  flex: 1,
-  lineHeight: 20,
-},
+  ruleText: {
+    marginLeft: 10,
+    fontSize: 14,
+    color: "#444",
+    flex: 1,
+    lineHeight: 20,
+  },
 
 });
