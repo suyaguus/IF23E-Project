@@ -144,31 +144,42 @@ export const GET = async (
     }
 }
 
+// Update User berdasarkan ID (bukan Email)
 export async function PUT(
     req: NextRequest,
+    context: { params: Promise<{ id: string }> } // Tambahkan context params
 ) {
     try {
-        const body = await req.json();
-        const { email, username, notelp } = body;
+        // 1. Ambil ID dari URL
+        const { id } = await context.params;
+        const userId = Number(id);
 
-        if (!email) {
+        // 2. Validasi ID
+        if (isNaN(userId)) {
             return NextResponse.json(
-                { success: false, message: "Email user wajib disertakan." },
+                { success: false, message: "ID tidak valid" },
                 { status: 400, headers: corsHeaders }
             );
         }
 
+        // 3. Ambil data dari Body
+        const body = await req.json();
+        const { username, notelp } = body;
+        // Note: Kita tidak butuh email dari body untuk query WHERE, karena sudah ada ID
+
+        // 4. Cek apakah user dengan ID tersebut ada
         const existingUser = await prisma.tb_user.findUnique({
-            where: { email: email },
+            where: { id: userId }, // Cari berdasarkan ID
         });
 
         if (!existingUser) {
             return NextResponse.json(
-                { success: false, message: "User tidak ditemukan." },
+                { success: false, message: "User tidak ditemukan" },
                 { status: 404, headers: corsHeaders }
             );
         }
 
+        // 5. Siapkan data update
         const dataToUpdate: Prisma.tb_userUpdateInput = {};
 
         if (username !== undefined && username !== null && username.trim() !== "") {
@@ -185,8 +196,9 @@ export async function PUT(
             );
         }
 
+        // 6. Lakukan Update
         const updatedUser = await prisma.tb_user.update({
-            where: { email: email },
+            where: { id: userId }, // Update berdasarkan ID
             data: dataToUpdate,
         });
 
