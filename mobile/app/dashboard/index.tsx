@@ -346,4 +346,26 @@ sanctionText: {
   lineHeight: 18,
   flex: 1,
 },
+
+statusBadge: {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingVertical: 4,
+  paddingHorizontal: 10,
+  borderRadius: 14,
+  marginTop: 6,
+  alignSelf: "flex-start",
+},
+
+statusText: {
+  fontSize: 12,
+  marginLeft: 6,
+  fontWeight: "600",
+},
+
+priceText: {
+    color: "#666",
+    marginTop: 2,
+    fontSize: 13,
+  },
 });
