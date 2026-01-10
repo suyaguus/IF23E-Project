@@ -32,6 +32,51 @@ export default function DashboardPage() {
     fasilitas: ["WiFi", "Parkir", "AC", "Dapur", "Kasur", "Lemari"],
   };
 
+  const rekomendasiKamar = [
+    {
+      title: "Kamar Khusus Laki-laki",
+      price: "Rp 900.000 / bln",
+      image:
+        "https://images.unsplash.com/photo-1522771739844-649f439f6f18",
+      available: true,
+    },
+    {
+      title: "Kamar Khusus Perempuan",
+      price: "Rp 800.000 / bln",
+      image:
+        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
+      available: false,
+    },
+    {
+      title: "Kamar Campur",
+      price: "Rp 1.300.000 / bln",
+      image:
+        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
+      available: true,
+    },
+     {
+      title: "Kamar Khusus Perempuan",
+      price: "Rp 800.000 / bln",
+      image:
+        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
+      available: false,
+    },
+     {
+      title: "Kamar Khusus Laki-laki",
+      price: "Rp 900.000 / bln",
+      image:
+        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
+      available: false,
+    },
+     {
+      title: "Kamar Campur",
+      price: "Rp 1.300.000 / bln",
+      image:
+        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
+      available: true,
+    },
+  ];
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.colors.background }]}
@@ -138,37 +183,60 @@ export default function DashboardPage() {
           Rekomendasi Kos
         </Text>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-          <Card style={styles.recommendationCard}>
-            <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1522771739844-649f439f6f18' }} />
-            <Card.Content style={{ padding: 10 }}>
-              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Khusus Laki-laki</Text>
-              <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.500.000 / bln</Text>
-            </Card.Content>
-            <Card.Actions>
-              <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
-            </Card.Actions>
-          </Card>
-          <Card style={styles.recommendationCard}>
-            <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1505691938895-1758d7eaa511' }} />
-            <Card.Content style={{ padding: 10 }}>
-              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Khusus Perempuan</Text>
-              <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.200.000 / bln</Text>
-            </Card.Content>
-            <Card.Actions>
-              <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
-            </Card.Actions>
-          </Card>
-          <Card style={styles.recommendationCard}>
-            <Card.Cover source={{ uri: 'https://images.unsplash.com/photo-1505691938895-1758d7eaa511' }} />
-            <Card.Content style={{ padding: 10 }}>
-              <Text variant="titleSmall" style={{ fontWeight: 'bold' }}>Kamar Campur</Text>
-              <Text variant="bodySmall" style={{ color: '#666' }}>Rp 1.300.000/ bln</Text>
-            </Card.Content>
-            <Card.Actions>
-              <Button mode="contained-tonal" compact labelStyle={{ fontSize: 12 }}>Lihat</Button>
-            </Card.Actions>
-          </Card>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {rekomendasiKamar.map((item, index) => (
+            <Card key={index} style={styles.recommendationCard}>
+              <Card.Cover source={{ uri: item.image }} />
+
+              <Card.Content style={{ padding: 10 }}>
+                <Text variant="titleSmall" style={{ fontWeight: "bold" }}>
+                  {item.title}
+                </Text>
+
+                <Text style={styles.priceText}>{item.price}</Text>
+
+                {/* STATUS KAMAR */}
+                <View
+                  style={[
+                    styles.statusBadge,
+                    {
+                      backgroundColor: item.available
+                        ? "#DCFCE7"
+                        : "#FEE2E2",
+                    },
+                  ]}
+                >
+                  <MaterialIcons
+                    name={item.available ? "check-circle" : "cancel"}
+                    size={14}
+                    color={item.available ? "#16A34A" : "#DC2626"}
+                  />
+                  <Text
+                    style={[
+                      styles.statusText,
+                      {
+                        color: item.available
+                          ? "#166534"
+                          : "#7F1D1D",
+                      },
+                    ]}
+                  >
+                    {item.available ? "Tersedia" : "Penuh"}
+                  </Text>
+                </View>
+              </Card.Content>
+
+              <Card.Actions>
+                <Button
+                  mode="contained-tonal"
+                  compact
+                  disabled={!item.available}
+                >
+                  Lihat
+                </Button>
+              </Card.Actions>
+            </Card>
+          ))}
         </ScrollView>
       </View>
 
@@ -299,4 +367,26 @@ sanctionText: {
   lineHeight: 18,
   flex: 1,
 },
+
+statusBadge: {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingVertical: 4,
+  paddingHorizontal: 10,
+  borderRadius: 14,
+  marginTop: 6,
+  alignSelf: "flex-start",
+},
+
+statusText: {
+  fontSize: 12,
+  marginLeft: 6,
+  fontWeight: "600",
+},
+
+priceText: {
+    color: "#666",
+    marginTop: 2,
+    fontSize: 13,
+  },
 });
