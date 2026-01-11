@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { View, StyleSheet, StatusBar, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
-import { useRouter, usePathname, useSegments } from "expo-router"; 
+import { useRouter, usePathname, useSegments } from "expo-router";
 import {
   PaperProvider,
   DefaultTheme,
@@ -41,9 +41,14 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       >
         <Avatar.Icon
           size={64}
-          icon="account"
           style={{ backgroundColor: "white" }}
-          color={theme.colors.primary}
+          icon={({ size, color }) => (
+            <MaterialIcons
+              name="person"
+              size={size}
+              color={theme.colors.primary}
+            />
+          )}
         />
         <Text variant="titleMedium" style={styles.drawerTitle}>
           {isLoggedIn && userData ? userData.username : "Guest User"}
@@ -93,8 +98,8 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 };
 
 function RootLayoutNav() {
-  const { isLoggedIn, userRole, isLoading } = useAuth(); 
-  const segments = useSegments() as string[]; 
+  const { isLoggedIn, userRole, isLoading } = useAuth();
+  const segments = useSegments() as string[];
   const router = useRouter();
 
   useEffect(() => {
