@@ -366,6 +366,7 @@ sanctionText: {
   color: "#7F1D1D",
   lineHeight: 18,
   flex: 1,
+  
 },
 
 statusBadge: {
