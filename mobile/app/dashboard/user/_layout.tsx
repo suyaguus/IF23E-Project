@@ -13,8 +13,6 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/context/AuthContext";
-import api from "@/services/api";
-import { Strings } from "@/constants/strings";
 
 const UserDrawerContent = (props: DrawerContentComponentProps) => {
   const router = useRouter();
@@ -32,15 +30,6 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
   };
 
   const handleLogout = () => {
-    // Alert.alert("Konfirmasi", "Keluar dari aplikasi?", [
-    //   { text: "Batal", style: "cancel" },
-    //   {
-    //     text: "Ya",
-    //     onPress: () => {
-    //       logout();
-    //     },
-    //   },
-    // ]);
     logout();
   };
 
@@ -76,6 +65,20 @@ const UserDrawerContent = (props: DrawerContentComponentProps) => {
           active={isActive("")}
           onPress={() => navigateTo("/dashboard/user")}
           theme={{ colors: { secondaryContainer: "#E6F2FF" } }}
+        />
+
+        {/* Menu Lapor di Sidebar (Opsional) */}
+        <PaperDrawer.Item
+          icon={({ size }) => (
+            <MaterialIcons
+              name="report-problem"
+              size={size}
+              color={isActive("lapor") ? theme.colors.primary : "#666"}
+            />
+          )}
+          label="Lapor Kerusakan"
+          active={isActive("lapor")}
+          onPress={() => navigateTo("/dashboard/user/lapor")}
         />
 
         <PaperDrawer.Item
@@ -150,8 +153,24 @@ export default function UserLayout() {
         headerShown: true,
       }}
     >
+      {/* 1. Beranda */}
       <Drawer.Screen name="index" options={{ title: "Beranda User" }} />
+      
+      {/* 2. PENDAFTARAN HALAMAN LAPOR (Penting!) */}
+      <Drawer.Screen 
+        name="lapor/index" 
+        options={{ 
+          title: "Lapor Kerusakan",
+          headerShown: true 
+        }} 
+      />
+
+      {/* 3. Profil */}
       <Drawer.Screen name="profile/index" options={{ title: "Profil Saya" }} />
+      
+      {/* Tambahkan ini jika file rooms dan history sudah ada */}
+      <Drawer.Screen name="rooms/index" options={{ title: "List Kamar" }} />
+      <Drawer.Screen name="history/index" options={{ title: "Riwayat Sewa" }} />
     </Drawer>
   );
 }
