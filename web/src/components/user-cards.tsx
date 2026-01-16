@@ -25,7 +25,7 @@ export function UserStatsCards() {
       value: "A-0",
       description: "Lantai 1 - Tipe Deluxe",
       icon: IconHome,
-      status: "Aktif",
+      status: "Belum Aktif",
       badgeVariant: "default",
     },
     {
