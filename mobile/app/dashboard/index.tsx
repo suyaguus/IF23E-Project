@@ -9,73 +9,20 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { styles } from "../../styles/guest";
+import {
+  KOS_RULES,
+  KOS_INFO,
+  REKOMENDASI_KAMAR,
+} from "@/constants/kost";
 
 export default function DashboardPage() {
   const router = useRouter();
   const navigation = useNavigation();
   const theme = useTheme();
 
-  const kosRules = [
-    "Dilarang membawa hewan peliharaan.",
-    "Tamu wajib lapor ke pengelola.",
-    "Jam malam maksimal pukul 22.00.",
-    "Dilarang merokok di dalam kamar.",
-    "Menjaga kebersihan lingkungan kos.",
-    "Dilarang membawa tamu lawan jenis ke dalam kamar.",
-    "Penghuni wajib menjaga kebersihan kamar dan area bersama."
-  ];
+ 
 
 
-  const kosInfo = {
-    nama: "Wisma Dempo",
-    alamat: "Jl. Dempo, Labuhan Ratu, Kec. Kedaton, Kota Bandar Lampung, Lampung 35132",
-    fasilitas: ["WiFi", "Parkir", "AC", "Dapur", "Kasur", "Lemari"],
-  };
-
-  const rekomendasiKamar = [
-    {
-      title: "Kamar Khusus Laki-laki",
-      price: "Rp 900.000 / bln",
-      image:
-        "https://images.unsplash.com/photo-1522771739844-649f439f6f18",
-      available: true,
-    },
-    {
-      title: "Kamar Khusus Perempuan",
-      price: "Rp 800.000 / bln",
-      image:
-        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
-      available: false,
-    },
-    {
-      title: "Kamar Campur",
-      price: "Rp 1.300.000 / bln",
-      image:
-        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
-      available: true,
-    },
-     {
-      title: "Kamar Khusus Perempuan",
-      price: "Rp 800.000 / bln",
-      image:
-        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
-      available: false,
-    },
-     {
-      title: "Kamar Khusus Laki-laki",
-      price: "Rp 900.000 / bln",
-      image:
-        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
-      available: false,
-    },
-     {
-      title: "Kamar Campur",
-      price: "Rp 1.300.000 / bln",
-      image:
-        "https://images.unsplash.com/photo-1505691938895-1758d7eaa511",
-      available: true,
-    },
-  ];
 
   return (
     <ScrollView
@@ -95,7 +42,7 @@ export default function DashboardPage() {
           color="#fff"
           style={{ marginTop: 10 }}
         />
-        <Text style={styles.headerTitle}>{kosInfo.nama}</Text>
+        <Text style={styles.headerTitle}>{KOS_INFO.nama}</Text>
         <Text style={styles.headerSubtitle}>Guest Mode (Belum Login)</Text>
       </View>
 
@@ -112,7 +59,7 @@ export default function DashboardPage() {
                 size={24}
                 color={theme.colors.secondary}
               />
-              <Text style={styles.text}>{kosInfo.alamat}</Text>
+              <Text style={styles.text}>{KOS_INFO.alamat}</Text>
             </View>
           </Card.Content>
         </Card>
@@ -124,7 +71,7 @@ export default function DashboardPage() {
           Fasilitas
         </Text>
         <View style={styles.grid}>
-          {kosInfo.fasilitas.map((item, index) => (
+          {KOS_INFO.fasilitas.map((item, index) => (
             <View
               key={index}
               style={[styles.chip, { borderColor: theme.colors.secondary }]}
@@ -153,14 +100,14 @@ export default function DashboardPage() {
 
         <Card style={styles.card}>
           <Card.Content>
-            {kosRules.map((rule, index) => (
+            {KOS_RULES.map((rule, index) => (
               <View key={index} style={styles.ruleRow}>
                 <MaterialIcons
                   name="warning"
                   size={20}
                   color="#F59E0B"
                 />
-                <Text style={styles.ruleText}>{rule}</Text>
+                <Text style={styles.ruleText}>{rule.text}</Text>
               </View>
             ))}
 
@@ -184,7 +131,7 @@ export default function DashboardPage() {
         </Text>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {rekomendasiKamar.map((item, index) => (
+          {REKOMENDASI_KAMAR.map((item, index) => (
             <Card key={index} style={styles.recommendationCard}>
               <Card.Cover source={{ uri: item.image }} />
 
