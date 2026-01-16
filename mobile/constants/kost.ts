@@ -7,3 +7,11 @@ export const KOS_RULES = [
   { id: 6, text: "Dilarang membawa tamu lawan jenis ke dalam kamar." },
   { id: 7, text: "Penghuni wajib menjaga kebersihan kamar dan area bersama." },
 ];
+
+export const KOS_INFO = {
+  nama: "Wisma Dempo",
+  alamat:
+    "Jl. Dempo, Labuhan Ratu, Kec. Kedaton, Kota Bandar Lampung, Lampung 35132",
+  fasilitas: ["WiFi", "Parkir", "AC", "Dapur", "Kasur", "Lemari"],
+};
+
