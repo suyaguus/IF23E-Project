@@ -2,9 +2,9 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const activities = [
-  { date: "23 Des 2025", task: "Pembayaran terverifikasi", status: "Selesai" },
+  { date: "23 Des 2025", task: "Pembayaran terverifikasi", status: "Diproses" },
   { date: "20 Des 2025", task: "Laporan AC bocor", status: "Diproses" },
-  { date: "15 Des 2025", task: "Pembaruan aturan kos", status: "Info" },
+  { date: "15 Des 2025", task: "Pembaruan aturan kos", status: "Diproses" },
 ];
 
 export function RecentActivity() {
