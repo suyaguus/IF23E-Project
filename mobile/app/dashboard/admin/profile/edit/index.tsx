@@ -119,26 +119,23 @@ export default function EditProfilePage() {
     setLoadingSave(true);
     try {
       const payload = {
-        email: userData?.email,
         username: username,
         notelp: phone,
       };
 
-      const response = await api.put(Strings.api_user, payload);
+      console.log("Mengirim PUT ke:", `${Strings.api_user}/${userData?.id}`);
+      
+      const response = await api.put(`${Strings.api_user}/${userData?.id}`, payload); 
 
       if (response.data.success) {
         setUserData({ ...userData!, username: username, notelp: phone });
         showNotification("Sukses", "Profil berhasil disimpan!");
       } else {
-        showNotification(
-          "Gagal",
-          response.data.message || "Gagal menyimpan data."
-        );
+        showNotification("Gagal", response.data.message || "Gagal menyimpan data.");
       }
     } catch (error: any) {
       console.error("Save Profile Error:", error);
-      const errorMsg =
-        error.response?.data?.message || "Terjadi kesalahan server.";
+      const errorMsg = error.response?.data?.message || "Terjadi kesalahan server.";
       showNotification("Error", errorMsg);
     } finally {
       setLoadingSave(false);
