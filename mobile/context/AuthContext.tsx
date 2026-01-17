@@ -9,6 +9,8 @@ interface UserData {
   email: string;
   role: string;
   notelp?: string;
+  imageUrl?: string;
+  createdAt?: string;
 }
 
 // definisi tipe context
@@ -16,6 +18,7 @@ interface AuthContextType {
   isLoggedIn: boolean;
   userRole: "guest" | "admin" | "user";
   userData: UserData | null;
+  setUserData: (data: UserData | null) => void;
   isLoading: boolean;
   logout: () => void;
   login: (email: string, password: string) => Promise<any>;
@@ -78,6 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoggedIn,
         userRole,
         userData,
+        setUserData, 
         isLoading,
         login,
         logout,
