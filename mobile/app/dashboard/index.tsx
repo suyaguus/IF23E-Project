@@ -95,7 +95,7 @@ export default function DashboardPage() {
 
         <View style={styles.badge}>
           <MaterialIcons name="priority-high" size={14} color="#fff" />
-          <Text style={styles.badgeText}>Wajib Dipatuhi</Text>
+          <Text style={styles.badgeText}>Wajib Patuhi Aturan Kos Yang Berlaku</Text>
         </View>
 
         <Card style={styles.card}>
