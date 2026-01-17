@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { View, StyleSheet, StatusBar, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
-import { useRouter, usePathname, useSegments } from "expo-router"; 
+import { useRouter, usePathname, useSegments } from "expo-router";
 import {
   PaperProvider,
   DefaultTheme,
@@ -93,28 +93,43 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 };
 
 function RootLayoutNav() {
-  const { isLoggedIn, userRole, isLoading } = useAuth(); 
-  const segments = useSegments() as string[]; 
+  const { isLoggedIn, userRole, isLoading } = useAuth();
+  const segments = useSegments() as string[];
   const router = useRouter();
 
   useEffect(() => {
     if (isLoading) return;
 
+    // 1. CEK SEGMENT: Jika segment belum dimuat (undefined/empty), STOP DISINI.
+    // Ini mencegah redirect prematur saat state berubah.
+    if (!segments || segments.length === 0) {
+      return; 
+    }
+
     const inAuthGroup = segments[0] === "auth";
     const inDashboardGroup = segments[0] === "dashboard";
 
-    if (!isLoggedIn && inDashboardGroup) {
-      router.replace("/");
-    }
+    console.log("RootLayout Nav Check:", { 
+      isLoggedIn, 
+      segment: segments[0], 
+      inAuthGroup,
+      inDashboardGroup 
+    });
 
-    else if (isLoggedIn && (inAuthGroup || segments.length === 0)) {
+    // 2. Logic Proteksi Dashboard
+    if (!isLoggedIn && inDashboardGroup) {
+      router.replace("/auth/login");
+    } 
+    
+    // 3. Logic Redirect jika sudah Login
+    else if (isLoggedIn && inAuthGroup) {
       if (userRole === "admin") {
         router.replace("/dashboard/admin");
       } else {
         router.replace("/dashboard/user");
       }
     }
-  }, [isLoggedIn, segments, isLoading]);
+  }, [isLoggedIn, segments, isLoading, userRole]);
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

@@ -21,48 +21,48 @@ interface AuthContextType {
   setUserData: (data: UserData | null) => void;
   isLoading: boolean;
   logout: () => void;
-  login: (email: string, password: string) => Promise<any>;
+  login: (email: string, password: string) => Promise<UserData>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // State Login Status
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState<"guest" | "admin" | "user">("guest");
-
-  // State Data User
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fungsi Login
   const login = async (email: string, password: string) => {
     setIsLoading(true);
+    setIsLoggedIn(false);
+    setUserData(null);
+    setUserRole("guest");
+
     try {
       const response = await api.post(Strings.api_auth_login, {
         email,
         password,
       });
-      const result = response.data;
 
-      if (result.success) {
-        let user = result.data.user;
-
-        if (user.role) {
-          user.role = user.role.toLowerCase();
-        }
+      if (response.data.success) {
+        const user = response.data.data.user;
+        if (user.role) user.role = user.role.toLowerCase();
 
         setUserData(user);
-        const role = user.role === "admin" ? "admin" : "user";
-        setUserRole(role);
+        setUserRole(user.role === "admin" ? "admin" : "user");
         setIsLoggedIn(true);
-
         return user;
       } else {
-        throw new Error(result.message || "Login gagal");
+        throw new Error(response.data.message || "Login gagal");
       }
     } catch (error: any) {
-      console.error("Login Error Full:", error);
+      console.error("AuthContext Login Error:", error);
+
+      // RESET DI SINI SAJA
+      setIsLoggedIn(false);
+      setUserData(null);
+      setUserRole("guest");
+
       throw error;
     } finally {
       setIsLoading(false);
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoggedIn,
         userRole,
         userData,
-        setUserData, 
+        setUserData,
         isLoading,
         login,
         logout,
