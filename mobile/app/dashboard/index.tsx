@@ -1,26 +1,28 @@
 import React from "react";
 import {
   View,
-  Text,
   ScrollView,
-  StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { Card, Button, useTheme } from "react-native-paper";
+import { Card, Button, useTheme, Text } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, useNavigation } from "expo-router";
-import { DrawerActions } from "@react-navigation/native"; 
+import { DrawerActions } from "@react-navigation/native";
+import { styles } from "../../styles/guest";
+import {
+  KOS_RULES,
+  KOS_INFO,
+  REKOMENDASI_KAMAR,
+} from "@/constants/kost";
 
 export default function DashboardPage() {
   const router = useRouter();
   const navigation = useNavigation();
-  const theme = useTheme(); 
+  const theme = useTheme();
 
-  const kosInfo = {
-    nama: "Wisma Dempo",
-    alamat: "Jl. Dempo, Labuhan Ratu, Kec. Kedaton, Kota Bandar Lampung, Lampung 35132",
-    fasilitas: ["WiFi", "Parkir", "AC", "Dapur"],
-  };
+ 
+
+
 
   return (
     <ScrollView
@@ -40,7 +42,7 @@ export default function DashboardPage() {
           color="#fff"
           style={{ marginTop: 10 }}
         />
-        <Text style={styles.headerTitle}>{kosInfo.nama}</Text>
+        <Text style={styles.headerTitle}>{KOS_INFO.nama}</Text>
         <Text style={styles.headerSubtitle}>Guest Mode (Belum Login)</Text>
       </View>
 
@@ -57,7 +59,7 @@ export default function DashboardPage() {
                 size={24}
                 color={theme.colors.secondary}
               />
-              <Text style={styles.text}>{kosInfo.alamat}</Text>
+              <Text style={styles.text}>{KOS_INFO.alamat}</Text>
             </View>
           </Card.Content>
         </Card>
@@ -69,7 +71,7 @@ export default function DashboardPage() {
           Fasilitas
         </Text>
         <View style={styles.grid}>
-          {kosInfo.fasilitas.map((item, index) => (
+          {KOS_INFO.fasilitas.map((item, index) => (
             <View
               key={index}
               style={[styles.chip, { borderColor: theme.colors.secondary }]}
@@ -85,7 +87,107 @@ export default function DashboardPage() {
         </View>
       </View>
 
-      {/* Call to Action */}
+      {/* Peraturan Kost */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>
+          Peraturan Kost
+        </Text>
+
+        <View style={styles.badge}>
+          <MaterialIcons name="priority-high" size={14} color="#fff" />
+          <Text style={styles.badgeText}>Wajib Patuhi Aturan Kos Yang Berlaku</Text>
+        </View>
+
+        <Card style={styles.card}>
+          <Card.Content>
+            {KOS_RULES.map((rule, index) => (
+              <View key={index} style={styles.ruleRow}>
+                <MaterialIcons
+                  name="warning"
+                  size={20}
+                  color="#F59E0B"
+                />
+                <Text style={styles.ruleText}>{rule.text}</Text>
+              </View>
+            ))}
+
+            {/* Peringatan Sanksi */}
+            <View style={styles.sanctionBox}>
+              <MaterialIcons name="report" size={20} color="#B91C1C" />
+              <Text style={styles.sanctionText}>
+                Setiap pelanggaran terhadap peraturan kost akan dikenakan sanksi sesuai
+                dengan kebijakan pengelola.
+              </Text>
+            </View>
+          </Card.Content>
+        </Card>
+      </View>
+
+
+      {/* Rekomendasi Kos */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.primary }]}>
+          Rekomendasi Kos
+        </Text>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {REKOMENDASI_KAMAR.map((item, index) => (
+            <Card key={index} style={styles.recommendationCard}>
+              <Card.Cover source={{ uri: item.image }} />
+
+              <Card.Content style={{ padding: 10 }}>
+                <Text variant="titleSmall" style={{ fontWeight: "bold" }}>
+                  {item.title}
+                </Text>
+
+                <Text style={styles.priceText}>{item.price}</Text>
+
+                {/* STATUS KAMAR */}
+                <View
+                  style={[
+                    styles.statusBadge,
+                    {
+                      backgroundColor: item.available
+                        ? "#DCFCE7"
+                        : "#FEE2E2",
+                    },
+                  ]}
+                >
+                  <MaterialIcons
+                    name={item.available ? "check-circle" : "cancel"}
+                    size={14}
+                    color={item.available ? "#16A34A" : "#DC2626"}
+                  />
+                  <Text
+                    style={[
+                      styles.statusText,
+                      {
+                        color: item.available
+                          ? "#166534"
+                          : "#7F1D1D",
+                      },
+                    ]}
+                  >
+                    {item.available ? "Tersedia" : "Penuh"}
+                  </Text>
+                </View>
+              </Card.Content>
+
+              <Card.Actions>
+                <Button
+                  mode="contained-tonal"
+                  compact
+                  disabled={!item.available}
+                >
+                  Lihat
+                </Button>
+              </Card.Actions>
+            </Card>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Footer */}
       <View style={styles.footer}>
         <Text style={{ textAlign: "center", marginBottom: 10, color: "#666" }}>
           Ingin booking kamar?
@@ -101,45 +203,3 @@ export default function DashboardPage() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: {
-    padding: 30,
-    alignItems: "center",
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    position: "relative", // Untuk absolute positioning tombol menu
-  },
-  menuButton: {
-    position: "absolute",
-    top: 40, // Sesuaikan dengan StatusBar
-    left: 20,
-    zIndex: 10,
-    padding: 5,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#fff",
-    marginTop: 10,
-  },
-  headerSubtitle: { color: "#E6F2FF", marginTop: 5 },
-  section: { padding: 20, paddingBottom: 0 },
-  sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-  card: { backgroundColor: "#fff", elevation: 3 },
-  row: { flexDirection: "row", alignItems: "center" },
-  text: { marginLeft: 10, fontSize: 15, color: "#444", flex: 1 },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
-  chip: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#eee",
-  },
-  footer: { padding: 30, marginTop: 10, marginBottom: 20 },
-});
